@@ -19,7 +19,7 @@ Template.view_image.events({
 
 })
 
-var staticURL = "https://dl.dropbox.com/s/enb5zemvmu2oqgw/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
 Template.view_image.rendered = function() {
     if(!this._rendered) {
