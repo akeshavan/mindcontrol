@@ -23,7 +23,8 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
             
-            <li><a>{{> loginButtons}}</a></li>
+            <li><a data-intro='Step 1: Login or create an account' data-step="1">{{> loginButtons}}</a></li>
+            <li><a class="tutorial">Tutorial</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -42,12 +43,12 @@
                  <ul class="nav nav-list affix qbox">
                  <h5>Query Box</h5>
                                   
-  <button class="btn btn-default btn-small reset"> Reset </button>
-  <button class="btn btn-default btn-small download"> Download </button>
+  <button class="btn btn-default btn-small reset" data-intro="Step 4: You can also click reset to remove all filters" data-step="4" data-position="right"> Reset </button>
+  <button class="btn btn-default btn-small download" data-intro="Step 5: Click download to get all Freesurfer metrics for your query" data-step="5"> Download </button>
                      <br><br>
 
 
-                 <div class="well">
+                 <div class="well" data-step="3" data-intro="Step 3: After selecting a date, a query parameter appears. Click the x to remove the filter">
                      
                      {{#each currentQuery.Exams}}
                     <span class="tag label label-info">
@@ -131,10 +132,10 @@
     <br>
     <br>
     <div class="collapse in" id="collapseExample" aria-labelledby="collapseExample">
-        <div id="d3vis_date"></div>
+        <div id="d3vis_date" data-intro="Step 2: Click on a date to show exams from a particular day" data-step="2"></div>
     </div>
 
-    <div id="exam_table">
+    <div id="exam_table" data-intro="To filter by any of the columns, click a value in the column">
         
         {{> tabular table=TabularTables.Exams selector=selector class="table table-striped table-bordered table-condensed"}}
         
@@ -149,14 +150,14 @@
  <br>
   <br>
     Selected Metric: {{selectedMetric}}
-  <div class="d3board"><!-- height="150px" width="600px">-->
+  <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
       
         <svg id="d3vis"></svg>
 
   </div>
 
-    <select id="metric-select" class="form-control">
-    <option disabled="disabled" selected="selected">Please Select</option>
+    <select id="metric-select" class="form-control" data-intro="Change the freesurfer metric here">
+    <option disabled="disabled" selected="selected" >Please Select</option>
     {{#each metric}}
         <option value="{{this}}">{{this}}</option>
     {{/each}}

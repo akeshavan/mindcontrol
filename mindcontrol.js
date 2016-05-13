@@ -397,7 +397,20 @@ if (Meteor.isClient) {
     "click .download": function(){
         MyAppExporter.exportFS()
     },
-    
+    "click .tutorial": function(){
+        var intro = introJs()
+        intro.setOptions({showProgress: false})
+        intro.onchange(function(targetElement) {
+            console.log(targetElement.attributes.getNamedItem("data-step"))
+            if (targetElement.attributes.getNamedItem("data-step") == "2"){
+                console.log("in here")
+                var gSelector = Session.get("globalSelector")
+                gSelector.Exams["DCM_StudyDate"] = "20151123"
+                Session.set("globalSelector", gSelector)
+            }
+        });
+        intro.start();
+    },
     "click .save": function(){
         var gSelector = Session.get("globalSelector")
         var name = $("#qname").serializeArray()[0]["value"]
