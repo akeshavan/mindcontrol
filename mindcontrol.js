@@ -318,7 +318,7 @@ if (Meteor.isClient) {
           //var sub1 = Meteor.subscribe("all-nifti")
           //var sub2 = Meteor.subscribe("all-subjects")
           Session.set("globalSelector", globalSelector)
-          Session.set("currentFSMetric", "EstimatedTotalIntraCranialVol")
+          Session.set("currentFSMetric", "Amygdala")
           Meteor.subscribe("datehist")
           Meteor.subscribe("user")
           Meteor.subscribe("users")
