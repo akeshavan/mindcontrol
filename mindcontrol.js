@@ -59,7 +59,7 @@ label_qa = function(name,object){
 
 var tableFields = {
     
-    "msid": {data:"msid", title:"MSID", render: function(val, type, doc){
+    "msid": {data:"msid", title:"Subject", render: function(val, type, doc){
             html = '<a class="exam msid '+val+'">'+val+'</a>'
 	        return Spacebars.SafeString(html)
         }},

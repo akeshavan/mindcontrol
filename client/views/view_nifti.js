@@ -28,6 +28,6 @@ Template.view_image.rendered = function() {
     }
     params = {}
     Rparams = Router.current().params
-    params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
+    params["images"] = [staticURL+Rparams.imageFilename+"/t1.nii.gz"]
     papaya.Container.addViewer("viewer", params, function(){console.log(params)})
 }
