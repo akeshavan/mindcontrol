@@ -85,7 +85,7 @@ var tableFields = {
             return Spacebars.SafeString(html)
         }},
         
-    "viewNifti": {data:"_id", title:"file", render: function(val, type, doc){
+    "viewNifti": {data:"_id", title:"nifti filename", render: function(val, type, doc){
 	                  html = '<a target="_blank" href="/viewImage/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	                  return Spacebars.SafeString(html)
 	              }},
@@ -113,7 +113,7 @@ var tableFields = {
 
     "QC": {data:"quality_check", title:"QC", render: label_qa },
     
-    "viewFS": {data:"_id", title:"ID", render: function(val, type, doc){
+    "viewFS": {data:"_id", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	        //console.log(html)
 	        return Spacebars.SafeString(html)
@@ -193,12 +193,13 @@ TabularTables.NI =  new Tabular.Table({
     collection: NI,
     autoWidth: true,
     throttleRefresh: 1000,
-    columns: [tableFields["msid"],
+    columns: [//tableFields["msid"],
               tableFields["subject_id"],
-              tableFields["Study Tag"],
+              //tableFields["Study Tag"],
               tableFields["viewNifti"],
-              tableFields["Site"],
-              tableFields["Date"]]
+              //tableFields["Site"],
+              //tableFields["Date"]
+              ]
 })
 
 TabularTables.MNI = new Tabular.Table({
