@@ -8,7 +8,7 @@ User = new Mongo.Collection("user")
 //MNI = new Mongo.Collection("mni")
 //RSFMRI = new Mongo.Collection("rsfmri")
 
-var staticURL = "https://dl.dropbox.com/s/enb5zemvmu2oqgw/"
+staticURL = "http://localhost:3002/"
 var globalSelector = {"Exams":{},
                       "FS": {},
                       "NI": {}}
@@ -323,6 +323,7 @@ if (Meteor.isClient) {
           Meteor.subscribe("datehist")
           Meteor.subscribe("user")
           Meteor.subscribe("users")
+          //Meteor.subscribe("nii")
           //Meteor.subscribe("fs_metrics", )
           //Meteor.subscribe("subject_ids")
           //Meteor.call("agg_fs")
@@ -604,7 +605,7 @@ if (Meteor.isServer){
     return Subjects.find({})
     })*/
 
-    Meteor.startup(function () {
+    /*Meteor.startup(function () {
     if (Subjects.find().count() === 0) {
         //load the json from here: https://www.dropbox.com/s/enb5zemvmu2oqgw/data.json?dl=0
         var source_json = "https://dl.dropbox.com/s/enb5zemvmu2oqgw/data.json?dl=0"
@@ -616,7 +617,7 @@ if (Meteor.isServer){
         
         //Subjects.insert({});
     }
-  });
+  });*/
     
     Meteor.publish("datehist", function(){return DH.find({})})
     Meteor.publish("user", function(){return User.find({})}) //anisha's user collections
@@ -631,6 +632,10 @@ if (Meteor.isServer){
             quality_check: 1, checkedBy: 1, complete:1}
         fields[mname] = 1
         return FS.find({},{fields:fields})
+    })
+    Meteor.publish("nii", function(id){
+        console.log("id is", id)
+        return NI.find({_id:id})
     })
     Meteor.publish("subject_ids", function(){
         return NI.find({},{fields:{subject_id:1}})
@@ -671,6 +676,7 @@ if (Meteor.isServer){
                                        //metrics: {$first: "$freesurfer_t1s.metrics"},
                                        quality_check: {$first: "$nifti_files.quality_check"},
                                        "Study Tag": {$first: "$Study Tag"},
+                                       "filename": {$first: "$nifti_files.filename"},
                                        DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
                                        DCM_StudyDate: {$first: "$DCM_StudyDate"},
                                        //complete: {$first: "$nifti_files.complete"},

@@ -26,7 +26,7 @@ Template.view_image_freesurfer.events({
     passwordSignupFields: "USERNAME_ONLY"
   });
 
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
   
 var find_item_of_list = function(full_list,key,value){
 

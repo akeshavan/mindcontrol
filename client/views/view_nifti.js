@@ -19,7 +19,7 @@ Template.view_image.events({
 
 })
 
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
 Template.view_image.rendered = function() {
     if(!this._rendered) {
@@ -28,6 +28,15 @@ Template.view_image.rendered = function() {
     }
     params = {}
     Rparams = Router.current().params
-    params["images"] = [staticURL+Rparams.imageFilename+"/t1.nii.gz"]
-    papaya.Container.addViewer("viewer", params, function(){console.log(params)})
+    Meteor.subscribe("nii", Rparams.imageFilename)
+    this.autorun(function(){
+        var doc = NI.findOne({_id: Rparams.imageFilename})
+        console.log("doc is", doc)
+        if (doc) {
+            params["images"] = [staticURL+doc.filename]
+            papaya.Container.addViewer("viewer", params, function(){console.log(params)})
+        }
+
+    })
+
 }
