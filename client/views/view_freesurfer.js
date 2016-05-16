@@ -8527,20 +8527,20 @@ Template.view_image_freesurfer.rendered = function() {
         
         
         
-        myCustomColorTable.prototype.lookupRed = function (index) {
+        myCustomColorTable.prototype.lookupRed = function (screenVal, index) {
             
             if (validKeys.indexOf(index.toString()) >= 0){
             return colormap["colorCoding"][index].r}
             else{return 0}
         };
         
-        myCustomColorTable.prototype.lookupGreen = function (index) {
+        myCustomColorTable.prototype.lookupGreen = function (screenVal, index) {
             if (validKeys.indexOf(index.toString()) >= 0){
             return colormap["colorCoding"][index].g}
             else{return 0}
         };
         
-        myCustomColorTable.prototype.lookupBlue = function (index) {
+        myCustomColorTable.prototype.lookupBlue = function (screenVal, index) {
             if (validKeys.indexOf(index.toString()) >= 0){
                 return colormap["colorCoding"][index].b}
             else{
