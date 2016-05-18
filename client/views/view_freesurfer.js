@@ -8526,27 +8526,46 @@ Template.view_image_freesurfer.rendered = function() {
         var validKeys = Object.keys(colormap["colorCoding"])
         
         
-        
-        myCustomColorTable.prototype.lookupRed = function (screenVal, index) {
-            
-            if (validKeys.indexOf(index.toString()) >= 0){
-            return colormap["colorCoding"][index].r}
-            else{return 0}
-        };
-        
-        myCustomColorTable.prototype.lookupGreen = function (screenVal, index) {
-            if (validKeys.indexOf(index.toString()) >= 0){
-            return colormap["colorCoding"][index].g}
-            else{return 0}
-        };
-        
-        myCustomColorTable.prototype.lookupBlue = function (screenVal, index) {
-            if (validKeys.indexOf(index.toString()) >= 0){
-                return colormap["colorCoding"][index].b}
+
+        myCustomColorTable.prototype.lookupRed = function (screenVal, imageVal) {
+            if (imageVal){
+            	//console.log(imageVal)
+            	if (validKeys.indexOf(imageVal.toString()) >= 0){
+            	return colormap["colorCoding"][imageVal].r}
+            	else{return 0}
+            	}
             else{
-                //console.log(index)
-                return 0
-                }
+            	console.log("no imageVal", screenVal, imageVal)
+            	return 0
+            }
+        };
+        
+        myCustomColorTable.prototype.lookupGreen = function (screenVal, imageVal) {
+        	if (imageVal){
+            	if (validKeys.indexOf(imageVal.toString()) >= 0){
+            		return colormap["colorCoding"][imageVal].g
+            		}
+            	else{
+            		return 0
+            		}
+            	}
+            else{
+            	return 0
+            }
+        };
+        
+        myCustomColorTable.prototype.lookupBlue = function (screenVal, imageVal) {
+        	if (imageVal){
+
+            	if (validKeys.indexOf(imageVal.toString()) >= 0){
+                	return colormap["colorCoding"][imageVal].b}
+            	else{
+                	//console.log(index)
+                	return 0
+                	}
+              }
+            else{
+            return 0}
         };
         
         console.log("customCtab", myCustomColorTable)
