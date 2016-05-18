@@ -192,7 +192,7 @@ TabularTables.NI =  new Tabular.Table({
     name:"NI",
     collection: NI,
     autoWidth: true,
-    throttleRefresh: 1000,
+    //throttleRefresh: 1000,
     columns: [//tableFields["msid"],
               tableFields["subject_id"],
               //tableFields["Study Tag"],
@@ -258,7 +258,8 @@ Router.route("/", {
     waitOn: function(){
         return [Meteor.subscribe("datehist"),
           Meteor.subscribe("user"),
-          Meteor.subscribe("users")]
+          Meteor.subscribe("users")]//,
+          //Meteor.subscribe("nii-all")]
         
     },
     fastRender: true}
@@ -323,6 +324,7 @@ if (Meteor.isClient) {
           Meteor.subscribe("datehist")
           Meteor.subscribe("user")
           Meteor.subscribe("users")
+          //Meteor.subscribe("nii-all")
           //Meteor.subscribe("nii")
           //Meteor.subscribe("fs_metrics", )
           //Meteor.subscribe("subject_ids")
@@ -637,6 +639,10 @@ if (Meteor.isServer){
         console.log("id is", id)
         return NI.find({_id:id})
     })
+    //Meteor.publish("nii-all", function(){
+    //console.log("publishing nii-all")
+    //return NI.find({})
+    //})
     Meteor.publish("subject_ids", function(){
         return NI.find({},{fields:{subject_id:1}})
         })

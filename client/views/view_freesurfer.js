@@ -8488,7 +8488,68 @@ var colormap = {
 
 
 
+var do_xtk = function(mse,name){
+	var xtkfile_lh = staticURL+mse + "/masks/" + name+"/recon/surf/lh.inflated"
+	var xtkfile_rh = staticURL+mse + "/masks/" + name+"/recon/surf/rh.inflated"
+    console.log(xtkfile_lh, xtkfile_rh)
+	var r1 = new X.renderer3D();
+    // .. attach the renderer to a <div> container using its id
+    r1.container = 'r1';
+    r1.init();
+    r1.camera.position = [300, 0, 250];
+    r1.camera.up = [0, 0, 1];
+    mesh = new X.mesh();
+    // change the color to grey
+    mesh.color = [0.5, 0.5, 0.5];
+    // and attach a freesurfer mesh
+    mesh.file = xtkfile_lh//'http://x.babymri.org/?lefthemisphere.smoothwm' //'http://x.babymri.org/?avf.vtk'
+    //'http://x.babymri.org/?lefthemisphere.smoothwm';
 
+    // load curvature values from a .crv file
+    // it would also be possible to create an X.scalars object and
+    // configure an array using 'X.scalars.array = arr;' to be independent from a
+    // file format
+    // in this case we choose the 'C' curvature as the default
+    //mesh.scalars.file = 'http://x.babymri.org/?lh.smoothwm.C.crv';
+    // we want to map the scalars linear between blue and white
+    //mesh.scalars.minColor = [0, 0, 1];
+    //mesh.scalars.maxColor = [1, 1, 1];
+
+    // .. add the mesh
+    r1.add(mesh);
+
+    // .. and start the loading/rendering
+    r1.render();
+
+    var r2 = new X.renderer3D();
+    // .. attach the renderer to a <div> container using its id
+    r2.container = 'r2';
+    r2.init();
+    r2.camera.position = [100, 300, 250];
+    //r2.camera.up = [0, 1, 0];
+    mesh = new X.mesh();
+    // change the color to grey
+    mesh.color = [0.5, 0.5, 0.5];
+    // and attach a freesurfer mesh
+    mesh.file = xtkfile_rh//'http://x.babymri.org/?lefthemisphere.smoothwm' //'http://x.babymri.org/?avf.vtk'
+    //'http://x.babymri.org/?lefthemisphere.smoothwm';
+
+    // load curvature values from a .crv file
+    // it would also be possible to create an X.scalars object and
+    // configure an array using 'X.scalars.array = arr;' to be independent from a
+    // file format
+    // in this case we choose the 'C' curvature as the default
+    //mesh.scalars.file = 'http://x.babymri.org/?lh.smoothwm.C.crv';
+    // we want to map the scalars linear between blue and white
+    //mesh.scalars.minColor = [0, 0, 1];
+    //mesh.scalars.maxColor = [1, 1, 1];
+
+    // .. add the mesh
+    r2.add(mesh);
+
+    // .. and start the loading/rendering
+    r2.render();
+}
 	//params["expandable"] = true;
 
 Template.view_image_freesurfer.rendered = function() {
@@ -8564,6 +8625,7 @@ Template.view_image_freesurfer.rendered = function() {
                 	return 0
                 	}
               }
+
             else{
             return 0}
         };
@@ -8661,6 +8723,7 @@ Template.view_image_freesurfer.rendered = function() {
         //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
         console.log("params", params)
         papaya.Container.addViewer("viewer", params, function(){console.log(params)})
+        do_xtk(db.subject_id, doc.name)
 
 	}
 	        
