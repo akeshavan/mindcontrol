@@ -5,13 +5,14 @@ MS = new Mongo.Collection("msid")
 DH = new Mongo.Collection("datehist")
 FSH = new Mongo.Collection("fshist")
 User = new Mongo.Collection("user")
-//MNI = new Mongo.Collection("mni")
-//RSFMRI = new Mongo.Collection("rsfmri")
+MNI = new Mongo.Collection("mni")
+RSFMRI = new Mongo.Collection("rsfmri")
 
 staticURL = "http://localhost:3002/"
 var globalSelector = {"Exams":{},
                       "FS": {},
-                      "NI": {}}
+                      "NI": {},
+                      "MNI": {}}
 
 
   /*
@@ -175,7 +176,7 @@ TabularTables.FS =  new Tabular.Table({
     autoWidth: true,
     columns: [//tableFields["msid"],
               tableFields["subject_id"],
-              //tableFields["Study Tag"],
+              tableFields["Study Tag"],
               //tableFields["Site"],
               tableFields["viewFS"],
               tableFields["QC"],
@@ -205,8 +206,8 @@ TabularTables.NI =  new Tabular.Table({
 TabularTables.MNI = new Tabular.Table({
 
     name:"MNI",
-    collection: FS,
-    throttleRefresh: 5000,
+    collection: MNI,
+    //throttleRefresh: 5000,
     columns: [tableFields["msid"],
               tableFields["subject_id"],
               tableFields["Study Tag"],
@@ -246,6 +247,7 @@ MainController = RouteController.extend({
     action: function () {
         Meteor.call("agg_fs")
         Meteor.call("agg_ni")
+        Meteor.call("agg_mni")
         console.log("agg ni in main controller")
         this.render();
   }
@@ -262,7 +264,7 @@ Router.route("/", {
           //Meteor.subscribe("nii-all")]
         
     },
-    fastRender: true}
+    fastRender: false}
     )
 
   Router.route('/viewImage/:imageFilename/mseID/:mse', function(){
@@ -363,7 +365,12 @@ if (Meteor.isClient) {
             niSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "NI"})
             } 
 
-        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors}
+        var mniSelectors = []
+        for (var attrname in gSelector["MNI"]) {
+            mniSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "MNI"})
+            } 
+
+        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors, MNI: mniSelectors}
 
     },
     
@@ -568,7 +575,8 @@ if (Meteor.isClient) {
         
                 var values = get_histogram(fs_tables, metric, bins)
                 //console.log("values", values)
-                do_d3_histogram(values, metric, "#d3vis")
+                var formatCount = d3.format(",.0f");
+                do_d3_histogram(values, metric, "#d3vis", "FS", formatCount)
             })
         
         }
@@ -594,6 +602,43 @@ if (Meteor.isClient) {
 
     tableSettings : nii_table_settings
 })
+
+  Template.mniOnly.helpers({
+    selector : function () {
+        //Meteor.call("agg_ni")
+        var fsSelector = getMNI()
+        //var out = NI.find(fsSelector)
+        //console.log("ni down to", out.count())
+        return fsSelector
+    },
+
+    tableSettings : nii_table_settings
+})
+
+  Template.mniOnly.rendered = function(){
+
+        if (!this.rendered){
+            this.rendered = true
+        }   
+                
+            this.autorun(function() {
+                var fsSelector = getMNI()
+                //console.log(FS)
+                //fsSelector["FS"] = {} //always show full hist
+                var bins = 10
+                var metric = "PearsonCorrelation"//Session.get("currentFSMetric")
+                Meteor.subscribe("mni_metrics", metric) //"Caudate"
+                //Meteor.call("getFSHist", fsSelector, bins, metric)
+                //var values = Session.get("FSHist")
+                var fs_tables = MNI.find(fsSelector).fetch()
+                //console.log("fs_tables", fs_tables)
+                var formatCount = d3.format(",.3f");
+                var values = get_histogram(fs_tables, metric, bins)
+                //console.log("values", values)
+                do_d3_histogram(values, metric, "#d3vismni", "MNI", formatCount)
+            })
+        
+        }
   
 
 } //end client
@@ -635,9 +680,24 @@ if (Meteor.isServer){
         fields[mname] = 1
         return FS.find({},{fields:fields})
     })
+    
+    Meteor.publish("mni_metrics", function(metric){
+        var mname = "metrics." + metric
+        var fields = {subject_id: 1, _id: 1, "Study Tag":1,
+        DCM_InstitutionName:1, DCM_StudyDate: 1, msid: 1,
+            quality_check: 1, checkedBy: 1, complete:1}
+        fields[mname] = 1
+        //console.log(mname)
+        return MNI.find({},{fields:fields})
+    })
+    
     Meteor.publish("nii", function(id){
         console.log("id is", id)
         return NI.find({_id:id})
+    })
+    Meteor.publish("mni", function(id){
+        console.log("id is", id)
+        return MNI.find({_id:id})
     })
     //Meteor.publish("nii-all", function(){
     //console.log("publishing nii-all")
@@ -690,6 +750,28 @@ if (Meteor.isServer){
                                        checkedAt: {$first: "$nifti_files.checkedAt"}
                               }},
                               {$out:"ni"}])
+          //console.log(NI.findOne({}))
+          //FS//.find(query)
+      },
+      
+      agg_mni: function(){
+          
+          console.log("agg for mni")
+          var out = Subjects.aggregate([{$unwind:"$mni"},
+                              {$group:{_id:"$mni.name",
+                                       msid: {$first: "$msid"},
+                                       subject_id: {$first: "$subject_id"},
+                                       metrics: {$first: "$mni.metrics"},
+                                       quality_check: {$first: "$mni.quality_check"},
+                                       "Study Tag": {$first: "$Study Tag"},
+                                       "filename": {$first: "$mni.filename"},
+                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
+                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
+                                       //complete: {$first: "$nifti_files.complete"},
+                                       checkedBy: {$first: "$mni.checkedBy"},
+                                       checkedAt: {$first: "$mni.checkedAt"}
+                              }},
+                              {$out:"mni"}])
           //console.log(NI.findOne({}))
           //FS//.find(query)
       },

@@ -37,9 +37,10 @@
                     <ul class="nav nav-list bs-docs-sidenav affix">
                         <li><a href="#exams"><span class="badge badge-inverse"></span> Exams</a></li>
                         <li><a href="#freesurfer"><span class="badge badge-inverse">{{num_fs}}</span> Freesurfer</a></li>
+                        <li><a href="#mni"><span class="badge badge-inverse"></span> MNI Warps</a></li>
                         <li><a href="#niftis"><span class="badge badge-inverse"></span> Nifti</a></li>
                     </ul> <!--End sidebar navigation-->
-                 
+                 <br><br>
                  <ul class="nav nav-list affix qbox">
                  <h5>Query Box</h5>
                                   
@@ -74,6 +75,13 @@
                     <br><br>
                      {{/each}}
 
+                    {{#each currentQuery.MNI}}
+                    <span class="tag label label-info">
+                      <span class="mni {{attr}}">{{attr}}</span>
+                      <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
+                    </span>
+                    <br><br>
+                     {{/each}}
                      
                  </div>
 <form class="form-inline">
@@ -119,7 +127,11 @@
     
     {{> freesurferOnly}}
     
+    {{> mniOnly}}
+    
     {{> niiOnly}}
+    
+    
 
 </template>
 
@@ -181,4 +193,20 @@
 
 </template>
 
+<template name="mniOnly">
 
+  <h1 id="mni">MNI Warps</h1>
+  <br>
+  <br>
+    <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
+      
+        <svg id="d3vismni"></svg>
+
+  </div>
+  <br><br>
+  
+  <div id="mni_table">
+    {{> tabular table=TabularTables.MNI selector=selector class="table table-striped table-bordered table-condensed"}}
+  </div>
+
+</template>

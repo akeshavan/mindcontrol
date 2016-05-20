@@ -15,6 +15,14 @@ getNI = function(){
         //console.log("NI Selector", fsSelector)
     return fsSelector
 }
+
+getMNI = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["MNI"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
  
 getFS_ford3 = function(){
     var gSelector = Session.get('globalSelector')
@@ -96,7 +104,7 @@ get_histogram = function(fs_tables, metric, bins){
         return values
             }
  
-d3barplot = function(window, data, formatCount, metric){
+d3barplot = function(window, data, formatCount, metric, collection){
         // fs_tables is the original table the stuff came from
         
         var bar_selector = window.d3vis.svg.selectAll("rect")
@@ -122,7 +130,7 @@ d3barplot = function(window, data, formatCount, metric){
         //var clicked = false
         
 
-        
+        var countFormat = d3.format(",.0f")
         bar_selector.enter().append("text")
         .attr("dy", "1em")
         .attr("y", function(d) { return window.d3vis.y(d.y) - 15; })
@@ -132,7 +140,7 @@ d3barplot = function(window, data, formatCount, metric){
               })
         .attr("fill", "black")
         .attr("text-anchor", "middle")
-        .text(function(d) { return formatCount(d.y); });
+        .text(function(d) { return countFormat(d.y); });
 
         text_selector.enter().append("text")
         .attr("dy", "1em")
@@ -198,7 +206,7 @@ d3barplot = function(window, data, formatCount, metric){
                 d3.selectAll(".brush").call(brush.clear());
                 var newkey = "metrics."+metric
                 var gSelector = Session.get("globalSelector")
-                gSelector["FS"][newkey] = {$gte: extent0[0], $lte: extent0[1]}
+                gSelector[collection][newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 Session.set("globalSelector", gSelector)      
                 
             }
@@ -218,7 +226,7 @@ d3barplot = function(window, data, formatCount, metric){
 
       };
 
-do_d3_histogram = function (values, metric, dom_id) {
+do_d3_histogram = function (values, metric, dom_id, collection, formatCount) {
     // Defer to make sure we manipulate DOM
     _.defer(function () {
         //console.log("HELLO, ATTEMPTING TO DO TABLE!!", fs_tables)
@@ -278,8 +286,8 @@ do_d3_histogram = function (values, metric, dom_id) {
         window.d3vis.y.domain([0, d3.max(data, function(d) { return d.y; })]);
 
 
-        var formatCount = d3.format(",.0f");
-        d3barplot(window,data, formatCount, metric)
+        
+        d3barplot(window,data, formatCount, metric, collection)
 
     });
   })
