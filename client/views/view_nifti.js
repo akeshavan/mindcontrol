@@ -19,6 +19,25 @@ Template.view_image.events({
 
 })
 
+Template.view_image.helpers({
+    selector: function(){
+        return Session.get("globalSelector")["Exams"]
+    },
+        ni_selector: function(){
+        return getNI()
+    },
+    user: function(){
+    	return Meteor.users.find({}).fetch()
+    },
+    
+    doc: function(){
+            var Rparams = Router.current().params
+            var db = Subjects.findOne({subject_id:Rparams.mse})
+            var doc = find_item_of_list(db["nifti_files"],"name", Rparams.imageFilename)
+            return doc
+    }
+})
+
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
 Template.view_image.rendered = function() {

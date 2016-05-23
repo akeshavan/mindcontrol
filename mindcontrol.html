@@ -38,9 +38,10 @@
                         <li><a href="#exams"><span class="badge badge-inverse"></span> Exams</a></li>
                         <li><a href="#freesurfer"><span class="badge badge-inverse">{{num_fs}}</span> Freesurfer</a></li>
                         <li><a href="#mni"><span class="badge badge-inverse"></span> MNI Warps</a></li>
+                        <li><a href="#rsfmri"><span class="badge badge-inverse"></span> Resting State fMRI</a></li>
                         <li><a href="#niftis"><span class="badge badge-inverse"></span> Nifti</a></li>
                     </ul> <!--End sidebar navigation-->
-                 <br><br>
+                 
                  <ul class="nav nav-list affix qbox">
                  <h5>Query Box</h5>
                                   
@@ -129,6 +130,8 @@
     
     {{> mniOnly}}
     
+    {{> rsfmriOnly}}
+    
     {{> niiOnly}}
     
     
@@ -207,6 +210,24 @@
   
   <div id="mni_table">
     {{> tabular table=TabularTables.MNI selector=selector class="table table-striped table-bordered table-condensed"}}
+  </div>
+
+</template>
+
+<template name="rsfmriOnly">
+
+  <h1 id="rsfmri">Resting State fMRI</h1>
+  <br>
+  <br>
+    <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
+      
+        <svg id="d3visrsfmri"></svg>
+
+  </div>
+  <br><br>
+  
+  <div id="mni_table">
+    {{> tabular table=TabularTables.RSFMRI selector=selector class="table table-striped table-bordered table-condensed"}}
   </div>
 
 </template>

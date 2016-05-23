@@ -28,7 +28,7 @@ Template.view_image_freesurfer.events({
 
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
   
-var find_item_of_list = function(full_list,key,value){
+find_item_of_list = function(full_list,key,value){
 
     //console.log(key)
     //console.log(value)

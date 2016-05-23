@@ -12,7 +12,8 @@ staticURL = "http://localhost:3002/"
 var globalSelector = {"Exams":{},
                       "FS": {},
                       "NI": {},
-                      "MNI": {}}
+                      "MNI": {},
+                      "RSFMRI": {}}
 
 
   /*
@@ -25,7 +26,7 @@ var globalSelector = {"Exams":{},
     
   */
 
-
+//TODO: make this work for MNI as well!
 label_qa = function(name,object){
             if (!name){
                 html = '<span class="label label-warning fsqc -1">Not Checked</span>'
@@ -91,9 +92,15 @@ var tableFields = {
 	                  return Spacebars.SafeString(html)
 	              }},
 
-	"viewMNI": {data:"_id", title:"file", render: function(val, type,doc){
+	"viewMNI": {data:"_id", title:"filename", render: function(val, type,doc){
 
 	html = '<a target="_blank" href="/viewImage_mni/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
+	                  return Spacebars.SafeString(html)
+	}},
+	
+    "viewRSFMRI": {data:"_id", title:"filename", render: function(val, type,doc){
+
+	html = '<a target="_blank" href="/viewImage_rsfmri/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	                  return Spacebars.SafeString(html)
 	}},
 	              
@@ -208,13 +215,30 @@ TabularTables.MNI = new Tabular.Table({
     name:"MNI",
     collection: MNI,
     //throttleRefresh: 5000,
-    columns: [tableFields["msid"],
+    columns: [//tableFields["msid"],
               tableFields["subject_id"],
               tableFields["Study Tag"],
               tableFields["viewMNI"],
-              tableFields["Site"],
-              tableFields["Date"]]
+              tableFields["QC"],
+              tableFields["checkedBy"],
+              //tableFields["Site"],
+              tableFields["Date"]
+              ]
 
+})
+
+TabularTables.RSFMRI =  new Tabular.Table({
+    name:"RSFMRI",
+    collection: RSFMRI,
+    autoWidth: true,
+    //throttleRefresh: 1000,
+    columns: [//tableFields["msid"],
+              tableFields["subject_id"],
+              //tableFields["Study Tag"],
+              tableFields["viewRSFMRI"],
+              //tableFields["Site"],
+              //tableFields["Date"]
+              ]
 })
 
 //Routes                                        
@@ -248,6 +272,7 @@ MainController = RouteController.extend({
         Meteor.call("agg_fs")
         Meteor.call("agg_ni")
         Meteor.call("agg_mni")
+        Meteor.call("agg_rsfmri")
         console.log("agg ni in main controller")
         this.render();
   }
@@ -312,6 +337,18 @@ Router.route("/", {
 
 })
 
+  Router.route('/viewImage_rsfmri/:imageFilename/mseID/:mse/', function(){
+	this.layout("main")
+    //var db = Subjects.findOne({subject_id:this.params.mse})
+    //console.log("db is", db)
+    //var doc = find_item_of_list(db["freesurfer_t1s"],"name", this.params.imageFilename)
+    var gSelector = Session.get("globalSelector")
+    gSelector["Exams"]["subject_id"] = this.params.mse
+    Session.set("globalSelector", gSelector)
+	this.render("view_rsfmri", {data: {"name": this.params.imageFilename,
+		                              "mse":this.params.mse}})
+
+})
 
 /*Client Code*/
 if (Meteor.isClient) {
@@ -368,6 +405,11 @@ if (Meteor.isClient) {
         var mniSelectors = []
         for (var attrname in gSelector["MNI"]) {
             mniSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "MNI"})
+            } 
+            
+        var rsfmriSelectors = []
+        for (var attrname in gSelector["RSFMRI"]) {
+            mniSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "RSFMRI"})
             } 
 
         return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors, MNI: mniSelectors}
@@ -640,6 +682,43 @@ if (Meteor.isClient) {
         
         }
   
+  Template.rsfmriOnly.helpers({
+    selector : function () {
+        //Meteor.call("agg_ni")
+        var fsSelector = getMNI()
+        //var out = NI.find(fsSelector)
+        //console.log("ni down to", out.count())
+        return fsSelector
+    },
+
+    tableSettings : nii_table_settings
+})
+
+  Template.rsfmriOnly.rendered = function(){
+
+        if (!this.rendered){
+            this.rendered = true
+        }   
+                
+            this.autorun(function() {
+                var fsSelector = getMNI()
+                //console.log(FS)
+                //fsSelector["FS"] = {} //always show full hist
+                var bins = 10
+                var metric = "PearsonCorrelation"//Session.get("currentFSMetric")
+                Meteor.subscribe("rsfmri_metrics", metric) //"Caudate"
+                //Meteor.call("getFSHist", fsSelector, bins, metric)
+                //var values = Session.get("FSHist")
+                var fs_tables = RSFMRI.find(fsSelector).fetch()
+                //console.log("fs_tables", fs_tables)
+                var formatCount = d3.format(",.3f");
+                var values = get_histogram(fs_tables, metric, bins)
+                //console.log("values", values)
+                //do_d3_histogram(values, metric, "#d3visrsfmri", "RSFMRI", formatCount)
+            })
+        
+        }
+  
 
 } //end client
 
@@ -691,6 +770,16 @@ if (Meteor.isServer){
         return MNI.find({},{fields:fields})
     })
     
+    Meteor.publish("rsfmri_metrics", function(metric){
+        var mname = "metrics." + metric
+        var fields = {subject_id: 1, _id: 1, "Study Tag":1,
+        DCM_InstitutionName:1, DCM_StudyDate: 1, msid: 1,
+            quality_check: 1, checkedBy: 1, complete:1}
+        fields[mname] = 1
+        //console.log(mname)
+        return RSFMRI.find({},{fields:fields})
+    })
+    
     Meteor.publish("nii", function(id){
         console.log("id is", id)
         return NI.find({_id:id})
@@ -698,6 +787,10 @@ if (Meteor.isServer){
     Meteor.publish("mni", function(id){
         console.log("id is", id)
         return MNI.find({_id:id})
+    })
+    Meteor.publish("rsfmri", function(id){
+        console.log("id is", id)
+        return RSFMRI.find({_id:id})
     })
     //Meteor.publish("nii-all", function(){
     //console.log("publishing nii-all")
@@ -776,6 +869,28 @@ if (Meteor.isServer){
           //FS//.find(query)
       },
       
+      agg_rsfmri: function(){
+          
+          console.log("agg for rsfmri")
+          var out = Subjects.aggregate([{$unwind:"$rsfmri"},
+                              {$group:{_id:"$rsfmri.name",
+                                       msid: {$first: "$msid"},
+                                       subject_id: {$first: "$subject_id"},
+                                       metrics: {$first: "$rsfmri.metrics"},
+                                       quality_check: {$first: "$rsfmri.quality_check"},
+                                       "Study Tag": {$first: "$Study Tag"},
+                                       "filename": {$first: "$rsfmri.filename"},
+                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
+                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
+                                       //complete: {$first: "$nifti_files.complete"},
+                                       checkedBy: {$first: "$rsfmri.checkedBy"},
+                                       checkedAt: {$first: "$rsfmri.checkedAt"}
+                              }},
+                              {$out:"rsfmri"}])
+          //console.log(NI.findOne({}))
+          //FS//.find(query)
+      },
+      
       agg_ms: function(){
           console.log("AGGREGATING MS")
           var out = Subjects.aggregate([
@@ -801,8 +916,29 @@ if (Meteor.isServer){
                     //console.log(nifti_files[i])
                 }
             }
-            Meteor.call("agg_ni in updateqc")
+            Meteor.call("agg_ni")
             Subjects.update({"subject_id":mse},{$set: {nifti_files: nifti_files}})
+      },
+      
+      //TODO: why isn't the client finding this method???
+      updateQC_mni: function(mse, form_data, name){
+            //console.log("IN UPDATEQC METHOD")
+            current_doc = Subjects.findOne({"subject_id":mse})
+            console.log(current_doc)
+            nifti_files = current_doc["mni"]
+    
+            for (i=0;i<nifti_files.length;i++){
+                if (nifti_files[i]["name"] == name){
+                    nifti_files[i]["quality_check"] = form_data
+                    nifti_files[i]["checkedBy"] = Meteor.user().username
+                    nifti_files[i]["checkedAt"] = new Date()
+                    //console.log(nifti_files[i])
+                }
+            }
+            Meteor.call("agg_mni")
+            Subjects.update({"subject_id":mse},{$set: {mni: nifti_files}})
+            console.log(nifti_files)
+            console.log("in this updateQC_mni method on the server")
       },
     
       updateQC_fs: function(mse, form_data, name, loggedPoints){
@@ -828,7 +964,7 @@ if (Meteor.isServer){
             
       },
 
-    save_query: function(name, selector){
+      save_query: function(name, selector){
         
         var user = Meteor.user().username
         //User.remove({user:user})
@@ -839,13 +975,13 @@ if (Meteor.isServer){
         
     },
     
-    removeQuery: function(user, query, name, id){
+      removeQuery: function(user, query, name, id){
         
         User.remove({user: user, query: query, name:name, _id:id})
         
     },
 
-    export_FS: function(gSelector){
+      export_FS: function(gSelector){
         var info = FS.find(gSelector).fetch()
         var data = []
         var fields = Object.keys(info[0])
