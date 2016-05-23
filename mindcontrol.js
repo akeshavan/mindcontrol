@@ -27,35 +27,42 @@ var globalSelector = {"Exams":{},
   */
 
 //TODO: make this work for MNI as well!
-label_qa = function(name,object){
+get_label_qa = function(label_type){
+    //fsqc
+    var label_qa = function(name,object){
             if (!name){
-                html = '<span class="label label-warning fsqc -1">Not Checked</span>'
+                html = '<span class="label label-warning TEMPLATE -1">Not Checked</span>'.replace("TEMPLATE", label_type)
                 return Spacebars.SafeString(html)
                 }
             else{
                 if (name.QC == "1"){
-                    html = '<span class="label label-success fsqc 1">Pass</span>'
+                    html = '<span class="label label-success TEMPLATE 1">Pass</span>'.replace("TEMPLATE", label_type)
                     return Spacebars.SafeString(html)
                 }
                 else if (name.QC=="0"){
-                    html = '<span class="label label-danger fsqc 0">Fail</span>'
+                    html = '<span class="label label-danger TEMPLATE 0">Fail</span>'.replace("TEMPLATE", label_type)
                     return Spacebars.SafeString(html)
                 }
                 else if (name.QC=="2"){
-                    html = '<span class="label label-primary fsqc 2">Needs Edits</span>'
+                    html = '<span class="label label-primary TEMPLATE 2">Needs Edits</span>'.replace("TEMPLATE", label_type)
                     return Spacebars.SafeString(html)
                 }
                 else if (name.QC=="3"){
-                    html = '<span class="label label-info fsqc 3">Edited</span>'
+                    html = '<span class="label label-info TEMPLATE 3">Edited</span>'.replace("TEMPLATE", label_type)
                     return Spacebars.SafeString(html)
                 }
                 else{
-                    html = '<span class="label label-warning fsqc -1">Not Checked</span>'
+                    html = '<span class="label label-warning TEMPLATE -1">Not Checked</span>'.replace("TEMPLATE", label_type)
                     return Spacebars.SafeString(html)
                 }
 
             }
         }// end of function
+    return label_qa
+    
+}
+
+
 
 /*Tabular Table Setup*/
 
@@ -119,7 +126,9 @@ var tableFields = {
         return '<a class="fs quality_check.user_assign '+val+'">'+val+'</a>'
     }},
 
-    "QC": {data:"quality_check", title:"QC", render: label_qa },
+    "QC_fs": {data:"quality_check", title:"QC", render: get_label_qa("fsqc") },
+    
+    "QC_mni": {data:"quality_check", title:"QC", render: get_label_qa("mniqc") },
     
     "viewFS": {data:"_id", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
@@ -186,7 +195,7 @@ TabularTables.FS =  new Tabular.Table({
               tableFields["Study Tag"],
               //tableFields["Site"],
               tableFields["viewFS"],
-              tableFields["QC"],
+              tableFields["QC_fs"],
               tableFields["checkedBy"],
               tableFields["assignedTo"],
               tableFields["completeFS"],
@@ -219,7 +228,7 @@ TabularTables.MNI = new Tabular.Table({
               tableFields["subject_id"],
               tableFields["Study Tag"],
               tableFields["viewMNI"],
-              tableFields["QC"],
+              tableFields["QC_mni"],
               tableFields["checkedBy"],
               //tableFields["Site"],
               tableFields["Date"]
@@ -543,6 +552,28 @@ if (Meteor.isClient) {
         //var value = element.slice(2).join(" ")
         var gSelector = Session.get("globalSelector")
         gSelector["FS"][key] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+    },
+    
+    "click .mniqc": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        console.log(element)
+        var value = element[element.indexOf("mniqc")+1]
+        if (value < 0){
+            value = null
+            key = "quality_check"
+        }
+        else{
+            key = "quality_check.QC"
+        }
+
+        //var level = element[0]
+        //var field = element[1]
+        //var value = element.slice(2).join(" ")
+        var gSelector = Session.get("globalSelector")
+        gSelector["MNI"][key] = value
         console.log(gSelector)
         Session.set("globalSelector", gSelector)
     }
