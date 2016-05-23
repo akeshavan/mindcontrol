@@ -62,6 +62,18 @@ get_label_qa = function(label_type){
     
 }
 
+get_checkedBy = function(tabletocheck){
+    //fs
+    var foo = function(val, type, doc){
+        if (val == null){
+            return null
+        }
+        return '<a class="TEMPLATE checkedBy '.replace("TEMPLATE", tabletocheck)+val+'">'+val+'</a>'
+    }
+    
+    return foo
+    
+}
 
 
 /*Tabular Table Setup*/
@@ -113,12 +125,9 @@ var tableFields = {
 	              
     "Date": {data:"DCM_StudyDate", title:"Date"},
 
-    "checkedBy": {data: "checkedBy", title:"checkedBy", render: function(val, type, doc){
-        if (val == null){
-            return null
-        }
-        return '<a class="fs checkedBy '+val+'">'+val+'</a>'
-    }},
+    "checkedBy_fs": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("fs")},
+    "checkedBy_mni": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("mni")},
+    
     "assignedTo": {data: "quality_check.user_assign", title:"assignedTo", render: function(val, type, doc){
         if (val == null){
             return null
@@ -196,7 +205,7 @@ TabularTables.FS =  new Tabular.Table({
               //tableFields["Site"],
               tableFields["viewFS"],
               tableFields["QC_fs"],
-              tableFields["checkedBy"],
+              tableFields["checkedBy_fs"],
               tableFields["assignedTo"],
               tableFields["completeFS"],
               //tableFields["percentFS"],
@@ -229,7 +238,7 @@ TabularTables.MNI = new Tabular.Table({
               tableFields["Study Tag"],
               tableFields["viewMNI"],
               tableFields["QC_mni"],
-              tableFields["checkedBy"],
+              tableFields["checkedBy_mni"],
               //tableFields["Site"],
               tableFields["Date"]
               ]
@@ -534,6 +543,24 @@ if (Meteor.isClient) {
         Session.set("globalSelector", gSelector)
 
     },
+    
+    "click .mni": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        var level = element[0]
+        var field = element[1]
+        var value = element.slice(2).join(" ")
+        console.log("element classname is", element)
+        console.log("level field value:", level, field, value)
+        var gSelector = Session.get("globalSelector")
+        if (value=="false"){value=false}
+        if (value=="true"){value=true}
+        gSelector["MNI"][field] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+
+    },
+    
     "click .fsqc": function(e){
         console.log(e)
         element = e.toElement.className.split(" ")
