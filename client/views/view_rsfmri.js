@@ -21,6 +21,30 @@ Template.view_rsfmri.events({
 
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
+Template.view_rsfmri.helpers({
+    selector: function(){
+        return Session.get("globalSelector")["Exams"]
+    },
+    mni_selector: function(){
+        return getRSFMRI()
+    },
+    user: function(){
+    	return Meteor.users.find({}).fetch()
+    },
+    
+    doc: function(){
+            var Rparams = Router.current().params
+            var db = Subjects.findOne({subject_id:Rparams.mse})
+            
+            //var doc = find_item_of_list(db["mni"],"name", Rparams.imageFilename)
+            var doc = RSFMRI.findOne({subject_id: Rparams.mse})
+            //console.log("doc is", doc, "in helpers")
+
+            return doc
+            
+    }
+})
+
 Template.view_rsfmri.rendered = function() {
     if(!this._rendered) {
       this._rendered = true;

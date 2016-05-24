@@ -127,6 +127,7 @@ var tableFields = {
 
     "checkedBy_fs": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("fs")},
     "checkedBy_mni": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("mni")},
+    "checkedBy_rsfmri": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("rsfmri")},
     
     "assignedTo": {data: "quality_check.user_assign", title:"assignedTo", render: function(val, type, doc){
         if (val == null){
@@ -138,6 +139,8 @@ var tableFields = {
     "QC_fs": {data:"quality_check", title:"QC", render: get_label_qa("fsqc") },
     
     "QC_mni": {data:"quality_check", title:"QC", render: get_label_qa("mniqc") },
+    
+    "QC_rsfmri": {data:"quality_check", title:"QC", render: get_label_qa("rsfmriqc") },
     
     "viewFS": {data:"_id", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
@@ -252,10 +255,12 @@ TabularTables.RSFMRI =  new Tabular.Table({
     //throttleRefresh: 1000,
     columns: [//tableFields["msid"],
               tableFields["subject_id"],
-              //tableFields["Study Tag"],
+              tableFields["Study Tag"],
               tableFields["viewRSFMRI"],
+              tableFields["QC_rsfmri"],
+              tableFields["checkedBy_rsfmri"],
               //tableFields["Site"],
-              //tableFields["Date"]
+              tableFields["Date"]
               ]
 })
 
@@ -561,6 +566,23 @@ if (Meteor.isClient) {
 
     },
     
+    "click .rsfmri": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        var level = element[0]
+        var field = element[1]
+        var value = element.slice(2).join(" ")
+        console.log("element classname is", element)
+        console.log("level field value:", level, field, value)
+        var gSelector = Session.get("globalSelector")
+        if (value=="false"){value=false}
+        if (value=="true"){value=true}
+        gSelector["RSFMRI"][field] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+
+    },
+    
     "click .fsqc": function(e){
         console.log(e)
         element = e.toElement.className.split(" ")
@@ -601,6 +623,28 @@ if (Meteor.isClient) {
         //var value = element.slice(2).join(" ")
         var gSelector = Session.get("globalSelector")
         gSelector["MNI"][key] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+    },
+    
+    "click .rsfmriqc": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        console.log(element)
+        var value = element[element.indexOf("rsfmriqc")+1]
+        if (value < 0){
+            value = null
+            key = "quality_check"
+        }
+        else{
+            key = "quality_check.QC"
+        }
+
+        //var level = element[0]
+        //var field = element[1]
+        //var value = element.slice(2).join(" ")
+        var gSelector = Session.get("globalSelector")
+        gSelector["RSFMRI"][key] = value
         console.log(gSelector)
         Session.set("globalSelector", gSelector)
     }
@@ -995,8 +1039,28 @@ if (Meteor.isServer){
             }
             Meteor.call("agg_mni")
             Subjects.update({"subject_id":mse},{$set: {mni: nifti_files}})
-            console.log(nifti_files)
+            //console.log(nifti_files)
             console.log("in this updateQC_mni method on the server")
+      },
+      
+      updateQC_rsfmri: function(mse, form_data, name){
+            //console.log("IN UPDATEQC METHOD")
+            current_doc = Subjects.findOne({"subject_id":mse})
+            console.log(current_doc)
+            nifti_files = current_doc["rsfmri"]
+    
+            for (i=0;i<nifti_files.length;i++){
+                if (nifti_files[i]["name"] == name){
+                    nifti_files[i]["quality_check"] = form_data
+                    nifti_files[i]["checkedBy"] = Meteor.user().username
+                    nifti_files[i]["checkedAt"] = new Date()
+                    //console.log(nifti_files[i])
+                }
+            }
+            Meteor.call("agg_rsfmri")
+            Subjects.update({"subject_id":mse},{$set: {rsfmri: nifti_files}})
+            //console.log(nifti_files)
+            console.log("in this updateQC_rsfmri method on the server")
       },
     
       updateQC_fs: function(mse, form_data, name, loggedPoints){
