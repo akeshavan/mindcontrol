@@ -23,6 +23,14 @@ getMNI = function(){
         //console.log("NI Selector", fsSelector)
     return fsSelector
 }
+
+getRSFMRI = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["RSFMRI"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
  
 getFS_ford3 = function(){
     var gSelector = Session.get('globalSelector')

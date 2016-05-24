@@ -427,10 +427,10 @@ if (Meteor.isClient) {
             
         var rsfmriSelectors = []
         for (var attrname in gSelector["RSFMRI"]) {
-            mniSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "RSFMRI"})
+            rsfmriSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "RSFMRI"})
             } 
 
-        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors, MNI: mniSelectors}
+        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors, MNI: mniSelectors, RSFMRI: rsfmriSelectors}
 
     },
     
@@ -732,7 +732,7 @@ if (Meteor.isClient) {
                 //var values = Session.get("FSHist")
                 var fs_tables = MNI.find(fsSelector).fetch()
                 //console.log("fs_tables", fs_tables)
-                var formatCount = d3.format(",.3f");
+                var formatCount = d3.format(",.0f");
                 var values = get_histogram(fs_tables, metric, bins)
                 //console.log("values", values)
                 do_d3_histogram(values, metric, "#d3vismni", "MNI", formatCount)
@@ -743,7 +743,7 @@ if (Meteor.isClient) {
   Template.rsfmriOnly.helpers({
     selector : function () {
         //Meteor.call("agg_ni")
-        var fsSelector = getMNI()
+        var fsSelector = getRSFMRI()
         //var out = NI.find(fsSelector)
         //console.log("ni down to", out.count())
         return fsSelector
@@ -759,11 +759,11 @@ if (Meteor.isClient) {
         }   
                 
             this.autorun(function() {
-                var fsSelector = getMNI()
+                var fsSelector = getRSFMRI()
                 //console.log(FS)
                 //fsSelector["FS"] = {} //always show full hist
                 var bins = 10
-                var metric = "PearsonCorrelation"//Session.get("currentFSMetric")
+                var metric = "motion_outliers"//Session.get("currentFSMetric")
                 Meteor.subscribe("rsfmri_metrics", metric) //"Caudate"
                 //Meteor.call("getFSHist", fsSelector, bins, metric)
                 //var values = Session.get("FSHist")
@@ -772,7 +772,7 @@ if (Meteor.isClient) {
                 var formatCount = d3.format(",.3f");
                 var values = get_histogram(fs_tables, metric, bins)
                 //console.log("values", values)
-                //do_d3_histogram(values, metric, "#d3visrsfmri", "RSFMRI", formatCount)
+                do_d3_histogram(values, metric, "#d3visrsfmri", "RSFMRI", formatCount)
             })
         
         }

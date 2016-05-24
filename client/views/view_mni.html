@@ -1,0 +1,58 @@
+<template name="view_mni">
+<h1>{{name}}</h1>
+
+<div id="viewer" width="1000px"></div>
+<br>
+
+  <h2>Quality Check</h2>
+    <strong>QC status:</strong> {{doc.quality_check.QC}}
+    <br>
+    <strong>Motion Artifacts:</strong> {{doc.quality_check.motion_artifact}}
+    <br>
+    <strong>Intensity Artifacts:</strong> {{doc.quality_check.intensity_artifact}}
+    <br>
+    <strong>Has Bad Coverage:</strong> {{doc.quality_check.coverage}}
+    <br>
+    <strong>Last Checked At:</strong> {{doc.checkedAt}}
+    <br>
+    <strong>Last Checked By:</strong> {{doc.checkedBy}}
+    <br>
+    <strong>Notes:</strong> {{doc.quality_check.notes_QC}}
+    <br>
+
+    <div class="well">
+
+        <form id="QC_form" class="new-qc">
+
+            <div class="radio">
+              <label>
+                <input type="radio" name="QC" id="optionsRadios1" value="1" checked>
+                <strong>PASS</strong>
+              </label>
+            </div>
+            
+            <div class="radio">
+              <label>
+                <input type="radio" name="QC" id="optionsRadios2" value="0">
+                <strong>FAIL</strong>
+              </label>
+            </div>
+            
+            <br>
+            
+              <label>
+                Notes: <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
+              </label>
+            
+            <br>
+              <label>
+                  <button class="btn btn-success" type="submit">Save</button>
+              </label>
+        </form>
+    
+    </div>
+
+{{> tabular table=TabularTables.Exams selector=selector class="table table-striped table-bordered table-condensed"}}
+
+<!--<div class="papaya" data-params="params"></div>-->
+</template>

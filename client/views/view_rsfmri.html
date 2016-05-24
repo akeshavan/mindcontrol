@@ -1,0 +1,68 @@
+<template name="view_rsfmri">
+<h1>{{name}}</h1>
+
+<div id="viewer" width="1000px"></div>
+<br>
+
+  <h2>Quality Check</h2>
+    <strong>QC status:</strong> {{doc.quality_check.QC}}
+    <br>
+    <strong>Motion Artifacts:</strong> {{doc.quality_check.motion_artifact}}
+    <br>
+    <strong>Intensity Artifacts:</strong> {{doc.quality_check.intensity_artifact}}
+    <br>
+    <strong>Has Bad Coverage:</strong> {{doc.quality_check.coverage}}
+    <br>
+    <strong>Last Checked At:</strong> {{doc.checkedAt}}
+    <br>
+    <strong>Last Checked By:</strong> {{doc.checkedBy}}
+    <br>
+    <strong>Notes:</strong> {{doc.quality_check.notes_QC}}
+    <br>
+
+    <div class="well">
+
+  <form id="QC_form" class="new-qc">
+
+    <div class = "form-group">
+      <label>
+        <input type='hidden' value='0' name='motion_artifact'>
+        <input type="checkbox" name="motion_artifact" value="1"> Motion Artifact
+      </label>
+  <br>
+      <label>
+        <input type="hidden" name="intensity_artifact" value="0">
+          <input type="checkbox" name="intensity_artifact" value="1"> Intensity Artifact
+      </label>
+  <br>
+      <label>
+        <input type="hidden" name="coverage" value="0">
+        <input type="checkbox" name="coverage" value="1"> Bad Coverage
+      </label>
+  <br>
+    <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="optionsRadios1" value="1" checked>
+        <strong>PASS</strong>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="optionsRadios2" value="0">
+        <strong>FAIL</strong>
+      </label>
+    </div>
+  <br>
+      <label>
+        Notes: <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
+      </label>
+    </div>
+<br>
+      <label>
+          <button class="btn btn-success" type="submit">Save</button>
+      </label>
+  </form>
+        </div>
+
+<!--<div class="papaya" data-params="params"></div>-->
+</template>
