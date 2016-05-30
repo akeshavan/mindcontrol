@@ -37,6 +37,7 @@
                     <ul class="nav nav-list bs-docs-sidenav affix">
                         <li><a href="#exams"><span class="badge badge-inverse"></span> Exams</a></li>
                         <li><a href="#freesurfer"><span class="badge badge-inverse">{{num_fs}}</span> Freesurfer</a></li>
+                        <li><a href="#antsct"><span class="badge badge-inverse"></span> Ants Cortical Thickness</a></li>
                         <li><a href="#mni"><span class="badge badge-inverse"></span> MNI Warps</a></li>
                         <li><a href="#rsfmri"><span class="badge badge-inverse"></span> Resting State fMRI</a></li>
                         <li><a href="#niftis"><span class="badge badge-inverse"></span> Nifti</a></li>
@@ -86,12 +87,20 @@
                      
                     {{#each currentQuery.RSFMRI}}
                     <span class="tag label label-info">
-                      <span class="mni {{attr}}">{{attr}}</span>
+                      <span class="rsfmri {{attr}}">{{attr}}</span>
                       <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
                     </span>
                     <br><br>
                      {{/each}}
-                     
+
+                     {{#each currentQuery.ANTSCT}}
+                    <span class="tag label label-info">
+                      <span class="antsct {{attr}}">{{attr}}</span>
+                      <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a>
+                    </span>
+                    <br><br>
+                     {{/each}}
+
                  </div>
 <form class="form-inline">
     <div class="form-group">
@@ -135,6 +144,8 @@
     {{> exams}}
     
     {{> freesurferOnly}}
+
+    {{> antsctOnly}}
     
     {{> mniOnly}}
     
@@ -227,15 +238,49 @@
   <h1 id="rsfmri">Resting State fMRI</h1>
   <br>
   <br>
+   Selected Metric: {{selectedMetric}}
     <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
       
         <svg id="d3visrsfmri"></svg>
 
   </div>
-  <br><br>
   
-  <div id="mni_table">
+  
+  <select id="metric-select" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+  <br><br>
+  <div id="rsfmri_table">
     {{> tabular table=TabularTables.RSFMRI selector=selector class="table table-striped table-bordered table-condensed"}}
+  </div>
+
+</template>
+
+<template name="antsctOnly">
+
+  <h1 id="antsct">ANTS Cortical Thickness</h1>
+  <br>
+  <br>
+   Selected Metric: {{selectedMetric}}
+    <div class="d3board"><!-- height="150px" width="600px">-->
+
+        <svg id="d3visantsct"></svg>
+
+  </div>
+
+
+  <select id="metric-select" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+  <br><br>
+  <div id="antsct_table">
+    {{> tabular table=TabularTables.ANTSCT selector=selector class="table table-striped table-bordered table-condensed"}}
   </div>
 
 </template>

@@ -128,6 +128,7 @@ a:hover {
 .bs-docs-sidenav.affix {
   top: 40px;
   left: 10px;
+  z-index: 10;
 }
 .bs-docs-sidenav.affix-bottom {
   position: absolute;

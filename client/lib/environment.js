@@ -31,7 +31,15 @@ getRSFMRI = function(){
         //console.log("NI Selector", fsSelector)
     return fsSelector
 }
- 
+
+getANTSCT = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["ANTSCT"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
+
 getFS_ford3 = function(){
     var gSelector = Session.get('globalSelector')
     var fsSelector = {}//gSelector["FS"]

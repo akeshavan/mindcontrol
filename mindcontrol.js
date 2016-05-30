@@ -7,13 +7,15 @@ FSH = new Mongo.Collection("fshist")
 User = new Mongo.Collection("user")
 MNI = new Mongo.Collection("mni")
 RSFMRI = new Mongo.Collection("rsfmri")
+ANTSCT = new Mongo.Collection("antsct")
 
 staticURL = "http://localhost:3002/"
 var globalSelector = {"Exams":{},
                       "FS": {},
                       "NI": {},
                       "MNI": {},
-                      "RSFMRI": {}}
+                      "RSFMRI": {},
+                      "ANTSCT": {}}
 
 
   /*
@@ -26,7 +28,8 @@ var globalSelector = {"Exams":{},
     
   */
 
-//TODO: make this work for MNI as well!
+
+
 get_label_qa = function(label_type){
     //fsqc
     var label_qa = function(name,object){
@@ -122,13 +125,19 @@ var tableFields = {
 	html = '<a target="_blank" href="/viewImage_rsfmri/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	                  return Spacebars.SafeString(html)
 	}},
-	              
+	"viewANTSCT": {data:"_id", title:"filename", render: function(val, type,doc){
+
+	html = '<a target="_blank" href="/viewImage_antsct/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
+	                  return Spacebars.SafeString(html)
+	}},
     "Date": {data:"DCM_StudyDate", title:"Date"},
+    "fsnotes": {data:"quality_check.notes_QC", title:"Notes"},
 
     "checkedBy_fs": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("fs")},
     "checkedBy_mni": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("mni")},
     "checkedBy_rsfmri": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("rsfmri")},
-    
+    "checkedBy_antsct": {data: "checkedBy", title:"checkedBy", render: get_checkedBy("antsct")},
+
     "assignedTo": {data: "quality_check.user_assign", title:"assignedTo", render: function(val, type, doc){
         if (val == null){
             return null
@@ -141,7 +150,7 @@ var tableFields = {
     "QC_mni": {data:"quality_check", title:"QC", render: get_label_qa("mniqc") },
     
     "QC_rsfmri": {data:"quality_check", title:"QC", render: get_label_qa("rsfmriqc") },
-    
+    "QC_antsct": {data:"quality_check", title:"QC", render: get_label_qa("antsctqc") },
     "viewFS": {data:"_id", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	        //console.log(html)
@@ -211,6 +220,7 @@ TabularTables.FS =  new Tabular.Table({
               tableFields["checkedBy_fs"],
               tableFields["assignedTo"],
               tableFields["completeFS"],
+              tableFields["fsnotes"],
               //tableFields["percentFS"],
               //tableFields["totalFS"],
               //tableFields["numNifti"],
@@ -263,29 +273,41 @@ TabularTables.RSFMRI =  new Tabular.Table({
               tableFields["Date"]
               ]
 })
+TabularTables.ANTSCT =  new Tabular.Table({
+    name:"ANTSCT",
+    collection: ANTSCT,
+    autoWidth: true,
+    //throttleRefresh: 1000,
+    columns: [//tableFields["msid"],
+              tableFields["subject_id"],
+              tableFields["Study Tag"],
+              tableFields["viewANTSCT"],
+              tableFields["QC_antsct"],
+              tableFields["checkedBy_antsct"],
+              //tableFields["Site"],
+              tableFields["Date"]
+              ]
+})
 
 //Routes                                        
-/*  Router.route("/", function(){
+  Router.route("/", function(){
     Meteor.call("agg_fs")
     Meteor.call("agg_ni")
+    Meteor.call("agg_mni")
+    Meteor.call("agg_rsfmri")
+    Meteor.call("agg_antsct")
+    console.log("agg ni in main controller")
+
     this.layout("main")
     this.render("base")
     
 })
-*/
 
+/*
 Router.configure({
   layoutTemplate: 'main'
 });
 
-/*Router.route("/", function(){
-    Meteor.call("agg_fs")
-    Meteor.call("agg_ni")
-    //this.layout("main")
-    this.render("base")
-    
-})
-*/
 
 MainController = RouteController.extend({
     
@@ -296,6 +318,7 @@ MainController = RouteController.extend({
         Meteor.call("agg_ni")
         Meteor.call("agg_mni")
         Meteor.call("agg_rsfmri")
+        Meteor.call("agg_antsct")
         console.log("agg ni in main controller")
         this.render();
   }
@@ -315,6 +338,7 @@ Router.route("/", {
     fastRender: false}
     )
 
+*/
   Router.route('/viewImage/:imageFilename/mseID/:mse', function(){
 	this.layout("main")
     //db = Subjects.findOne({subject_id:this.params.mse})
@@ -373,6 +397,18 @@ Router.route("/", {
 
 })
 
+  Router.route('/viewImage_antsct/:imageFilename/mseID/:mse/', function(){
+	this.layout("main")
+    //var db = Subjects.findOne({subject_id:this.params.mse})
+    //console.log("db is", db)
+    //var doc = find_item_of_list(db["freesurfer_t1s"],"name", this.params.imageFilename)
+    var gSelector = Session.get("globalSelector")
+    gSelector["Exams"]["subject_id"] = this.params.mse
+    Session.set("globalSelector", gSelector)
+	this.render("view_antsct", {data: {"name": this.params.imageFilename,
+		                              "mse":this.params.mse}})
+
+})
 /*Client Code*/
 if (Meteor.isClient) {
   
@@ -383,6 +419,7 @@ if (Meteor.isClient) {
           //var sub2 = Meteor.subscribe("all-subjects")
           Session.set("globalSelector", globalSelector)
           Session.set("currentFSMetric", "Amygdala")
+          Session.set("currentRSFMRIMetric", "motion_outliers")
           Meteor.subscribe("datehist")
           Meteor.subscribe("user")
           Meteor.subscribe("users")
@@ -427,15 +464,19 @@ if (Meteor.isClient) {
 
         var mniSelectors = []
         for (var attrname in gSelector["MNI"]) {
-            mniSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "MNI"})
+            mniSelectors.push({attr: attrname, value: gSelector["MNI"][attrname], col: "MNI"})
             } 
             
         var rsfmriSelectors = []
         for (var attrname in gSelector["RSFMRI"]) {
-            rsfmriSelectors.push({attr: attrname, value: gSelector["NI"][attrname], col: "RSFMRI"})
+            rsfmriSelectors.push({attr: attrname, value: gSelector["RSFMRI"][attrname], col: "RSFMRI"})
             } 
-
-        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors, MNI: mniSelectors, RSFMRI: rsfmriSelectors}
+        var antsctSelectors = []
+        for (var attrname in gSelector["ANTSCT"]) {
+            antsctSelectors.push({attr: attrname, value: gSelector["ANTSCT"][attrname], col: "ANTSCT"})
+            }
+        return {Exams: examSelectors, FS: fsSelectors, NI: niSelectors,
+                MNI: mniSelectors, RSFMRI: rsfmriSelectors, ANTSCT: antsctSelectors}
 
     },
     
@@ -582,7 +623,23 @@ if (Meteor.isClient) {
         Session.set("globalSelector", gSelector)
 
     },
-    
+
+    "click .antsct": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        var level = element[0]
+        var field = element[1]
+        var value = element.slice(2).join(" ")
+        console.log("element classname is", element)
+        console.log("level field value:", level, field, value)
+        var gSelector = Session.get("globalSelector")
+        if (value=="false"){value=false}
+        if (value=="true"){value=true}
+        gSelector["ANTSCT"][field] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+
+    },
     "click .fsqc": function(e){
         console.log(e)
         element = e.toElement.className.split(" ")
@@ -645,6 +702,28 @@ if (Meteor.isClient) {
         //var value = element.slice(2).join(" ")
         var gSelector = Session.get("globalSelector")
         gSelector["RSFMRI"][key] = value
+        console.log(gSelector)
+        Session.set("globalSelector", gSelector)
+    },
+
+     "click .antsctqc": function(e){
+        console.log(e)
+        element = e.toElement.className.split(" ")
+        console.log(element)
+        var value = element[element.indexOf("antsctqc")+1]
+        if (value < 0){
+            value = null
+            key = "quality_check"
+        }
+        else{
+            key = "quality_check.QC"
+        }
+
+        //var level = element[0]
+        //var field = element[1]
+        //var value = element.slice(2).join(" ")
+        var gSelector = Session.get("globalSelector")
+        gSelector["ANTSCT"][key] = value
         console.log(gSelector)
         Session.set("globalSelector", gSelector)
     }
@@ -776,7 +855,7 @@ if (Meteor.isClient) {
                 //var values = Session.get("FSHist")
                 var fs_tables = MNI.find(fsSelector).fetch()
                 //console.log("fs_tables", fs_tables)
-                var formatCount = d3.format(",.0f");
+                var formatCount = d3.format(",.3f");
                 var values = get_histogram(fs_tables, metric, bins)
                 //console.log("values", values)
                 do_d3_histogram(values, metric, "#d3vismni", "MNI", formatCount)
@@ -792,9 +871,26 @@ if (Meteor.isClient) {
         //console.log("ni down to", out.count())
         return fsSelector
     },
+    
+    metric: function(){return ["motion_outliers","Default_Somatomotor",
+                               "Default_Limbic", "Default_Frontoparietal",
+                                "Default_Dorsal_Attention", "Default_Visual",
+                                "Default_Ventral_Attention"]},
+
+    selectedMetric: function(){return Session.get("currentRSFMRIMetric")},
 
     tableSettings : nii_table_settings
 })
+
+  Template.rsfmriOnly.events({
+
+    "change #metric-select": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("currentRSFMRIMetric", metric)
+    }
+
+  })
 
   Template.rsfmriOnly.rendered = function(){
 
@@ -807,20 +903,84 @@ if (Meteor.isClient) {
                 //console.log(FS)
                 //fsSelector["FS"] = {} //always show full hist
                 var bins = 10
-                var metric = "motion_outliers"//Session.get("currentFSMetric")
+                var metric = Session.get("currentRSFMRIMetric")
                 Meteor.subscribe("rsfmri_metrics", metric) //"Caudate"
                 //Meteor.call("getFSHist", fsSelector, bins, metric)
                 //var values = Session.get("FSHist")
                 var fs_tables = RSFMRI.find(fsSelector).fetch()
                 //console.log("fs_tables", fs_tables)
-                var formatCount = d3.format(",.3f");
+                if (metric == "motion_outliers"){
+                    var formatCount = d3.format(",.0f");
+                }
+                else{
+                    var formatCount = d3.format(",.3f");
+                }
+                
                 var values = get_histogram(fs_tables, metric, bins)
                 //console.log("values", values)
                 do_d3_histogram(values, metric, "#d3visrsfmri", "RSFMRI", formatCount)
             })
         
         }
-  
+
+  Template.antsctOnly.helpers({
+    selector : function () {
+        //Meteor.call("agg_ni")
+        var fsSelector = getANTSCT()
+        //var out = NI.find(fsSelector)
+        //console.log("ni down to", out.count())
+        return fsSelector
+    },
+
+    metric: function(){return []},
+
+    selectedMetric: function(){return Session.get("currentANTSCTMetric")},
+
+    tableSettings : nii_table_settings
+})
+
+  Template.antsctOnly.events({
+
+    "change #metric-select": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("currentANTSCTMetric", metric)
+    }
+
+  })
+
+  Template.antsctOnly.rendered = function(){
+
+        if (!this.rendered){
+            this.rendered = true
+        }
+
+            this.autorun(function() {
+                var fsSelector = getANTSCT()
+                //console.log(FS)
+                //fsSelector["FS"] = {} //always show full hist
+                var bins = 10
+                //var metric = Session.get("currentANTSCTMetric")
+                //Meteor.subscribe("antsct_metrics", metric) //"Caudate"
+                //Meteor.call("getFSHist", fsSelector, bins, metric)
+                //var values = Session.get("FSHist")
+
+                //var fs_tables = ANTSCT.find(fsSelector).fetch()
+
+                //console.log("fs_tables", fs_tables)
+                //if (metric == "motion_outliers"){
+                //    var formatCount = d3.format(",.0f");
+                //}
+                //else{
+                    var formatCount = d3.format(",.3f");
+                //}
+
+                //var values = get_histogram(fs_tables, metric, bins)
+
+                //do_d3_histogram(values, metric, "#d3visrsantsct", "ANTSCT", formatCount)
+            })
+
+        }
 
 } //end client
 
@@ -847,290 +1007,7 @@ if (Meteor.isServer){
     }
   });*/
     
-    Meteor.publish("datehist", function(){return DH.find({})})
-    Meteor.publish("user", function(){return User.find({})}) //anisha's user collections
-    Meteor.publish("users", function(){ //meteor users collection
-        return Meteor.users.find({})
-    })
-    Meteor.publish("fshist", function(){return FSH.find({})})
-    Meteor.publish("fs_metrics", function(metric){
-        var mname = "metrics." + metric
-        var fields = {subject_id: 1, _id: 1, "Study Tag":1,
-        DCM_InstitutionName:1, DCM_StudyDate: 1, msid: 1,
-            quality_check: 1, checkedBy: 1, complete:1}
-        fields[mname] = 1
-        return FS.find({},{fields:fields})
-    })
-    
-    Meteor.publish("mni_metrics", function(metric){
-        var mname = "metrics." + metric
-        var fields = {subject_id: 1, _id: 1, "Study Tag":1,
-        DCM_InstitutionName:1, DCM_StudyDate: 1, msid: 1,
-            quality_check: 1, checkedBy: 1, complete:1}
-        fields[mname] = 1
-        //console.log(mname)
-        return MNI.find({},{fields:fields})
-    })
-    
-    Meteor.publish("rsfmri_metrics", function(metric){
-        var mname = "metrics." + metric
-        var fields = {subject_id: 1, _id: 1, "Study Tag":1,
-        DCM_InstitutionName:1, DCM_StudyDate: 1, msid: 1,
-            quality_check: 1, checkedBy: 1, complete:1}
-        fields[mname] = 1
-        //console.log(mname)
-        return RSFMRI.find({},{fields:fields})
-    })
-    
-    Meteor.publish("nii", function(id){
-        console.log("id is", id)
-        return NI.find({_id:id})
-    })
-    Meteor.publish("mni", function(id){
-        console.log("id is", id)
-        return MNI.find({_id:id})
-    })
-    Meteor.publish("rsfmri", function(id){
-        console.log("id is", id)
-        return RSFMRI.find({_id:id})
-    })
-    //Meteor.publish("nii-all", function(){
-    //console.log("publishing nii-all")
-    //return NI.find({})
-    //})
-    Meteor.publish("subject_ids", function(){
-        return NI.find({},{fields:{subject_id:1}})
-        })
-    
-    Meteor.methods({
-     
-      agg_fs: function(){
-          
-          //console.log("HELLO, THIS IS THE AGGREGATION FUNCTION")
-          var out = Subjects.aggregate([{$unwind:"$freesurfer_t1s"},
-                              {$group:{_id:"$freesurfer_t1s.name",
-                                       msid: {$first: "$msid"},
-                                       subject_id: {$first: "$subject_id"},
-                                       metrics: {$first: "$freesurfer_t1s.metrics"},
-                                       quality_check: {$first: "$freesurfer_t1s.quality_check"},
-                                       "Study Tag": {$first: "$Study Tag"},
-                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
-                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
-                                       complete: {$first: "$freesurfer_t1s.complete"},
-                                       checkedBy: {$first: "$freesurfer_t1s.checkedBy"},
-                                       checkedAt: {$first: "$freesurfer_t1s.checkedAt"}
-                              }},
-                              {$out:"fs"}])
-                              
-            
-          //console.log(FS.findOne({}))
-          //FS//.find(query)
-      },
-    
-      agg_ni: function(){
-          
-          console.log("agg for ni")
-          var out = Subjects.aggregate([{$unwind:"$nifti_files"},
-                              {$group:{_id:"$nifti_files.name",
-                                       msid: {$first: "$msid"},
-                                       subject_id: {$first: "$subject_id"},
-                                       //metrics: {$first: "$freesurfer_t1s.metrics"},
-                                       quality_check: {$first: "$nifti_files.quality_check"},
-                                       "Study Tag": {$first: "$Study Tag"},
-                                       "filename": {$first: "$nifti_files.filename"},
-                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
-                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
-                                       //complete: {$first: "$nifti_files.complete"},
-                                       checkedBy: {$first: "$nifti_files.checkedBy"},
-                                       checkedAt: {$first: "$nifti_files.checkedAt"}
-                              }},
-                              {$out:"ni"}])
-          //console.log(NI.findOne({}))
-          //FS//.find(query)
-      },
-      
-      agg_mni: function(){
-          
-          console.log("agg for mni")
-          var out = Subjects.aggregate([{$unwind:"$mni"},
-                              {$group:{_id:"$mni.name",
-                                       msid: {$first: "$msid"},
-                                       subject_id: {$first: "$subject_id"},
-                                       metrics: {$first: "$mni.metrics"},
-                                       quality_check: {$first: "$mni.quality_check"},
-                                       "Study Tag": {$first: "$Study Tag"},
-                                       "filename": {$first: "$mni.filename"},
-                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
-                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
-                                       //complete: {$first: "$nifti_files.complete"},
-                                       checkedBy: {$first: "$mni.checkedBy"},
-                                       checkedAt: {$first: "$mni.checkedAt"}
-                              }},
-                              {$out:"mni"}])
-          //console.log(NI.findOne({}))
-          //FS//.find(query)
-      },
-      
-      agg_rsfmri: function(){
-          
-          console.log("agg for rsfmri")
-          var out = Subjects.aggregate([{$unwind:"$rsfmri"},
-                              {$group:{_id:"$rsfmri.name",
-                                       msid: {$first: "$msid"},
-                                       subject_id: {$first: "$subject_id"},
-                                       metrics: {$first: "$rsfmri.metrics"},
-                                       quality_check: {$first: "$rsfmri.quality_check"},
-                                       "Study Tag": {$first: "$Study Tag"},
-                                       "filename": {$first: "$rsfmri.filename"},
-                                       DCM_InstitutionName: {$first: "$DCM_InstitutionName"},
-                                       DCM_StudyDate: {$first: "$DCM_StudyDate"},
-                                       //complete: {$first: "$nifti_files.complete"},
-                                       checkedBy: {$first: "$rsfmri.checkedBy"},
-                                       checkedAt: {$first: "$rsfmri.checkedAt"}
-                              }},
-                              {$out:"rsfmri"}])
-          //console.log(NI.findOne({}))
-          //FS//.find(query)
-      },
-      
-      agg_ms: function(){
-          console.log("AGGREGATING MS")
-          var out = Subjects.aggregate([
-                              {$group:{_id:"msid",
-                                       msid: {$first: "$msid"},
-                                       num_exams: {$sum: 1},
-                                       study_tags: {$addToSet: "Study Tag"}
-                              }},
-                              {$out:"ms"}])
-    
-      },
-         
-      updateQC: function(mse, form_data, name){
-            //console.log("IN UPDATEQC METHOD")
-            current_doc = Subjects.findOne({"subject_id":mse})
-            nifti_files = current_doc["nifti_files"]
-    
-            for (i=0;i<nifti_files.length;i++){
-                if (nifti_files[i]["name"] == name){
-                    nifti_files[i]["quality_check"] = form_data
-                    nifti_files[i]["checkedBy"] = Meteor.user().username
-                    nifti_files[i]["checkedAt"] = new Date()
-                    //console.log(nifti_files[i])
-                }
-            }
-            Meteor.call("agg_ni")
-            Subjects.update({"subject_id":mse},{$set: {nifti_files: nifti_files}})
-      },
-      
-      //TODO: why isn't the client finding this method???
-      updateQC_mni: function(mse, form_data, name){
-            //console.log("IN UPDATEQC METHOD")
-            current_doc = Subjects.findOne({"subject_id":mse})
-            console.log(current_doc)
-            nifti_files = current_doc["mni"]
-    
-            for (i=0;i<nifti_files.length;i++){
-                if (nifti_files[i]["name"] == name){
-                    nifti_files[i]["quality_check"] = form_data
-                    nifti_files[i]["checkedBy"] = Meteor.user().username
-                    nifti_files[i]["checkedAt"] = new Date()
-                    //console.log(nifti_files[i])
-                }
-            }
-            Meteor.call("agg_mni")
-            Subjects.update({"subject_id":mse},{$set: {mni: nifti_files}})
-            //console.log(nifti_files)
-            console.log("in this updateQC_mni method on the server")
-      },
-      
-      updateQC_rsfmri: function(mse, form_data, name){
-            //console.log("IN UPDATEQC METHOD")
-            current_doc = Subjects.findOne({"subject_id":mse})
-            console.log(current_doc)
-            nifti_files = current_doc["rsfmri"]
-    
-            for (i=0;i<nifti_files.length;i++){
-                if (nifti_files[i]["name"] == name){
-                    nifti_files[i]["quality_check"] = form_data
-                    nifti_files[i]["checkedBy"] = Meteor.user().username
-                    nifti_files[i]["checkedAt"] = new Date()
-                    //console.log(nifti_files[i])
-                }
-            }
-            Meteor.call("agg_rsfmri")
-            Subjects.update({"subject_id":mse},{$set: {rsfmri: nifti_files}})
-            //console.log(nifti_files)
-            console.log("in this updateQC_rsfmri method on the server")
-      },
-    
-      updateQC_fs: function(mse, form_data, name, loggedPoints){
-            //console.log("IN UPDATEQC METHOD")
-            current_doc = Subjects.findOne({"subject_id":mse})
-            nifti_files = current_doc["freesurfer_t1s"]
-    
-            for (i=0;i<nifti_files.length;i++){
-                if (nifti_files[i]["name"] == name){
-                    nifti_files[i]["quality_check"] = form_data
-                    nifti_files[i]["checkedBy"] = Meteor.user().username
-                    nifti_files[i]["checkedAt"] = new Date()
-                    nifti_files[i]["loggedPoints"] = loggedPoints
-                    //console.log(nifti_files[i])
-                }
-            }
-            Meteor.call("agg_fs")
-            Subjects.update({"subject_id":mse},{$set: {freesurfer_t1s: nifti_files}})
-      },
         
-      getDateHist: function(){
-            Subjects.aggregate([{$group:{_id:"$DCM_StudyDate", count:{$sum:1}}}, {$out:"datehist"}])
-            
-      },
-
-      save_query: function(name, selector){
-        
-        var user = Meteor.user().username
-        //User.remove({user:user})
-
-        User.insert({user: user, query: selector, name: name})
-
-        console.log(User.findOne({user:user}))
-        
-    },
     
-      removeQuery: function(user, query, name, id){
-        
-        User.remove({user: user, query: query, name:name, _id:id})
-        
-    },
-
-      export_FS: function(gSelector){
-        var info = FS.find(gSelector).fetch()
-        var data = []
-        var fields = Object.keys(info[0])
-        fields.splice(fields.indexOf("quality_check"),1)
-        fields.splice(fields.indexOf("metrics"),1)
-        var fs_metrics = Object.keys(info[0].metrics).sort()
-        var qc = Object.keys(info[0].quality_check)
-        //console.log(fs_metrics)
-        _.each(info, function(c){
-            var row = []
-            for (k=0;k<fields.length;k++){
-                row.push(c[fields[k]])
-            }
-            for (i=0;i<fs_metrics.length;i++){
-                row.push(c.metrics[fs_metrics[i]])
-            }
-            for (j=0;j<qc.length;j++){row.push(c.quality_check[qc[j]])}
-            //console.log(row)
-            data.push(row)
-        })
-        fields = fields.concat(fs_metrics).concat(qc)
-        //final_fields = fields
-        //final_fields.push(fs_metrics)
-        return {fields:fields, data:data}
-    }
-  
-
-});
 
 }
