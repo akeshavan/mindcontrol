@@ -40,6 +40,30 @@ getANTSCT = function(){
     return fsSelector
 }
 
+getMINDBOGGLE = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["MINDBOGGLE"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
+
+getDTI = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["DTI"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
+
+getMT = function(){
+    var gSelector = Session.get('globalSelector')
+        var fsSelector = gSelector["MT"]
+        for (var attrname in gSelector["Exams"]) { fsSelector[attrname] = gSelector["Exams"][attrname]; }
+        //console.log("NI Selector", fsSelector)
+    return fsSelector
+}
+
 getFS_ford3 = function(){
     var gSelector = Session.get('globalSelector')
     var fsSelector = {}//gSelector["FS"]
