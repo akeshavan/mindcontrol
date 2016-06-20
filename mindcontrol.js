@@ -243,6 +243,7 @@ MainController = RouteController.extend({
     
     //layoutTemplate: "main",
     template: "base",
+    name: "something",
     action: function () {
         Meteor.call("agg_fs")
         Meteor.call("agg_ni")
@@ -261,7 +262,7 @@ Router.route("/", {
           Meteor.subscribe("users")]
         
     },
-    fastRender: true}
+    fastRender: false}
     )
 
   Router.route('/viewImage/:imageFilename/mseID/:mse', function(){
