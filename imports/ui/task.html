@@ -1,19 +1,68 @@
-<template name="task">
-  <li class="{{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
-    <button class="delete">&times;</button>
+<template name="base">
 
-    <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
+    {{> exams}}
+    
+    {{> freesurferOnly}}
+    
+    <!--{{> niiOnly}}-->
 
-    {{#if isOwner}}
-      <button class="toggle-private">
-        {{#if private}}
-          Private
-        {{else}}
-          Public
-        {{/if}}
-      </button>
-    {{/if}}
-
-    <span class="text"><strong>{{username}}</strong> - {{text}}</span>
-  </li>
 </template>
+
+<template name="exams">
+
+<h1 id="exams">Exams</h1>
+    <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+      Toggle Calendar
+    </button>
+    <br>
+    <br>
+    <div class="collapse in" id="collapseExample" aria-labelledby="collapseExample">
+        <div id="d3vis_date" data-intro="Step 2: Click on a date to show exams from a particular day" data-step="2"></div>
+    </div>
+
+    <div id="exam_table" data-intro="To filter by any of the columns, click a value in the column">
+        
+        {{> tabular table=TabularTables.Exams selector=selector class="table table-striped table-bordered table-condensed"}}
+        
+    </div>
+    
+</template>
+
+<template name="freesurferOnly">
+
+ <div id="freesurfer">
+  <h1>Freesurfer</h1></div>
+ <br>
+  <br>
+    Selected Metric: {{selectedMetric}}
+  <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
+      
+        <svg id="d3vis"></svg>
+
+  </div>
+
+    <select id="metric-select" class="form-control" data-intro="Change the freesurfer metric here">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+  <div id="fs_table">
+    {{> tabular table=TabularTables.FS selector=selector class="table table-striped table-bordered table-condensed"}}
+  </div>
+
+</template>
+
+<template name="niiOnly">
+
+  <h1 id="niftis">All Nifti Files</h1>
+  <br>
+  <br>
+  <div id="ni_table">
+    {{> tabular table=TabularTables.NI selector=selector class="table table-striped table-bordered table-condensed"}}
+  </div>
+
+</template>
+
