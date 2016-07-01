@@ -239,7 +239,7 @@ d3barplot = function(window, data, formatCount, metric){
                 d3.selectAll(".brush").call(brush.clear());
                 var newkey = "metrics."+metric
                 var gSelector = Session.get("globalSelector")
-                gSelector["FS"][newkey] = {$gte: extent0[0], $lte: extent0[1]}
+                gSelector[newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 Session.set("globalSelector", gSelector)      
                 
             }
@@ -316,6 +316,18 @@ do_d3_histogram = function (values, minval, maxval, metric, dom_id) {
   })
   }
 
+var selector_function = function(entry_type){
+    var globalSelector = Session.get("globalSelector")
+    var myselect = {}
+    myselect["entry_type"] = entry_type
+    
+    globalKeys = Object.keys(globalSelector)
+    for (i=0;i<globalKeys.length;i++){
+        myselect[globalKeys[i]] = globalSelector[globalKeys[i]]
+    }
+    
+    return myselect
+}
 
 Template.exams.rendered = function() {
       
@@ -333,6 +345,8 @@ Template.exams.rendered = function() {
 
       })
   }
+
+Template.exams.helpers({selector: function(){return selector_function("demographic")}})
   
 Template.freesurferOnly.rendered = function(){
 
@@ -356,15 +370,24 @@ Template.freesurferOnly.rendered = function(){
                 //console.log("values", values)
                 do_d3_histogram(values, metric, "#d3vis")*/
                 var metric = "Amygdala" 
-                Meteor.call("getHistogramData", "freesurfer", metric, 20, function(error, result){
+                var filter = Session.get("globalSelector")
+                console.log("filter is", filter)
+                Meteor.call("getHistogramData", "freesurfer", metric, 20, filter, function(error, result){
                     console.log("result is", result)
                     var data = result["histogram"]
                     var minval = result["minval"]
                     var maxval = result["maxval"]
+                    if (data.length){
+                        do_d3_histogram(data, minval, maxval, metric, "#d3vis")
+                    }
+                    else{
+                        console.log("attempt to clear histogram here")
+                    }
                     
                     
-                    do_d3_histogram(data, minval, maxval, metric, "#d3vis")
                 })
             })
         
         }
+
+Template.freesurferOnly.helpers({selector: function(){return selector_function("freesurfer")}})

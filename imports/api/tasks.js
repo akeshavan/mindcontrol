@@ -131,13 +131,15 @@ var tableFields = {
     
 }
 
+
+
 TabularTables = {}
 
 TabularTables.Exams =  new Tabular.Table({
     name:"Exams",
     throttleRefresh: 1000,
     autoWidth: true,
-    selector: function(){return {entry_type: "demographic"}},
+    //selector: function(){return selector_function("demographic")},
     collection: Subjects,
     columns: [tableFields["msid"],
               tableFields["subject_id"],
@@ -154,7 +156,7 @@ TabularTables.Exams =  new Tabular.Table({
 TabularTables.FS =  new Tabular.Table({
     name:"FS",
     collection: Subjects,
-    selector: function(){return {entry_type: "freesurfer"}},
+    //selector: function(){return selector_function("demographic")},
     autoWidth: true,
     columns: [//tableFields["msid"],
               tableFields["subject_id"],
@@ -212,12 +214,20 @@ Meteor.methods({
             
       },
       
-      getHistogramData: function(entry_type, metric, bins){
+      getHistogramData: function(entry_type, metric, bins, filter){
           console.log("getting histogram data")
-          var no_null = {"entry_type": entry_type}
+          var no_null = filter
+          no_null["entry_type"] = entry_type
           var metric_name = "metrics."+metric
-          no_null[metric_name] = {$ne: null}
-          console.log(no_null)
+          
+          if (Object.keys(no_null).indexOf(metric_name) >=0 ){
+              no_null[metric_name]["$ne"] = null
+          }
+          else{
+              no_null[metric_name] = {$ne: null}
+          }
+          
+          console.log("in the server, the filter is", no_null)
           
           var minval = Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric]
           var maxval = Subjects.find(no_null, {sort: [[metric_name, "descending"]], limit: 1}).fetch()[0]["metrics"][metric]
@@ -226,13 +236,23 @@ Meteor.methods({
           
           var bin_size = (maxval -minval)/(bins+1)
           console.log(bin_size)
-          //{entry_type: "freesurfer"}
-          var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics.Amygdala", {$mod: ["$metrics.Amygdala", bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
+          
+          if (bin_size){
+                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics.Amygdala", {$mod: ["$metrics.Amygdala", bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
           var output = {}
           output["histogram"] = _.sortBy(foo, "_id")
           output["minval"] = minval
           output["maxval"] = maxval
           return output
+          }
+          else{
+              var output= {}
+              output["histogram"] = []
+              output["minval"] = 0
+              output["maxval"] = 0
+          }
+          //{entry_type: "freesurfer"}
+
           
                             
       }
