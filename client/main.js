@@ -6,6 +6,6 @@ globalSelector = {}
  Meteor.startup(function () {
 
           Session.set("globalSelector", globalSelector)
-          Session.set("currentFSMetric", "Amygdala")
+
       
     });
