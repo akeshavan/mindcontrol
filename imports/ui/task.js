@@ -27,6 +27,11 @@ var selector_function = function(entry_type){
     
     console.log("selector for", entry_type, "is", myselect)
     
+    // In this part, if another filter has filtered subjects, then filter on the rest
+    if (globalKeys.indexOf("subject_id") >=0){
+        myselect["subject_id"] = globalKeys["subject_id"]
+    }
+    
     return myselect
 }
 

@@ -11,20 +11,15 @@ TabularTables = {}
 
 TabularTables.Exams =  new Tabular.Table({
     name:"Exams",
-    throttleRefresh: 1000,
-    autoWidth: true,
+    //throttleRefresh: 1000,
+    autoWidth: false,
     //selector: function(){return selector_function("demographic")},
     collection: Subjects,
-    columns: [tableFields["msid"],
-              tableFields["subject_id"],
-              tableFields["Study Tag"],
-              tableFields["Site"],
-              //tableFields["percentFS"],
-              //tableFields["totalFS"],
-              //tableFields["numNifti"],
-              tableFields["Date"],
-              {data:"freesurfer_t1s", visible:false},
-              {data:"nifti_files", visible:false}]
+    columns: [get_filter_field("demographic", "msid", "msid"),
+              get_filter_field("demographic", "subject_id", "Exam ID"),
+              get_filter_field("demographic", "'Study Tag'", "Study Tag"),
+              get_filter_field("demographic", "DCM_InstitutionName", "Site"),
+              get_filter_field("demographic", "DCM_StudyDate", "Date")]
 })
 
 TabularTables.FS =  new Tabular.Table({

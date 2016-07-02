@@ -31,12 +31,23 @@ label_qa = function(name,object){
 
 /*Tabular Table Setup*/
 
+get_filter_field = function(entry_type, field_name, title){
+    
+    var returnfunc = {data:field_name, 
+                      title:title, 
+                      render: function(val, type, doc){
+                                html = '<a class="filter '+entry_type+'+'+field_name+'+'+val+'">'+val+'</a>'
+                    	        return Spacebars.SafeString(html)
+                            }//end function
+                      }; //end returnfunc
+    return returnfunc
+    
+}
+
+
 tableFields = {
     
-    "msid": {data:"msid", title:"Subject", render: function(val, type, doc){
-            html = '<a class="exam msid '+val+'">'+val+'</a>'
-	        return Spacebars.SafeString(html)
-        }},
+    "msid": get_filter_field("demographic", "msid", "msid"),
         
     "subject_id": {data:"subject_id", title: "Exam ID", render: function(val, type, doc){
 	        html = '<a class="exam subject_id '+val+'">'+val+'</a>'
