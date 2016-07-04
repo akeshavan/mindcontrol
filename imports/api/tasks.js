@@ -17,9 +17,9 @@ TabularTables.Exams =  new Tabular.Table({
     collection: Subjects,
     columns: [get_filter_field("demographic", "msid", "msid"),
               get_filter_field("demographic", "subject_id", "Exam ID"),
-              get_filter_field("demographic", "'Study Tag'", "Study Tag"),
+              get_filter_field("demographic", "Study Tag", "Study Tag"),
               get_filter_field("demographic", "DCM_InstitutionName", "Site"),
-              get_filter_field("demographic", "DCM_StudyDate", "Date")]
+              get_filter_field("demographic", "metrics.DCM_StudyDate", "Date")]
 })
 
 TabularTables.FS =  new Tabular.Table({
@@ -27,19 +27,11 @@ TabularTables.FS =  new Tabular.Table({
     collection: Subjects,
     //selector: function(){return selector_function("demographic")},
     autoWidth: true,
-    columns: [//tableFields["msid"],
-              tableFields["subject_id"],
-              //tableFields["Study Tag"],
-              //tableFields["Site"],
+    columns: [get_filter_field("freesurfer", "subject_id", "Exam ID"),
               tableFields["viewFS"],
               tableFields["QC"],
               tableFields["checkedBy"],
-              tableFields["assignedTo"],
-              tableFields["completeFS"],
-              //tableFields["percentFS"],
-              //tableFields["totalFS"],
-              //tableFields["numNifti"],
-              tableFields["Date"]]
+              tableFields["assignedTo"]]
 })
 
 if (Meteor.isServer) {
@@ -122,7 +114,14 @@ Meteor.methods({
 
           
                             
-      }
+      },
+    
+    get_subject_ids_from_filter: function(filter){
+        var subids = []
+        var foo = Subjects.find(filter,{subject_id:1, _id:0}).forEach(function(val){subids.push(val.subject_id)})
+        console.log("the subjects to filter by are",foo)
+        return subids
+    }
   });
   
   

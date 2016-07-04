@@ -88,7 +88,10 @@ do_d3_date_histogram = function (result, dom_id) {
             rect.on("click", function(d){
                 console.log(d)
                 var currSelect = Session.get("globalSelector")
-                currSelect["Exams"]["DCM_StudyDate"] = parseInt(d)
+                if (Object.keys(currSelect).indexOf("demographic") < 0) {
+                    currSelect["demographic"] = {}
+                }
+                currSelect["demographic"]["metrics.DCM_StudyDate"] = parseInt(d)
                 Session.set("globalSelector", currSelect)
                 })    
                 

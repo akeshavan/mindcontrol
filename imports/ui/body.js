@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
-import { Tasks } from '../api/tasks.js';
+//import { Tasks } from '../api/tasks.js';
+import { Subjects } from '../api/tasks.js';
 
 import './task.js';
 import './body.html';
@@ -10,6 +11,7 @@ import './body.html';
 Template.body.events({
     "click .reset": function(){
         Session.set("globalSelector", {})
+        Session.set("subjectSelector", {"subject_id": {$in: []}})
     },
     "click .download": function(){
         MyAppExporter.exportFS()
@@ -55,26 +57,6 @@ Template.body.events({
         
     },
     
-    "click .exam": function(e){
-        console.log(e)
-        element = e.toElement.className.split(" ")
-        var level = element[0]
-        var field = element[1].replace("'","").replace("'")
-        var value = element.slice(2).join(" ")
-        
-        console.log(level, field, value)
-        field_mapper = {"study_tag": "Study Tag",
-                  "site": "DCM_InstitutionName",
-                  "msid":"msid",
-                  "subject_id":"subject_id"
-        }
-        var gSelector = Session.get("globalSelector")
-        gSelector["Exams"][field_mapper[field]] = value
-        console.log(gSelector)
-        Session.set("globalSelector", gSelector)
-
-    },
-    
     "click .filter": function(e){
         console.log(e)
         var element = e.toElement.className.split(" ")//.slice(1).split("-")
@@ -82,62 +64,27 @@ Template.body.events({
         console.log("element is", element)
         var entry_type = element[0]
         var field = element[1]
-        var value = element[2]//.slice(2).join(" ")
-        
+        var value = element[2]//.slice(2).join(" ")        
         console.log(entry_type, field, value)
-        field_mapper = {"study_tag": "Study Tag",
-                  "site": "DCM_InstitutionName",
-                  "msid":"msid",
-                  "subject_id":"subject_id"
-        }
+
         var gSelector = Session.get("globalSelector")
         if (Object.keys(gSelector).indexOf(entry_type) < 0){
             gSelector[entry_type] = {}
         }
         gSelector[entry_type][field] = value
-        //gSelector["Exams"][field_mapper[field]] = value
-        //console.log(gSelector)
+
+        console.log("insert subject selector in this filter function", gSelector)
+        Meteor.call("get_subject_ids_from_filter", gSelector[entry_type], function(error, result){
+            console.log("result from get subject ids from filter is", result)
+            var ss = Session.get("subjectSelector")
+            ss["subject_id"]["$in"] = result
+            Session.set("subjectSelector", ss)
+        })
+
         Session.set("globalSelector", gSelector)
 
     },
-    
-    "click .fs": function(e){
-        console.log(e)
-        element = e.toElement.className.split(" ")
-        var level = element[0]
-        var field = element[1]
-        var value = element.slice(2).join(" ")
-        console.log("element classname is", element)
-        console.log("level field value:", level, field, value)
-        var gSelector = Session.get("globalSelector")
-        if (value=="false"){value=false}
-        if (value=="true"){value=true}
-        gSelector["FS"][field] = value
-        console.log(gSelector)
-        Session.set("globalSelector", gSelector)
 
-    },
-    "click .fsqc": function(e){
-        console.log(e)
-        element = e.toElement.className//.split(" ")
-        console.log(element)
-        var value = element[element.indexOf("fsqc")+1]
-        if (value < 0){
-            value = null
-            key = "quality_check"
-        }
-        else{
-            key = "quality_check.QC"
-        }
-
-        //var level = element[0]
-        //var field = element[1]
-        //var value = element.slice(2).join(" ")
-        var gSelector = Session.get("globalSelector")
-        gSelector["FS"][key] = value
-        console.log(gSelector)
-        Session.set("globalSelector", gSelector)
-    }
 })
 
 Template.body.helpers({
