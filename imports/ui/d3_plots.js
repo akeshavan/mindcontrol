@@ -239,6 +239,14 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
                 gSelector[entry_type][newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 Session.set("globalSelector", gSelector)      
                 
+                Meteor.call("get_subject_ids_from_filter", gSelector[entry_type], function(error, result){
+                    console.log("result from get subject ids from filter is", result)
+                    var ss = Session.get("subjectSelector")
+                    ss["subject_id"]["$in"] = result
+                    Session.set("subjectSelector", ss)
+                })
+
+                
             }
             
             console.log("ended brushing", extent0)
