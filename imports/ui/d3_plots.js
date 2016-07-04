@@ -93,6 +93,15 @@ do_d3_date_histogram = function (result, dom_id) {
                 }
                 currSelect["demographic"]["metrics.DCM_StudyDate"] = parseInt(d)
                 Session.set("globalSelector", currSelect)
+                
+                Meteor.call("get_subject_ids_from_filter", currSelect["demographic"], function(error, result){
+                    console.log("result from get subject ids from filter is", result)
+                    var ss = Session.get("subjectSelector")
+                    ss["subject_id"]["$in"] = result
+                    Session.set("subjectSelector", ss)
+                })
+
+                
                 })    
                 
             //console.log("going to filter rects")
