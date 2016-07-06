@@ -75,8 +75,8 @@ var addPapaya = function(data){
         //console.log("maxKeys", _.max(validKeys))
         
         
-                //params["contextManager"] = new ctxManager();
-        //params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
+        //params["contextManager"] = new ctxManager();
+        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
         //params["expandable"] = true
         //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
         console.log("params", params)
