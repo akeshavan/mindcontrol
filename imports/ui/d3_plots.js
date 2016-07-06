@@ -245,13 +245,13 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
                 var newkey = "metrics."+metric
                 
                 
-                /*var gSelector = Session.get("globalSelector")
+                var gSelector = Session.get("globalSelector")
                 if (Object.keys(gSelector).indexOf(entry_type) < 0 ){
                     gSelector[entry_type] = {}
                 }
                 gSelector[entry_type][newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 Session.set("globalSelector", gSelector)      
-                
+                /*
                 var fs_and_subs = {}
                 fs_and_subs[entry_type] = gSelector[entry_type]
                 

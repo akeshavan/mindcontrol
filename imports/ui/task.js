@@ -85,7 +85,7 @@ Template.exams.rendered = function() {
       })
   }
 
-Template.exams.helpers({selector: function(){return selector_function("demographic")}})
+Template.exams.helpers({selector: function(){return get_filter("demographic")}})
   
 Template.freesurferOnly.rendered = function(){
 
@@ -115,4 +115,4 @@ Template.freesurferOnly.rendered = function(){
         
         }
 
-Template.freesurferOnly.helpers({selector: function(){return selector_function("freesurfer")}})
+Template.freesurferOnly.helpers({selector: function(){return get_filter("freesurfer")}})

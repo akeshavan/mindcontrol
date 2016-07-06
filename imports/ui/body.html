@@ -69,25 +69,9 @@
 
                  <div class="well" data-step="3" data-intro="Step 3: After selecting a date, a query parameter appears. Click the x to remove the filter">
                      
-                     {{#each currentQuery.Exams}}
+                     {{#each currentSelector}}
                     <span class="tag label label-info">
-                      <span class="exam {{attr}}">{{value}}</span>
-                      <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
-                    </span>
-                    <br><br>
-                     {{/each}}
-
-                     {{#each currentQuery.FS}}
-                    <span class="tag label label-info">
-                      <span class="fs {{attr}}">{{attr}}</span>
-                      <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
-                    </span>
-                    <br><br>
-                     {{/each}}
-                     
-                    {{#each currentQuery.NI}}
-                    <span class="tag label label-info">
-                      <span class="ni {{attr}}">{{value}}</span>
+                      <span class="{{this.mapper}}">{{this.name}}</span>
                       <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a> 
                     </span>
                     <br><br>
