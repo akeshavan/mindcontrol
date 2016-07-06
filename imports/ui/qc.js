@@ -80,7 +80,7 @@ var addPapaya = function(data){
         //params["expandable"] = true
         //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
         console.log("params", params)
-        $("#modal-fullscreen").show()
+        //$("#modal-fullscreen").show()
         papaya.Container.addViewer("viewer", params, function(){
                                         //.modal("show"); 
                                         console.log(params)
@@ -100,7 +100,7 @@ Template.view_images.rendered = function(){
         if (qc){
             var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1})
             
-            //addPapaya(output)
+            addPapaya(output)
             
         }
         
