@@ -96,7 +96,7 @@ Template.freesurferOnly.rendered = function(){
             this.autorun(function() {
                 var metric = "Amygdala" 
                 var filter = get_filter("freesurfer")
-                console.log("filter is", filter)
+                //console.log("filter is", filter)
                 Meteor.call("getHistogramData", "freesurfer", metric, 20, filter, function(error, result){
                     //console.log("result is", result)
                     var data = result["histogram"]

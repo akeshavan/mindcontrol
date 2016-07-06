@@ -57,7 +57,7 @@ if (Meteor.isServer) {
         var source_json = "https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0"
         //console.log(HTTP.get(source_json).content)
         myobject = JSON.parse(HTTP.get(source_json).content)
-        console.log("my object is", myobject.length)
+        //console.log("my object is", myobject.length)
         myobject.forEach(function(val,idx,array){
             Subjects.insert(val)
         })
@@ -110,10 +110,10 @@ Meteor.methods({
           
           
           var bin_size = (maxval -minval)/(bins+1)
-          console.log(bin_size)
+          //console.log(bin_size)
           
           if (bin_size){
-                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics.Amygdala", {$mod: ["$metrics.Amygdala", bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
+                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics."+metric, {$mod: ["$metrics."+metric, bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
           var output = {}
           output["histogram"] = _.sortBy(foo, "_id")
           output["minval"] = minval*0.95
@@ -134,9 +134,9 @@ Meteor.methods({
     
     get_subject_ids_from_filter: function(filter){
         var subids = []
-        console.log("the filter in this method is", filter)
+        //console.log("the filter in this method is", filter)
         var foo = Subjects.find(filter,{subject_id:1, _id:0}).forEach(function(val){subids.push(val.subject_id)})
-        console.log("the subjects to filter by are",foo)
+        //console.log("the subjects to filter by are",foo)
         return subids
     }
   });
