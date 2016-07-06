@@ -8431,7 +8431,7 @@ myCustomColorTable.prototype.lookupRed = function (screenVal, imageVal) {
     	else{return 0}
     	}
     else{
-    	console.log("no imageVal", screenVal, imageVal)
+    	//console.log("no imageVal", screenVal, imageVal)
     	return 0
     }
 };

@@ -273,6 +273,7 @@ li a {
   margin-bottom: 2px;
 }
 
+
 .modal-fullscreen {
   background: white;
   }
@@ -312,7 +313,7 @@ li a {
 }
 @media (min-width: 1200px) {
   .modal-fullscreen .modal-dialog {
-     width: 1400px;
+     width: 1150px;
   }
 }
 
