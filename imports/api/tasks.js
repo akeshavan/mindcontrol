@@ -34,6 +34,18 @@ TabularTables.FS =  new Tabular.Table({
               tableFields["assignedTo"]]
 })
 
+throwError = function(error, reason, details) {
+  var meteorError = new Meteor.Error(error, reason, details);
+
+  if (Meteor.isClient) {
+    // this error is never used
+    // on the client, the return value of a stub is ignored
+    return meteorError;
+  } else if (Meteor.isServer) {
+    throw meteorError;
+  }
+};
+
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
@@ -66,15 +78,19 @@ if (Meteor.isServer) {
 Meteor.methods({
     
     getDateHist: function(){
-            console.log("running the aggregate")
-            var foo = Subjects.aggregate([{$match: {entry_type: "demographic"}},{$group:{_id:"$metrics.DCM_StudyDate", count:{$sum:1}}}])
-            //console.log(foo)
-            return foo
+            //console.log("running the aggregate")
+            if (Meteor.isServer){
+                var foo = Subjects.aggregate([{$match: {entry_type: "demographic"}},{$group:{_id:"$metrics.DCM_StudyDate", count:{$sum:1}}}])
+                //console.log(foo)
+                return foo
+            }
+
             
       },
       
     getHistogramData: function(entry_type, metric, bins, filter){
-          console.log("getting histogram data")
+          //console.log("getting histogram data")
+          if (Meteor.isServer){
           var no_null = filter
           no_null["entry_type"] = entry_type
           var metric_name = "metrics."+metric
@@ -86,7 +102,7 @@ Meteor.methods({
               no_null[metric_name] = {$ne: null}
           }
           
-          console.log("in the server, the filter is", no_null)
+          //console.log("in the server, the filter is", no_null)
           
           var minval = Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric]
           var maxval = Subjects.find(no_null, {sort: [[metric_name, "descending"]], limit: 1}).fetch()[0]["metrics"][metric]
@@ -109,7 +125,7 @@ Meteor.methods({
               output["histogram"] = []
               output["minval"] = 0
               output["maxval"] = 0
-          }
+          }}
           //{entry_type: "freesurfer"}
 
           

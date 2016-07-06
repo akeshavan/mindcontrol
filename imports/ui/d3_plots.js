@@ -1,3 +1,5 @@
+import "./task.js"
+
 do_d3_date_histogram = function (result, dom_id) {
     // Defer to make sure we manipulate DOM
     _.defer(function () {
@@ -47,7 +49,7 @@ do_d3_date_histogram = function (result, dom_id) {
             
             var maxYear = _.max(values).toString().substring(0,4)
             
-            console.log(highest)
+            //console.log(highest)
             
             //console.log("min year", minYear)
             //console.log("maxYear", maxYear)
@@ -142,7 +144,7 @@ do_d3_date_histogram = function (result, dom_id) {
 
 d3barplot = function(window, data, formatCount, metric, entry_type){
         // fs_tables is the original table the stuff came from
-        console.log("data is", data)
+        //console.log("data is", data)
         var bar_selector = window.d3vis.svg.selectAll("rect")
           .data(data)
         var text_selector = window.d3vis.svg.selectAll(".bar_text")
@@ -211,19 +213,19 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
           var extent0 = brush.extent()
               //extent1;
         
-          console.log(d3.event.mode)
+          //console.log(d3.event.mode)
         
 
         
           // if dragging, preserve the width of the extent
           if (d3.event.mode === "move") {
-                  console.log("moving")
+                  //console.log("moving")
           }
         
           // otherwise, if resizing, round both dates
           else {
             extent1 = extent0//.map(d3.time.day.round);
-            console.log("extending")
+            //console.log("extending")
             // if empty when rounded, use floor & ceil instead
             /*if (extent1[0] >= extent1[1]) {
               extent1[0] = d3.time.day.floor(extent0[0]);
@@ -241,14 +243,28 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
                 
                 d3.selectAll(".brush").call(brush.clear());
                 var newkey = "metrics."+metric
-                var gSelector = Session.get("globalSelector")
+                
+                
+                /*var gSelector = Session.get("globalSelector")
                 if (Object.keys(gSelector).indexOf(entry_type) < 0 ){
                     gSelector[entry_type] = {}
                 }
                 gSelector[entry_type][newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 Session.set("globalSelector", gSelector)      
                 
-                Meteor.call("get_subject_ids_from_filter", gSelector[entry_type], function(error, result){
+                var fs_and_subs = {}
+                fs_and_subs[entry_type] = gSelector[entry_type]
+                
+                var subselect = Session.get("subjectSelector")
+    
+                if (subselect["subject_id"]["$in"].length){
+                    fs_and_subs["subject_id"] = subselect["subject_id"]
+                }*/
+                
+                var filter = get_filter(entry_type)
+                filter[newkey] = {$gte: extent0[0], $lte: extent0[1]}
+                
+                Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
                     console.log("result from get subject ids from filter is", result)
                     var ss = Session.get("subjectSelector")
                     ss["subject_id"]["$in"] = result

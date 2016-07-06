@@ -8,6 +8,7 @@ import { Subjects } from '../api/tasks.js';
 import './task.js';
 import './body.html';
 
+
 Template.body.events({
     "click .reset": function(){
         Session.set("globalSelector", {})
@@ -67,21 +68,25 @@ Template.body.events({
         var value = element[2]//.slice(2).join(" ")        
         console.log(entry_type, field, value)
 
-        var gSelector = Session.get("globalSelector")
+        /*var gSelector = Session.get("globalSelector")
         if (Object.keys(gSelector).indexOf(entry_type) < 0){
             gSelector[entry_type] = {}
         }
         gSelector[entry_type][field] = value
 
         console.log("insert subject selector in this filter function", gSelector)
-        Meteor.call("get_subject_ids_from_filter", gSelector[entry_type], function(error, result){
+        
+
+        Session.set("globalSelector", gSelector)*/
+        var filter = get_filter(entry_type)
+        console.log("filter in .filter is", filter)
+        filter[field] = value
+        Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
             console.log("result from get subject ids from filter is", result)
             var ss = Session.get("subjectSelector")
             ss["subject_id"]["$in"] = result
             Session.set("subjectSelector", ss)
         })
-
-        Session.set("globalSelector", gSelector)
 
     },
 
@@ -96,7 +101,7 @@ Template.body.helpers({
         
     savedQueries: function(){
         var user = Meteor.users.findOne(Meteor.userId(), {fields: {username:1}})
-        console.log("user", user)
+        //console.log("user", user)
         //var userentries = User.find({user:user.username})
         //console.log("userentries", userentries)
         //return userentries
