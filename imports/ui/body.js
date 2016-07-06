@@ -61,7 +61,9 @@ Template.body.events({
     "click .filter": function(e){
         console.log(e)
         var element = e.toElement.className.split(" ")//.slice(1).split("-")
-        element = element.slice(1).join(" ").split("+")
+        var idx = element.indexOf("filter") + 1
+        console.log("element is", element, "idx of filter is", idx)
+        element = element.slice(idx).join(" ").split("+")
         console.log("element is", element)
         var entry_type = element[0]
         var field = element[1]
@@ -78,9 +80,14 @@ Template.body.events({
         
 
         Session.set("globalSelector", gSelector)*/
+        //THIS IS HACKY
         var filter = get_filter(entry_type)
-        console.log("filter in .filter is", filter)
+        if (field=="metrics.DCM_StudyDate" || field=="quality_check.QC"){
+            value = parseInt(value)
+        }
         filter[field] = value
+        console.log("filter in .filter is", filter)
+
         Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
             console.log("result from get subject ids from filter is", result)
             var ss = Session.get("subjectSelector")

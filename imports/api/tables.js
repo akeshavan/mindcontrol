@@ -44,6 +44,29 @@ get_filter_field = function(entry_type, field_name, title){
     
 }
 
+get_qc_filter_field = function(entry_type, field_name, title){
+    
+
+    
+    var returnfunc = {data:field_name, 
+                      title:title, 
+                      render: function(val, type, doc){
+                            
+                                var val_mapper = {"-1": "Not Checked", "0": "Fail", "1": "Pass", "2": "Needs Edits", "3": "Edited"}
+                                var class_mapper = {"-1": " label label-warning", "0": " label label-danger",
+                                                   "1": " label label-success", "2": " label label-primary", "3": " label label-info"}
+                                var realval = -1
+                                if (val != null){
+                                    realval = val
+                                }
+                                html = '<a class="'+class_mapper[realval]+' filter '+entry_type+'+'+field_name+'+'+val+'">'+val_mapper[realval]+'</a>'
+                    	        return Spacebars.SafeString(html)
+                            }//end function
+                      }; //end returnfunc
+    return returnfunc
+    
+}
+
 
 tableFields = {
     
@@ -96,7 +119,7 @@ tableFields = {
         return '<a class="fs quality_check.user_assign '+val+'">'+val+'</a>'
     }},
 
-    "QC": {data:"quality_check", title:"QC", render: label_qa },
+    "QC": get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),//{data:"quality_check", title:"QC", render: label_qa },
     
     "viewFS": {data:"name", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'

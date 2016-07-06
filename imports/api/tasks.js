@@ -134,6 +134,7 @@ Meteor.methods({
     
     get_subject_ids_from_filter: function(filter){
         var subids = []
+        console.log("the filter in this method is", filter)
         var foo = Subjects.find(filter,{subject_id:1, _id:0}).forEach(function(val){subids.push(val.subject_id)})
         console.log("the subjects to filter by are",foo)
         return subids
