@@ -7,6 +7,8 @@ import { Subjects } from '../api/tasks.js';
 
 import './task.js';
 import './body.html';
+import "./qc.js";
+import "./qc.html";
 
 var update_subjects = function(filter, list_of_remaining){
         console.log("list of remaining is", list_of_remaining)
@@ -134,6 +136,24 @@ Template.body.events({
         })
 
     },
+    
+    "click .viewQC": function(e){
+        e.preventDefault();
+        var element = e.toElement.className.split(" ")//.slice(1).split("-")
+        var idx = element.indexOf("viewQC") + 1
+        //console.log("element is", element, "idx of filter is", idx)
+        element = element.slice(idx).join(" ").split("+")
+        //console.log("element is", element)
+        var entry_type = element[0]
+        var field = element[1]
+        console.log("element is", element)
+        //var value = element[2]//.slice(2).join(" ")    
+        console.log("you want to view QC for", entry_type, field)
+        
+        Session.set("currentQC", {"entry_type": entry_type, "name": field})
+        //$("#modal-fullscreen").modal("show")
+          
+    }
 
 })
 

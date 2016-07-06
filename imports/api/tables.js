@@ -67,6 +67,18 @@ get_qc_filter_field = function(entry_type, field_name, title){
     
 }
 
+get_qc_viewer = function(entry_type, field_name, title){
+    
+    var output = {data:field_name, title:title, render: function(val, type, doc){
+	        html = '<a data-toggle="modal" data-target="#modal-fullscreen" class="viewQC '+entry_type+"+"+val+'">'+val+'</a>'
+	        //console.log(html)
+	        return Spacebars.SafeString(html)
+        }}
+    
+    return output
+    
+}
+
 
 tableFields = {
     
@@ -122,7 +134,7 @@ tableFields = {
     "QC": get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),//{data:"quality_check", title:"QC", render: label_qa },
     
     "viewFS": {data:"name", title:"Freesurfer Subject ID", render: function(val, type, doc){
-	        html = '<a target="_blank" href="/viewImage_fs/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
+	        html = '<a target="_blank" href="#" class="viewQC '+'">'+val+'</a>'
 	        //console.log(html)
 	        return Spacebars.SafeString(html)
         }},  

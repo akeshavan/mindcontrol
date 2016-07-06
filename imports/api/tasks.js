@@ -28,7 +28,7 @@ TabularTables.FS =  new Tabular.Table({
     //selector: function(){return selector_function("demographic")},
     autoWidth: true,
     columns: [get_filter_field("freesurfer", "subject_id", "Exam ID"),
-              tableFields["viewFS"],
+              get_qc_viewer("freesurfer", "name", "Freesurfer ID"), //tableFields["viewFS"],
               tableFields["QC"],
               tableFields["checkedBy"],
               tableFields["assignedTo"]]
@@ -65,13 +65,9 @@ if (Meteor.isServer) {
     }
   });
   
-  Meteor.publish('tasks', function tasksPublication() {
-    return Tasks.find({
-      $or: [
-        { private: { $ne: true } },
-        { owner: this.userId },
-      ],
-    });
+  Meteor.publish('get_qc_doc', function tasksPublication(entry_type, name) {
+      console.log("publishing", entry_type, name)
+    return Subjects.find({"entry_type": entry_type, "name": name});
   });
 }
 
@@ -113,7 +109,7 @@ Meteor.methods({
           //console.log(bin_size)
           
           if (bin_size){
-                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics."+metric, {$mod: ["$metrics."+metric, bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
+                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics."+metric    , {$mod: ["$metrics."+metric, bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
           var output = {}
           output["histogram"] = _.sortBy(foo, "_id")
           output["minval"] = minval*0.95

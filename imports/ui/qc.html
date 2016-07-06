@@ -1,0 +1,102 @@
+<template name="qc_modal">
+<div class="modal modal-fullscreen" id="modal-fullscreen" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{name}}</h4>
+      </div>
+      <div class="modal-body">
+        {{> Template.dynamic template="view_images" data=modalData}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<template name="view_images">
+<h1>{{name}}</h1>
+<div id="viewer" width="1000px"></div>
+<br>
+
+  <!--<button class="btn btn-default pial" data-toggle="collapse"
+          data-target="#collapsePial" aria-expanded="false"
+          aria-controls="collapsePial">Edits</button>
+  <br><br>
+  <div class="collapse" id="collapsePial">
+      <kbd>
+
+        pbr-recon-edits {{doc.name}}
+
+      </kbd>
+
+
+
+  </div>-->
+
+  <h2>Quality Check</h2>
+    <strong>QC status:</strong> {{quality_check.QC}}
+    <br>
+    <strong>Last Checked At:</strong> {{checkedAt}}
+    <br>
+    <strong>Last Checked By:</strong> {{checkedBy}}
+    <br>
+    <strong>Notes:</strong> {{quality_check.notes_QC}}
+    <br>
+
+    <div class="well">
+
+  <form id="QC_form" class="new-qc">
+
+    <div class = "form-group">
+    <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="options_pass" value="1" checked>
+        <strong>PASS</strong>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="options_fail" value="0">
+        <strong>FAIL</strong>
+      </label>
+    </div>
+    
+    <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="options_edit" value="2">
+        <strong>NEEDS EDITS</strong>
+      </label>
+    </div>
+
+      <div class="radio">
+      <label>
+        <input type="radio" name="QC" id="options_edited" value="3">
+        <strong>EDITED</strong>
+      </label>
+    </div>
+    <label>Assign To:
+      <select id="user-assign" name="user_assign">
+
+          <option disabled="disabled" selected="selected">Assign To</option>
+              {{#each user}}
+                  <option value="{{this.username}}">{{this.username}}</option>
+              {{/each}}
+      </select>
+    </label>
+  <br>
+      <label>
+        Notes: <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
+      </label>
+    </div>
+<br>
+      <label>
+          <button class="btn btn-success" type="submit">Save</button>
+      </label>
+  </form>
+        </div>
+
+</template>
