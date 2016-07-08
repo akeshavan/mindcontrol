@@ -36,7 +36,7 @@ var logpoint = function(e, template){
 }
 
 Template.qc_modal.onCreated(function(){
-    console.log("qc modals current data is", this.data)
+    //console.log("qc modals current data is", this.data)
     Session.set("currentQC", null)
 })
 
@@ -64,7 +64,7 @@ Template.qc_modal.helpers({
         if (qc){
             Meteor.subscribe('get_qc_doc', qc.entry_type, qc.name)
             var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name})
-            console.log(output)
+            //console.log(output)
             return output
         }
         else{
@@ -118,7 +118,7 @@ Template.view_images.events({
         for (i=0;i<form_values.length;i++){
             form_data[form_values[i]["name"]] = form_values[i]["value"]
         }
-        console.log(form_data)
+        //console.log(form_data)
         lp = Session.get("loggedPoints")
         //console.log("this data", this.data)
         
@@ -129,7 +129,7 @@ Template.view_images.events({
         update["checkedAt"] = new Date()
         update["loggedPoints"] = template.loggedPoints.get()
         
-        console.log("update is", update)
+        //console.log("update is", update)
         
         Meteor.call("updateQC", qc, update, function(error, result){
             $("#closemodal").click()
@@ -165,20 +165,24 @@ var staticURL = "http://127.0.0.1:3002/"//"https://dl.dropboxusercontent.com/u/9
 
 var addPapaya = function(data){
     //if (papayaContainers.length == 0){
+        if (papayaContainers.length != 0){
+            console.log("papayacontainers is", papayaContainers.pop())
+        }
+        
     var params = {}
     params["images"] = []
-    console.log("this in the view images rendered template", data)
+    //console.log("this in the view images rendered template", data)
         
     for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
         params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
     }
         var sLabelledFile = data.check_masks[i-1]
-        console.log(sLabelledFile)
+        //console.log(sLabelledFile)
         var oPartsLabelled = sLabelledFile.split("/");
         var sLastPart = oPartsLabelled[oPartsLabelled.length-1];
-        console.log(sLastPart)
-        console.log("cmap", colormap)
-        console.log("customCtab", myCustomColorTable)
+        //console.log(sLastPart)
+        //console.log("cmap", colormap)
+        //console.log("customCtab", myCustomColorTable)
         //console.log("maxKeys", _.max(validKeys))
         
         
@@ -187,11 +191,11 @@ var addPapaya = function(data){
         params["showControlBar"] = true
         params["expandable"] = true
         //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
-        console.log("params", params)
+        //console.log("params", params)
         //$("#modal-fullscreen").show()
         papaya.Container.addViewer("viewer", params, function(){
                                         //.modal("show"); 
-                                        console.log(params)
+                                        //console.log(params)
                                         })  
                                         
         //$("#viewer").on("click", logpoint)       
@@ -209,7 +213,7 @@ Template.view_images.rendered = function(){
     this.autorun(function(){
         var qc = Session.get("currentQC")
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
-        console.log("in autorun, qc is", qc)
+        //console.log("in autorun, qc is", qc)
         if (qc){
         if (Object.keys(qc).indexOf("entry_type")>=0){
             var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1, loggedPoints: 1})
