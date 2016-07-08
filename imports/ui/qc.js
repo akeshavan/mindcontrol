@@ -90,6 +90,17 @@ Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
 })
 
+
+var template_decorator = function(template_instance, lp, idx){
+    var update_point_note = function(res, val){
+            lp[idx]["note"] = val
+            //console.log("logged points are", lp)
+            //console.log("template instance", template_instance)
+            template_instance.loggedPoints.set(lp)
+        }
+    return update_point_note
+}
+
 Template.view_images.helpers({
     
     user: function(){
@@ -99,6 +110,13 @@ Template.view_images.helpers({
     
     loggedPoints: function(){
         return Template.instance().loggedPoints.get()
+    },
+    
+    onPointNote: function(){
+        //console.log("poitn note is", this)
+        var lp = Template.instance().loggedPoints.get()
+        var idx = lp.indexOf(this)
+        return  template_decorator(Template.instance(), lp, idx)
     }
     
 })

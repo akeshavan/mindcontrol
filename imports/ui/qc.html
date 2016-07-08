@@ -114,7 +114,7 @@
         <h3>Logged Points</h3>
         {{#each loggedPoints}}
         
-            <a class="goto_coor"> {{this.world_coor.x}}, {{this.world_coor.y}}, {{this.world_coor.z}} </a> <br>
+            <a class="goto_coor"> {{this.world_coor.x}}, {{this.world_coor.y}}, {{this.world_coor.z}} </a> {{> xEditable type="text" success=onPointNote placement="right" value=this.note}} <br>
         
         {{/each}}
         

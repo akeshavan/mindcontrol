@@ -58,6 +58,7 @@ modules-runtime@0.6.4
 mongo@1.1.9
 mongo-id@1.0.5
 mongo-livedata@1.0.12
+natestrauser:x-editable-bootstrap@1.5.2_4
 npm-bcrypt@0.8.7
 npm-mongo@1.4.44
 observe-sequence@1.0.12
@@ -87,3 +88,4 @@ underscore@1.0.9
 url@1.0.10
 webapp@1.2.9
 webapp-hashing@1.0.9
+workman:x-editable-reactive-template@1.0.2
