@@ -105,7 +105,7 @@ Template.view_images.helpers({
 
 Template.view_images.events({
 
-"submit .new-qc": function(event){
+"submit .new-qc": function(event, template){
 
         event.preventDefault();
         if (! Meteor.userId()) {
@@ -120,13 +120,16 @@ Template.view_images.events({
         }
         console.log(form_data)
         lp = Session.get("loggedPoints")
-        console.log("this data", this.data)
+        //console.log("this data", this.data)
         
         var qc = Session.get("currentQC")
         var update = {}
         update["quality_check"] = form_data
         update["checkedBy"] = Meteor.user().username
         update["checkedAt"] = new Date()
+        update["loggedPoints"] = template.loggedPoints.get()
+        
+        console.log("update is", update)
         
         Meteor.call("updateQC", qc, update, function(error, result){
             $("#closemodal").click()
@@ -161,7 +164,7 @@ var staticURL = "http://127.0.0.1:3002/"//"https://dl.dropboxusercontent.com/u/9
 
 
 var addPapaya = function(data){
-    if (papayaContainers.length == 0){
+    //if (papayaContainers.length == 0){
     var params = {}
     params["images"] = []
     console.log("this in the view images rendered template", data)
@@ -192,7 +195,7 @@ var addPapaya = function(data){
                                         })  
                                         
         //$("#viewer").on("click", logpoint)       
-        }                           
+        //} //endif                           
     }
 
 Template.view_images.rendered = function(){
@@ -205,12 +208,14 @@ Template.view_images.rendered = function(){
         
     this.autorun(function(){
         var qc = Session.get("currentQC")
-        console.log("loggedPoints?", Template.instance().loggedPoints.get())
+        //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         console.log("in autorun, qc is", qc)
         if (qc){
         if (Object.keys(qc).indexOf("entry_type")>=0){
-            var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1})
+            var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1, loggedPoints: 1})
+            
             if (output){
+                Template.instance().loggedPoints.set(output.loggedPoints)
                 addPapaya(output)
             }
             
