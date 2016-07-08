@@ -3,6 +3,38 @@ import "./colormaps.js"
 import {Subjects} from "../api/tasks.js"
 import "./task.js"
 
+var logpoint = function(e, template){
+    
+    if(e.shiftKey){
+        //convert mouse position to matrix space
+        var currentCoor = papayaContainers[0].viewer.cursorPosition
+        var coor = new papaya.core.Coordinate(currentCoor.x, currentCoor.y, currentCoor.z)
+        
+        //convert matrix space to screen space
+        var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(coor);
+        
+        //convert screen space to world space
+        var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y);
+        var world = new papaya.core.Coordinate();
+        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+        
+        
+        var points = template.loggedPoints.get()
+        if (points == null){
+            points = []
+        }
+        points.push({matrix_coor: coor, world_coor: world})
+        template.loggedPoints.set(points)
+        //Session.set("loggedPoints", points)
+        
+        //draw
+        var viewer = papayaContainers[0].viewer
+        draw_point(screenCoor, viewer)
+        
+    }
+    
+}
+
 Template.qc_modal.onCreated(function(){
     console.log("qc modals current data is", this.data)
     Session.set("currentQC", null)
@@ -54,11 +86,19 @@ Template.qc_modal.helpers({
     
 })
 
+Template.view_images.onCreated(function(){
+    this.loggedPoints = new ReactiveVar([])
+})
+
 Template.view_images.helpers({
     
     user: function(){
         Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
+    },
+    
+    loggedPoints: function(){
+        return Template.instance().loggedPoints.get()
     }
     
 })
@@ -93,7 +133,11 @@ Template.view_images.events({
         })
         
         //console.log("called updateQC method!")
-    }
+    },
+
+ "click #viewer": function(event, template){
+     logpoint(event, template)
+ }
 
 })
 
@@ -102,6 +146,8 @@ Template.view_images.events({
   });*/
 
 var staticURL = "http://127.0.0.1:3002/"//"https://dl.dropboxusercontent.com/u/9020198/data/"
+
+
 
 var addPapaya = function(data){
     var params = {}
@@ -131,7 +177,9 @@ var addPapaya = function(data){
         papaya.Container.addViewer("viewer", params, function(){
                                         //.modal("show"); 
                                         console.log(params)
-                                        })    
+                                        })  
+                                        
+        //$("#viewer").on("click", logpoint)                                  
     }
 
 Template.view_images.rendered = function(){

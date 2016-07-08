@@ -8464,6 +8464,18 @@ myCustomColorTable.prototype.lookupBlue = function (screenVal, imageVal) {
     return 0}
 };
 
+draw_point = function(screenCoor, viewer){
+    var canvas = viewer.canvas
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = "rgb(255, 0, 0)";
+    ctx.fillRect(screenCoor.x, screenCoor.y, 5, 5);
+    console.log("filled?")
+}
+
+
+
+
+
 var ctxManager = function() {
         	//TODO: get loggedPoints from doc
         	lp = doc.loggedPoints

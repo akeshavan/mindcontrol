@@ -42,7 +42,13 @@
 
   </div>-->
 
-  <h2>Quality Check</h2>
+
+
+    <div class="row">
+
+    <div class="col-md-5">
+
+  <h3>Quality Check</h3>
     <strong>QC status:</strong> {{quality_check.QC}}
     <br>
     <strong>Last Checked At:</strong> {{checkedAt}}
@@ -51,10 +57,6 @@
     <br>
     <strong>Notes:</strong> {{quality_check.notes_QC}}
     <br>
-
-    <div class="row">
-
-    <div class="col-md-4">
 
     <div class="well">
 
@@ -107,6 +109,15 @@
       </label>
   </form>
         </div>
+    </div>
+    <div class="col-md-5">
+        <h3>Logged Points</h3>
+        {{#each loggedPoints}}
+        
+            {{this.world_coor.x}}, {{this.world_coor.y}}, {{this.world_coor.z}}<br>
+        
+        {{/each}}
+        
     </div>
     
     
