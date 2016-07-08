@@ -137,6 +137,17 @@ Template.view_images.events({
 
  "click #viewer": function(event, template){
      logpoint(event, template)
+ },
+ 
+ "click .goto_coor": function(event, template){
+     //console.log("clicked a coordinate", this, this.matrix_coor)
+     papayaContainers[0].viewer.gotoCoordinate(this.matrix_coor)
+     var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(this.matrix_coor);
+     var viewer = papayaContainers[0].viewer
+     draw_point(screenCoor, viewer)
+
+     
+     
  }
 
 })
@@ -150,6 +161,7 @@ var staticURL = "http://127.0.0.1:3002/"//"https://dl.dropboxusercontent.com/u/9
 
 
 var addPapaya = function(data){
+    if (papayaContainers.length == 0){
     var params = {}
     params["images"] = []
     console.log("this in the view images rendered template", data)
@@ -179,7 +191,8 @@ var addPapaya = function(data){
                                         console.log(params)
                                         })  
                                         
-        //$("#viewer").on("click", logpoint)                                  
+        //$("#viewer").on("click", logpoint)       
+        }                           
     }
 
 Template.view_images.rendered = function(){
@@ -189,8 +202,10 @@ Template.view_images.rendered = function(){
       //console.log('Template onLoad');
     }
     
+        
     this.autorun(function(){
         var qc = Session.get("currentQC")
+        console.log("loggedPoints?", Template.instance().loggedPoints.get())
         console.log("in autorun, qc is", qc)
         if (qc){
         if (Object.keys(qc).indexOf("entry_type")>=0){
