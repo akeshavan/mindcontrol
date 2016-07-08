@@ -54,6 +54,14 @@ Template.qc_modal.helpers({
     
 })
 
+Template.view_images.helpers({
+    
+    user: function(){
+        return Meteor.users.find({}).fetch()
+    }
+    
+})
+
 Template.view_images.events({
 
 "submit .new-qc": function(event){

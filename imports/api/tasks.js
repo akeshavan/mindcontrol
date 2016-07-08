@@ -29,9 +29,12 @@ TabularTables.FS =  new Tabular.Table({
     autoWidth: true,
     columns: [get_filter_field("freesurfer", "subject_id", "Exam ID"),
               get_qc_viewer("freesurfer", "name", "Freesurfer ID"), //tableFields["viewFS"],
-              tableFields["QC"],
-              tableFields["checkedBy"],
-              tableFields["assignedTo"]]
+              get_qc_filter_field("freesurfer", "quality_check.QC", "QC"), //tableFields["QC"],
+              get_filter_field("freesurfer", "checkedBy", "checked by"),
+              get_filter_field("freesurfer", "quality_check.user_assign", "Assigned To"),
+              {data:"quality_check.notes_QC", title:"Notes"}
+              //tableFields["assignedTo"]
+              ]
 })
 
 throwError = function(error, reason, details) {

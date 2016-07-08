@@ -36,8 +36,16 @@ get_filter_field = function(entry_type, field_name, title){
     var returnfunc = {data:field_name, 
                       title:title, 
                       render: function(val, type, doc){
-                                html = '<a class="filter '+entry_type+'+'+field_name+'+'+val+'">'+val+'</a>'
-                    	        return Spacebars.SafeString(html)
+                                
+                                if (val != null){
+                                    html = '<a class="filter '+entry_type+'+'+field_name+'+'+val+'">'+val+'</a>'
+                                    return Spacebars.SafeString(html)
+                                }
+                                else {
+                                    return ""
+                                }
+                          
+                                
                             }//end function
                       }; //end returnfunc
     return returnfunc
