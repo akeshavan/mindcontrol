@@ -4,9 +4,6 @@ import { Template } from 'meteor/templating';
 import './task.html';
 import "./d3_plots.js"
 
-/*Template.exams.helpers({
-    selector: function(){return {entry_type:"demographic"}}
-})*/
 
 get_filter = function(entry_type){
  
@@ -58,7 +55,14 @@ Template.exams.rendered = function() {
   }
 
 Template.exams.helpers({selector: function(){return get_filter("demographic")}})
-  
+
+var get_metrics = function(entry_type){
+    Meteor.call("get_metric_names", entry_type, function(error, result){
+            Session.set(entry_type+"_metrics", result)
+        })
+        return Session.get(entry_type+"_metrics")
+}
+
 Template.freesurferOnly.rendered = function(){
 
         if (!this.rendered){
@@ -66,10 +70,20 @@ Template.freesurferOnly.rendered = function(){
         }   
                 
             this.autorun(function() {
-                var metric = "Amygdala" 
-                var filter = get_filter("freesurfer")
-                //console.log("filter is", filter)
-                Meteor.call("getHistogramData", "freesurfer", metric, 20, filter, function(error, result){
+                var metric = Session.get("current_freesurfer")//"Amygdala" 
+                if (metric == null){
+                    var all_metrics = Session.get("freesurfer_metrics")
+                    
+                    if (all_metrics != null){
+                        Session.set("current_freesurfer", all_metrics[0])
+                    }
+                    
+                }
+                
+                if (metric != null){
+                    var filter = get_filter("freesurfer")
+                    //console.log("filter is", filter)
+                    Meteor.call("getHistogramData", "freesurfer", metric, 20, filter, function(error, result){
                     //console.log("result is", result)
                     var data = result["histogram"]
                     var minval = result["minval"]
@@ -82,14 +96,29 @@ Template.freesurferOnly.rendered = function(){
                     }
                     
                     
-                })
-            })
+                    });
+                }
+                
+            }); //end autorun
         
         }
 
+Template.freesurferOnly.events({
+    "change #metric-select-freesurfer": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_freesurfer", metric)
+    }
+})
+
+
+
 Template.freesurferOnly.helpers({
     selector: function(){return get_filter("freesurfer")},
-    metrics: function(){
-        //Object.keys()
+    metric: function(){
+        return get_metrics("freesurfer")
+    },
+    currentMetric: function(){
+        return Session.get("current_freesurfer")
     }
     })

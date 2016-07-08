@@ -37,17 +37,6 @@ TabularTables.FS =  new Tabular.Table({
               ]
 })
 
-throwError = function(error, reason, details) {
-  var meteorError = new Meteor.Error(error, reason, details);
-
-  if (Meteor.isClient) {
-    // this error is never used
-    // on the client, the return value of a stub is ignored
-    return meteorError;
-  } else if (Meteor.isServer) {
-    throw meteorError;
-  }
-};
 
 if (Meteor.isServer) {
   // This code only runs on the server
@@ -116,7 +105,7 @@ Meteor.methods({
               no_null[metric_name] = {$ne: null}
           }
           
-          console.log("in the server, the filter is", no_null)
+          //console.log("in the server, the filter is", no_null)
           
           var minval = Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric]
           var maxval = Subjects.find(no_null, {sort: [[metric_name, "descending"]], limit: 1}).fetch()[0]["metrics"][metric]
@@ -163,8 +152,32 @@ Meteor.methods({
     },
     
     updateQC: function(qc, form_data){
-        console.log(form_data)
+        //console.log(form_data)
         Subjects.update({entry_type: qc.entry_type, name:qc.name}, {$set: form_data})
+    },
+    
+    get_metric_names: function(entry_type){
+        
+        if (Meteor.isServer){
+            no_null= {metrics: {$ne: {}}, "entry_type": entry_type}
+            var dude = Subjects.findOne(no_null)
+            //console.log("dude is", dude)
+            return Object.keys(dude["metrics"])
+        }
+        
+    },
+    
+    save_query: function(name, gSelector){
+        var topush = {"name": name, "selector": gSelector}
+        Meteor.users.update(this.userId, {$push: {queries: topush}})
+    },
+    
+    removeQuery: function(query, name){
+
+        console.log("query is", query, name)
+        var topull = {"name": name, "selector": query}
+        Meteor.users.update(this.userId, {$pull: {queries: topull}})
+        
     }
     
   });

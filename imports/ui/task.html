@@ -34,14 +34,14 @@
   <h1>Freesurfer</h1></div>
  <br>
   <br>
-    Selected Metric: {{selectedMetric}}
+    Selected Metric: {{currentMetric}}
   <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
       
         <svg id="d3vis"></svg>
 
   </div>
 
-    <select id="metric-select" class="form-control" data-intro="Change the freesurfer metric here">
+    <select id="metric-select-freesurfer" class="form-control" data-intro="Change the freesurfer metric here">
     <option disabled="disabled" selected="selected" >Please Select</option>
     {{#each metric}}
         <option value="{{this}}">{{this}}</option>

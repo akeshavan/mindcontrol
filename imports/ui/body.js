@@ -30,15 +30,21 @@ var update_subjects = function(filter, list_of_remaining){
         
 }
 
+var run_recursive_update = function(gSelector){
+    var all_keys = Object.keys(gSelector)
+    var filter = get_filter(all_keys[0])
+    update_subjects(filter, all_keys)
+}
+
 Template.body.events({
     "click .reset": function(){
         Session.set("globalSelector", {})
         Session.set("subjectSelector", {"subject_id": {$in: []}})
     },
-    "click .download": function(){
+    /*"click .download": function(){
         MyAppExporter.exportFS()
     },
-    "click .tutorial": function(){
+    //"click .tutorial": function(){
         var intro = introJs()
         intro.setOptions({showProgress: false})
         intro.onchange(function(targetElement) {
@@ -51,13 +57,15 @@ Template.body.events({
             }
         });
         intro.start();
-    },
+    },*/
     "click .save": function(){
         var gSelector = Session.get("globalSelector")
         var name = $("#qname").serializeArray()[0]["value"]
         console.log("query name is", name)
+        if (name != ""){
+            Meteor.call("save_query", name, JSON.stringify(gSelector))
+        }
         
-        Meteor.call("save_query", name, JSON.stringify(gSelector))
     },
     
     "click .remove": function(e){
@@ -89,13 +97,16 @@ Template.body.events({
     },
     
     "click .removequery": function(e){
-        console.log(this.user, this.query, this.name)
-        Meteor.call("removeQuery", this.user, this.query, this.name, this._id)
+        console.log("in removequert, this is",this)
+        Meteor.call("removeQuery", this.selector, this.name)
     },
     
     "click .query": function(e){
-        console.log(this.user, this.query, this.name)
-        Session.set("globalSelector", JSON.parse(this.query))
+        //console.log(this.selector, this.name)
+        Session.set("globalSelector", JSON.parse(this.selector))
+        var gSelector = JSON.parse(this.selector)
+        run_recursive_update(gSelector)
+        
         
     },
     
@@ -199,11 +210,13 @@ Template.body.helpers({
     },
         
     savedQueries: function(){
-        var user = Meteor.users.findOne(Meteor.userId(), {fields: {username:1}})
-        //console.log("user", user)
+        var user = Meteor.users.findOne(Meteor.userId(), {fields: {username:1, queries:1}})
+        console.log("user", user)
         //var userentries = User.find({user:user.username})
         //console.log("userentries", userentries)
-        //return userentries
+        return user.queries
     }
+    
+    
     
 })
