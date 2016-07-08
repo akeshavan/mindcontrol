@@ -69,6 +69,15 @@ if (Meteor.isServer) {
       console.log("publishing", entry_type, name)
     return Subjects.find({"entry_type": entry_type, "name": name});
   });
+  
+  Meteor.publish('get_next_id', function nextName(filter, name) {
+      //console.log("publishing next id from", entry_type, name)
+      filter["name"] = {$nin: [name]}
+      //var cursor_fetch = Subjects.find(filter, {fields: {name: 1, _id: 0}})
+      return Subjects.find(filter, {fields: {name:1}}).limit(50)
+      
+  });
+  
 }
 
 Meteor.methods({
@@ -90,6 +99,8 @@ Meteor.methods({
           var no_null = filter
           no_null["entry_type"] = entry_type
           var metric_name = "metrics."+metric
+          //no_null["metrics"] = {}
+          //no_null["metrics"]["$ne"] = null
           
           if (Object.keys(no_null).indexOf(metric_name) >=0 ){
               no_null[metric_name]["$ne"] = null
@@ -98,7 +109,7 @@ Meteor.methods({
               no_null[metric_name] = {$ne: null}
           }
           
-          //console.log("in the server, the filter is", no_null)
+          console.log("in the server, the filter is", no_null)
           
           var minval = Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric]
           var maxval = Subjects.find(no_null, {sort: [[metric_name, "descending"]], limit: 1}).fetch()[0]["metrics"][metric]
@@ -106,21 +117,25 @@ Meteor.methods({
           
           
           var bin_size = (maxval -minval)/(bins+1)
-          //console.log(bin_size)
+          console.log("the bin size is", bin_size)
           
           if (bin_size){
-                        var foo = Subjects.aggregate([{$match: no_null}, {$project: {lowerBound: {$subtract: ["$metrics."+metric    , {$mod: ["$metrics."+metric, bin_size]}]}}}, {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
-          var output = {}
-          output["histogram"] = _.sortBy(foo, "_id")
-          output["minval"] = minval*0.95
-          output["maxval"] = maxval*1.05
-          return output
+                var foo = Subjects.aggregate([{$match: no_null}, 
+                    {$project: {lowerBound: {$subtract: ["$metrics."+metric, 
+                        {$mod: ["$metrics."+metric, bin_size]}]}}}, 
+                    {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
+                var output = {}
+                output["histogram"] = _.sortBy(foo, "_id")
+                output["minval"] = minval*0.95
+                output["maxval"] = maxval*1.05
+                return output
           }
           else{
-              var output= {}
-              output["histogram"] = []
-              output["minval"] = 0
-              output["maxval"] = 0
+                var output= {}
+                output["histogram"] = []
+                output["minval"] = 0
+                output["maxval"] = 0
+                return output
           }}
           //{entry_type: "freesurfer"}
 
@@ -129,12 +144,22 @@ Meteor.methods({
       },
     
     get_subject_ids_from_filter: function(filter){
-        var subids = []
-        //console.log("the filter in this method is", filter)
-        var foo = Subjects.find(filter,{subject_id:1, _id:0}).forEach(function(val){subids.push(val.subject_id)})
-        //console.log("the subjects to filter by are",foo)
-        return subids
+        if (Meteor.isServer){
+            var subids = []
+            var cursor = Subjects.find(filter,{subject_id:1, _id:0})
+            //console.log("the filter in this method is", filter, cursor.count())
+            var foo = cursor.forEach(function(val){subids.push(val.subject_id)})
+            //console.log("the number subjects to filter by are",filter, subids.length)
+            return subids
+        }
+        
+    },
+    
+    updateQC: function(qc, form_data){
+        console.log(form_data)
+        Subjects.update({entry_type: qc.entry_type, name:qc.name}, {$set: form_data})
     }
+    
   });
   
   

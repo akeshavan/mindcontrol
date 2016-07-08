@@ -1,11 +1,28 @@
 import "./qc.html";
 import "./colormaps.js"
 import {Subjects} from "../api/tasks.js"
+import "./task.js"
 
 Template.qc_modal.onCreated(function(){
     console.log("qc modals current data is", this.data)
     Session.set("currentQC", null)
 })
+
+/*var all_names_to_qc = function(){
+    var qc = Session.get("currentQC")
+    if (qc){
+        var filter = get_filter(qc.entry_type)
+        //console.log("filter is in next file", filter)
+        Meteor.subscribe("get_next_id", filter, qc.name)
+        filter["name"] = {$nin: [qc.name]}
+        console.log("in nextFile", filter, "result", Subjects.findOne(filter))
+        var to_return = Subjects.find(filter,{fields: {name:1}, sort: {name:1}}).fetch()//.forEach(function(x){return x.name})  
+        return to_return    
+    }
+    else {
+        return []
+        }
+}*/
 
 Template.qc_modal.helpers({
     
@@ -23,7 +40,17 @@ Template.qc_modal.helpers({
         }
         
         
-    }
+    },
+    
+    /*files_to_qc: function(){
+        return all_names_to_qc()
+    },//end function
+    
+    nextFile: function(){
+        var to_qc = all_names_to_qc()
+        console.log("TO QC IS", to_qc)
+        return to_qc[0]
+        }*/
     
 })
 
@@ -44,8 +71,18 @@ Template.view_images.events({
         }
         console.log(form_data)
         lp = Session.get("loggedPoints")
-        console.log("loggedPoints are", lp)
-        Meteor.call("updateQC_fs", this.mse, form_data, this.name, lp)
+        console.log("this data", this.data)
+        
+        var qc = Session.get("currentQC")
+        var update = {}
+        update["quality_check"] = form_data
+        update["checkedBy"] = Meteor.user().username
+        update["checkedAt"] = new Date()
+        
+        Meteor.call("updateQC", qc, update, function(error, result){
+            $("#closemodal").click()
+        })
+        
         //console.log("called updateQC method!")
     }
 
@@ -99,11 +136,14 @@ Template.view_images.rendered = function(){
         var qc = Session.get("currentQC")
         console.log("in autorun, qc is", qc)
         if (qc){
+        if (Object.keys(qc).indexOf("entry_type")>=0){
             var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1})
+            if (output){
+                addPapaya(output)
+            }
             
-            addPapaya(output)
             
-        }
+        }}
         
     });//end of autorun
 

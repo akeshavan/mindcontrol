@@ -115,6 +115,11 @@ Template.body.events({
         if (Object.keys(gSelector).indexOf(entry_type) < 0){
             gSelector[entry_type] = {}
         }
+        
+        if (value == "undefined"){
+            value = null
+        }
+        
         gSelector[entry_type][field] = value
 
         //console.log("insert subject selector in this filter function", gSelector)
@@ -122,9 +127,10 @@ Template.body.events({
         Session.set("globalSelector", gSelector)
         //THIS IS HACKY
         var filter = get_filter(entry_type)
-        if (field=="metrics.DCM_StudyDate" || field=="quality_check.QC"){
+        if (field=="metrics.DCM_StudyDate"){
             value = parseInt(value)
         }
+        
         filter[field] = value
         //console.log("filter in .filter is", filter)
 
@@ -151,6 +157,7 @@ Template.body.events({
         console.log("you want to view QC for", entry_type, field)
         
         Session.set("currentQC", {"entry_type": entry_type, "name": field})
+        
         //$("#modal-fullscreen").modal("show")
           
     }
@@ -170,21 +177,24 @@ Template.body.helpers({
         var gSelector = Session.get("globalSelector")
         //console.log("current query is", gSelector)
         //var keys = Object.keys(gSelector)
-        var keys = Object.keys(gSelector)
-        var outlist = []
-        for (i=0;i<keys.length;i++){
-            
-            var subkeys = Object.keys(gSelector[keys[i]])
-            for (j=0;j<subkeys.length; j++){
-                tmp = {}    
-                var keyname = keys[i] + "+" + subkeys[j]
-                tmp["mapper"] = keyname
-                tmp["name"] = subkeys[j]
-                outlist.push(tmp)
+        if (gSelector){
+            var keys = Object.keys(gSelector)
+            var outlist = []
+            for (i=0;i<keys.length;i++){
+                
+                var subkeys = Object.keys(gSelector[keys[i]])
+                for (j=0;j<subkeys.length; j++){
+                    tmp = {}    
+                    var keyname = keys[i] + "+" + subkeys[j]
+                    tmp["mapper"] = keyname
+                    tmp["name"] = subkeys[j]
+                    outlist.push(tmp)
+                }
+                
             }
-            
+            return outlist
         }
-        return outlist
+        
 
     },
         
