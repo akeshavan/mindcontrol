@@ -57,6 +57,7 @@ Template.qc_modal.helpers({
 Template.view_images.helpers({
     
     user: function(){
+        Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
     }
     

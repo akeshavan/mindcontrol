@@ -81,6 +81,10 @@ if (Meteor.isServer) {
       
   });
   
+  Meteor.publish('userList', function (){ 
+  return Meteor.users.find({});
+});
+  
 }
 
 Meteor.methods({
