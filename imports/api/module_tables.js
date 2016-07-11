@@ -2,10 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-export const Tasks = new Mongo.Collection('tasks');
+//export const Tasks = new Mongo.Collection('tasks');
 export const Subjects = new Mongo.Collection('subjects');
 
-import "./tables.js"
+import "./table_utils.js"
+import "./publications.js"
+import "./methods.js"
 
 TabularTables = {}
 
@@ -37,6 +39,7 @@ TabularTables.FS =  new Tabular.Table({
               ]
 })
 
+/*
 
 if (Meteor.isServer) {
   // This code only runs on the server
@@ -182,5 +185,5 @@ Meteor.methods({
     
   });
   
-  
+  */
 

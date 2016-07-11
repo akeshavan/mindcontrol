@@ -3,9 +3,11 @@ import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
 //import { Tasks } from '../api/tasks.js';
-import { Subjects } from '../api/tasks.js';
+import { Subjects } from '../api/module_tables.js';
 
-import './task.js';
+import './module_templates.js';
+import '../api/publications.js';
+import '../api/methods.js';
 import './body.html';
 import "./qc.js";
 import "./qc.html";

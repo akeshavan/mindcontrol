@@ -1,4 +1,4 @@
-import "./task.js"
+import "./module_templates.js"
 
 do_d3_date_histogram = function (result, dom_id) {
     // Defer to make sure we manipulate DOM

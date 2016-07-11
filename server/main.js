@@ -1,2 +1,2 @@
-import '../imports/api/tasks.js';
-import '../imports/api/tables.js';
+import '../imports/api/module_tables.js';
+import '../imports/api/table_utils.js';

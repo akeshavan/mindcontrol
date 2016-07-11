@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
-import './task.html';
+import './module_templates.html';
 import "./d3_plots.js"
 
 
@@ -37,33 +37,14 @@ get_filter = function(entry_type){
     
 }
 
-
-
-Template.exams.rendered = function() {
-      
-      if (!this.rendered){
-        this.rendered = true
-         }
-    
-    
-      this.autorun(function() {   
-          Meteor.call("getDateHist", function(error, result){
-              do_d3_date_histogram(result, "#d3vis_date")
-              })
-
-      })
-  }
-
-Template.exams.helpers({selector: function(){return get_filter("demographic")}})
-
-var get_metrics = function(entry_type){
+get_metrics = function(entry_type){
     Meteor.call("get_metric_names", entry_type, function(error, result){
             Session.set(entry_type+"_metrics", result)
         })
         return Session.get(entry_type+"_metrics")
 }
 
-var render_histogram = function(entry_type){
+render_histogram = function(entry_type){
                 var metric = Session.get("current_"+entry_type)//"Amygdala" 
                 if (metric == null){
                     var all_metrics = Session.get(entry_type+"_metrics")
@@ -94,6 +75,23 @@ var render_histogram = function(entry_type){
                 }
 }
 
+Template.exams.rendered = function() {
+      
+      if (!this.rendered){
+        this.rendered = true
+         }
+    
+    
+      this.autorun(function() {   
+          Meteor.call("getDateHist", function(error, result){
+              do_d3_date_histogram(result, "#d3vis_date")
+              })
+
+      })
+  }
+
+Template.exams.helpers({selector: function(){return get_filter("demographic")}})
+
 Template.freesurferOnly.rendered = function(){
 
         if (!this.rendered){
@@ -114,8 +112,6 @@ Template.freesurferOnly.events({
         Session.set("current_freesurfer", metric)
     }
 })
-
-
 
 Template.freesurferOnly.helpers({
     selector: function(){return get_filter("freesurfer")},

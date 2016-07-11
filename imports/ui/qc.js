@@ -1,7 +1,9 @@
 import "./qc.html";
 import "./colormaps.js"
-import {Subjects} from "../api/tasks.js"
-import "./task.js"
+import {Subjects} from "../api/module_tables.js"
+import "../api/publications.js"
+import "../api/methods.js"
+import "./module_templates.js"
 
 var fill_canvas = function(type, points, viewer){
     
@@ -24,8 +26,8 @@ var logpoint = function(e, template, type){
         //viewer.mouseUpEvent = onMouseUp
         //viewer.mouseMoveEvent = onMouseDrag
         
-    fill_canvas("points", template.loggedPoints.get(), viewer)    
-    fill_canvas("contour", template.contour.get(), viewer)    
+    //fill_canvas("points", template.loggedPoints.get(), viewer)    
+    //fill_canvas("contour", template.contour.get(), viewer)    
         
         
     if(e.shiftKey){
@@ -104,31 +106,11 @@ var logpoint = function(e, template, type){
     
 }
 
-
-
-
-
-
 Template.qc_modal.onCreated(function(){
     //console.log("qc modals current data is", this.data)
     Session.set("currentQC", null)
 })
 
-/*var all_names_to_qc = function(){
-    var qc = Session.get("currentQC")
-    if (qc){
-        var filter = get_filter(qc.entry_type)
-        //console.log("filter is in next file", filter)
-        Meteor.subscribe("get_next_id", filter, qc.name)
-        filter["name"] = {$nin: [qc.name]}
-        console.log("in nextFile", filter, "result", Subjects.findOne(filter))
-        var to_return = Subjects.find(filter,{fields: {name:1}, sort: {name:1}}).fetch()//.forEach(function(x){return x.name})  
-        return to_return    
-    }
-    else {
-        return []
-        }
-}*/
 
 Template.qc_modal.helpers({
     
@@ -313,7 +295,7 @@ Template.view_images.events({
     passwordSignupFields: "USERNAME_ONLY"
   });*/
 
-var staticURL = "http://127.0.0.1:3002/" //"https://dl.dropboxusercontent.com/u/9020198/data/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
 
 
