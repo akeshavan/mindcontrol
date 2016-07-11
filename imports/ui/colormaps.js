@@ -8464,12 +8464,12 @@ myCustomColorTable.prototype.lookupBlue = function (screenVal, imageVal) {
     return 0}
 };
 
-draw_point = function(screenCoor, viewer){
+draw_point = function(screenCoor, viewer, color, size){
     var canvas = viewer.canvas
     var ctx = canvas.getContext('2d');
-    ctx.fillStyle = "rgb(255, 0, 0)";
-    ctx.fillRect(screenCoor.x, screenCoor.y, 5, 5);
-    console.log("filled?")
+    ctx.fillStyle = color;
+    ctx.fillRect(screenCoor.x, screenCoor.y, size, size);
+    //console.log("filled?")
 }
 
 
