@@ -1,72 +1,6 @@
-Template.view_image_freesurfer.events({
-
-"submit .new-qc": function(event){
-
-        event.preventDefault();
-        if (! Meteor.userId()) {
-          throw new Meteor.Error("not-authorized");
-        }
 
 
-        form_values = $("#fs_QC_form").serializeArray()
-        form_data = {}
-        for (i=0;i<form_values.length;i++){
-            form_data[form_values[i]["name"]] = form_values[i]["value"]
-        }
-        console.log(form_data)
-        lp = Session.get("loggedPoints")
-        console.log("loggedPoints are", lp)
-        Meteor.call("updateQC_fs", this.mse, form_data, this.name, lp)
-        //console.log("called updateQC method!")
-    }
-
-})
-
-  Accounts.ui.config({
-    passwordSignupFields: "USERNAME_ONLY"
-  });
-
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-  
-find_item_of_list = function(full_list,key,value){
-
-    //console.log(key)
-    //console.log(value)
-    for (i=0;i<full_list.length;i++){
-        if (full_list[i][key] == value){
-            //console.log("FOUND SOMETHING")
-            //console.log(i)
-            //console.log(full_list[i])
-            return full_list[i]
-        }
-
-            //console.log(i,full_list[i]["name"],value)
-    }
-    console.log("didn't find anything!!")
-
-}
-
-
-Template.view_image_freesurfer.helpers({
-        selector: function(){
-        return Session.get("globalSelector")["Exams"]
-    },
-        fs_selector: function(){
-        return getFS()
-    },
-    user: function(){
-    	return Meteor.users.find({}).fetch()
-    },
-    
-        doc: function(){
-            var Rparams = Router.current().params
-            var db = Subjects.findOne({subject_id:Rparams.mse})
-            var doc = find_item_of_list(db["freesurfer_t1s"],"name", Rparams.imageFilename)
-            return doc
-        }
-})
-
-var colormap = {
+colormap = {
 			alpha : 0.5,
 			colorCoding : {
 	0 : {
@@ -8486,155 +8420,63 @@ var colormap = {
 }
 	};
 
-
-
-var do_xtk = function(mse,name){
-	var xtkfile_lh = staticURL+mse + "/masks/" + name+"/recon/surf/lh.inflated"
-	var xtkfile_rh = staticURL+mse + "/masks/" + name+"/recon/surf/rh.inflated"
-    console.log(xtkfile_lh, xtkfile_rh)
-	var r1 = new X.renderer3D();
-    // .. attach the renderer to a <div> container using its id
-    r1.container = 'r1';
-    r1.init();
-    r1.camera.position = [300, 0, 250];
-    r1.camera.up = [0, 0, 1];
-    mesh = new X.mesh();
-    // change the color to grey
-    mesh.color = [0.5, 0.5, 0.5];
-    // and attach a freesurfer mesh
-    mesh.file = xtkfile_lh//'http://x.babymri.org/?lefthemisphere.smoothwm' //'http://x.babymri.org/?avf.vtk'
-    //'http://x.babymri.org/?lefthemisphere.smoothwm';
-
-    // load curvature values from a .crv file
-    // it would also be possible to create an X.scalars object and
-    // configure an array using 'X.scalars.array = arr;' to be independent from a
-    // file format
-    // in this case we choose the 'C' curvature as the default
-    //mesh.scalars.file = 'http://x.babymri.org/?lh.smoothwm.C.crv';
-    // we want to map the scalars linear between blue and white
-    //mesh.scalars.minColor = [0, 0, 1];
-    //mesh.scalars.maxColor = [1, 1, 1];
-
-    // .. add the mesh
-    r1.add(mesh);
-
-    // .. and start the loading/rendering
-    r1.render();
-
-    var r2 = new X.renderer3D();
-    // .. attach the renderer to a <div> container using its id
-    r2.container = 'r2';
-    r2.init();
-    r2.camera.position = [100, 300, 250];
-    //r2.camera.up = [0, 1, 0];
-    mesh = new X.mesh();
-    // change the color to grey
-    mesh.color = [0.5, 0.5, 0.5];
-    // and attach a freesurfer mesh
-    mesh.file = xtkfile_rh//'http://x.babymri.org/?lefthemisphere.smoothwm' //'http://x.babymri.org/?avf.vtk'
-    //'http://x.babymri.org/?lefthemisphere.smoothwm';
-
-    // load curvature values from a .crv file
-    // it would also be possible to create an X.scalars object and
-    // configure an array using 'X.scalars.array = arr;' to be independent from a
-    // file format
-    // in this case we choose the 'C' curvature as the default
-    //mesh.scalars.file = 'http://x.babymri.org/?lh.smoothwm.C.crv';
-    // we want to map the scalars linear between blue and white
-    //mesh.scalars.minColor = [0, 0, 1];
-    //mesh.scalars.maxColor = [1, 1, 1];
-
-    // .. add the mesh
-    r2.add(mesh);
-
-    // .. and start the loading/rendering
-    r2.render();
-}
-	//params["expandable"] = true;
-
-Template.view_image_freesurfer.rendered = function() {
-    if(!this._rendered) {
-      this._rendered = true;
-      //console.log('Template onLoad');
+myCustomColorTable = function() { };
+validKeys = Object.keys(colormap["colorCoding"])
+                
+myCustomColorTable.prototype.lookupRed = function (screenVal, imageVal) {
+    if (imageVal){
+    	//console.log(imageVal)
+    	if (validKeys.indexOf(imageVal.toString()) >= 0){
+    	return colormap["colorCoding"][imageVal].r}
+    	else{return 0}
+    	}
+    else{
+    	//console.log("no imageVal", screenVal, imageVal)
+    	return 0
     }
-    var params = {}
-    var Rparams = Router.current().params
-    console.log("rparams are", Rparams)
-        
-    this.autorun(function(){
-    
-    var db = Subjects.findOne({subject_id:Rparams.mse})
+};
 
-    console.log("db is", db)
+myCustomColorTable.prototype.lookupGreen = function (screenVal, imageVal) {
+	if (imageVal){
+    	if (validKeys.indexOf(imageVal.toString()) >= 0){
+    		return colormap["colorCoding"][imageVal].g
+    		}
+    	else{
+    		return 0
+    		}
+    	}
+    else{
+    	return 0
+    }
+};
 
-	if (db){
+myCustomColorTable.prototype.lookupBlue = function (screenVal, imageVal) {
+	if (imageVal){
 
-    	var doc = find_item_of_list(db["freesurfer_t1s"],"name", Rparams.imageFilename)
-        console.log("current Parameters are",doc)
-        params["images"] = []
-        
-        for (i=0;i<doc.check_masks.length;i++){ //skipped the brainmask
-            params["images"].push(staticURL+doc["check_masks"][i]+"?dl=0")
-        }
-        var sLabelledFile = doc.check_masks[i-1]
-        console.log(sLabelledFile)
-        var oPartsLabelled = sLabelledFile.split("/");
-        var sLastPart = oPartsLabelled[oPartsLabelled.length-1];
-        console.log(sLastPart)
-        console.log("cmap", colormap)
-        
-        var myCustomColorTable = function() { };
-        var validKeys = Object.keys(colormap["colorCoding"])
-        
-        
+    	if (validKeys.indexOf(imageVal.toString()) >= 0){
+        	return colormap["colorCoding"][imageVal].b}
+    	else{
+        	//console.log(index)
+        	return 0
+        	}
+      }
+    else{
+    return 0}
+};
 
-        myCustomColorTable.prototype.lookupRed = function (screenVal, imageVal) {
-            if (imageVal){
-            	//console.log(imageVal)
-            	if (validKeys.indexOf(imageVal.toString()) >= 0){
-            	return colormap["colorCoding"][imageVal].r}
-            	else{return 0}
-            	}
-            else{
-            	console.log("no imageVal", screenVal, imageVal)
-            	return 0
-            }
-        };
-        
-        myCustomColorTable.prototype.lookupGreen = function (screenVal, imageVal) {
-        	if (imageVal){
-            	if (validKeys.indexOf(imageVal.toString()) >= 0){
-            		return colormap["colorCoding"][imageVal].g
-            		}
-            	else{
-            		return 0
-            		}
-            	}
-            else{
-            	return 0
-            }
-        };
-        
-        myCustomColorTable.prototype.lookupBlue = function (screenVal, imageVal) {
-        	if (imageVal){
+draw_point = function(screenCoor, viewer, color, size){
+    var canvas = viewer.canvas
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = color;
+    ctx.fillRect(screenCoor.x, screenCoor.y, size, size);
+    //console.log("filled?")
+}
 
-            	if (validKeys.indexOf(imageVal.toString()) >= 0){
-                	return colormap["colorCoding"][imageVal].b}
-            	else{
-                	//console.log(index)
-                	return 0
-                	}
-              }
 
-            else{
-            return 0}
-        };
-        
-        console.log("customCtab", myCustomColorTable)
-        console.log("maxKeys", _.max(validKeys))
-        
-        
-        var ctxManager = function() {
+
+
+
+var ctxManager = function() {
         	//TODO: get loggedPoints from doc
         	lp = doc.loggedPoints
         	if (!lp){
@@ -8648,6 +8490,8 @@ Template.view_image_freesurfer.rendered = function() {
          * Menu data (can contain submenus).
          * @type {{label: string, items: *[]}}
          */
+         
+         /*
         ctxManager.menudata = {"label": "Test",
             "items": [
                 {"label": "Log Point", "action": "Context-Log"},
@@ -8655,7 +8499,7 @@ Template.view_image_freesurfer.rendered = function() {
                 {"label": "Undo", "action": "Context-Undo"}
             ]
         };
-        
+        */
         /**
          * Returns menu options at image position.
          * @param x
@@ -8663,14 +8507,17 @@ Template.view_image_freesurfer.rendered = function() {
          * @param z
          * @returns {{label: string, items: *[]}|*}
          */
+         
+         /*
         ctxManager.prototype.getContextAtImagePosition = function(x, y, z) {
             return ctxManager.menudata;
         };
-        
+        */
         /**
          * Callback when menu option is selected.
          * @param action
          */
+         /*
         ctxManager.prototype.actionPerformed = function(action) {
             if (action === "Log") {
                 var currentCoor = papayaContainers[0].viewer.cursorPosition;
@@ -8692,11 +8539,13 @@ Template.view_image_freesurfer.rendered = function() {
         
             papayaContainers[0].viewer.drawViewer();
         };
-        
+        */
         /**
          * This provides an opportunity for the context manager to draw to the viewer canvas.
          * @param ctx
          */
+         
+         /*
         ctxManager.prototype.drawToViewer = function(ctx) {
             var ctr;
             var slice = papayaContainers[0].viewer.mainImage;
@@ -8710,24 +8559,12 @@ Template.view_image_freesurfer.rendered = function() {
                 }// end axial
             }
         };
-        
+        */
         /**
          * Called when image position changes.
          */
+         
+         /*
         ctxManager.prototype.clearContext = function() {
             // do nothing
-        };
-        //params["contextManager"] = new ctxManager();
-        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
-        params["expandable"] = true
-        //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
-        console.log("params", params)
-        papaya.Container.addViewer("viewer", params, function(){console.log(params)})
-        do_xtk(db.subject_id, doc.name)
-
-	}
-	        
-    })
-
-}
-  
+        };*/
