@@ -295,7 +295,7 @@ Template.view_images.events({
     passwordSignupFields: "USERNAME_ONLY"
   });*/
 
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+var staticURL = "http://localhost:3002/" //"https://dl.dropboxusercontent.com/u/9020198/data/"
 
 
 
