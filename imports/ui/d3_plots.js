@@ -265,7 +265,7 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
                 filter[newkey] = {$gte: extent0[0], $lte: extent0[1]}
                 
                 Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
-                    console.log("result from get subject ids from filter is", result)
+                    //console.log("result from get subject ids from filter is", result)
                     var ss = Session.get("subjectSelector")
                     ss["subject_id"]["$in"] = result
                     Session.set("subjectSelector", ss)

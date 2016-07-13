@@ -216,7 +216,13 @@ Template.body.helpers({
         console.log("user", user)
         //var userentries = User.find({user:user.username})
         //console.log("userentries", userentries)
-        return user.queries
+        if (user != null){
+            if (Object.keys(user).indexOf("queries") >=0){
+                return user.queries
+            }
+        }
+
+        return []
     }
     
     

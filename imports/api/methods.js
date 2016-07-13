@@ -83,7 +83,7 @@ Meteor.methods({
     get_metric_names: function(entry_type){
         
         if (Meteor.isServer){
-            no_null= {metrics: {$ne: {}}, "entry_type": entry_type}
+            no_null= {metrics: {$ne: null}, "entry_type": entry_type}
             var dude = Subjects.findOne(no_null)
             if (dude){
                 return Object.keys(dude["metrics"])
