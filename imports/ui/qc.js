@@ -5,8 +5,8 @@ import "../api/publications.js"
 import "../api/methods.js"
 import "./module_templates.js"
 
-var staticURL = "http://127.0.0.1:4002/" 
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+//var staticURL = "http://127.0.0.1:4002/" 
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 
 var fill_canvas = function(type, points, viewer){
     
