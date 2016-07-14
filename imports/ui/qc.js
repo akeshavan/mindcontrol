@@ -5,6 +5,9 @@ import "../api/publications.js"
 import "../api/methods.js"
 import "./module_templates.js"
 
+var staticURL = "http://127.0.0.1:4002/" 
+//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+
 var fill_canvas = function(type, points, viewer){
     
     if (type == "points"){
@@ -106,48 +109,44 @@ var logpoint = function(e, template, type){
     
 }
 
-Template.qc_modal.onCreated(function(){
-    //console.log("qc modals current data is", this.data)
-    Session.set("currentQC", null)
-})
-
-
-Template.qc_modal.helpers({
-    
-    modalData : function(){
-        
-        var qc = Session.get("currentQC")
-        if (qc){
-            Meteor.subscribe('get_qc_doc', qc.entry_type, qc.name)
-            var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name})
-            //console.log(output)
-            return output
-        }
-        else{
-            return {name: "Empty Modal"}
+var addPapaya = function(data){
+    //if (papayaContainers.length == 0){
+        if (papayaContainers.length != 0){
+            console.log("papayacontainers is", papayaContainers.pop())
         }
         
+    var params = {}
+    params["images"] = []
+    //console.log("this in the view images rendered template", data)
         
-    },
-    
-    /*files_to_qc: function(){
-        return all_names_to_qc()
-    },//end function
-    
-    nextFile: function(){
-        var to_qc = all_names_to_qc()
-        console.log("TO QC IS", to_qc)
-        return to_qc[0]
-        }*/
-    
-})
-
-Template.view_images.onCreated(function(){
-    this.loggedPoints = new ReactiveVar([])
-    this.contours = new ReactiveVar([])
-    this.logMode = new ReactiveVar("point")
-})
-
+    for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
+        params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
+    }
+        var sLabelledFile = data.check_masks[i-1]
+        //console.log(sLabelledFile)
+        var oPartsLabelled = sLabelledFile.split("/");
+        var sLastPart = oPartsLabelled[oPartsLabelled.length-1];
+        //console.log(sLastPart)
+        //console.log("cmap", colormap)
+        //console.log("customCtab", myCustomColorTable)
+        //console.log("maxKeys", _.max(validKeys))
+        
+        
+        //params["contextManager"] = new ctxManager();
+        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
+        params["showControlBar"] = true
+        params["expandable"] = true
+        //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
+        //console.log("params", params)
+        //$("#modal-fullscreen").show()
+        papaya.Container.addViewer("viewer", params, function(){
+                                        //.modal("show"); 
+                                        //console.log(params)
+                                        })  
+                                        
+        $("#viewer").on("mousedrag", function(e){console.log("mousedrag")})       
+        //} //endif                           
+    }
 
 var template_decorator = function(template_instance_value, lp, idx){
     var update_point_note = function(res, val){
@@ -158,6 +157,18 @@ var template_decorator = function(template_instance_value, lp, idx){
         }
     return update_point_note
 }
+
+var val_mapper = {"-1": "Not Checked", "0": "Fail", "1": "Pass", "2": "Needs Edits", "3": "Edited"}
+
+var class_mapper = {"-1": "warning", "0": "danger",
+                    "1": "success", "2": "primary", "3": "info"}
+                    
+
+Template.view_images.onCreated(function(){
+    this.loggedPoints = new ReactiveVar([])
+    this.contours = new ReactiveVar([])
+    this.logMode = new ReactiveVar("point")
+})
 
 Template.view_images.helpers({
     
@@ -194,7 +205,43 @@ Template.view_images.helpers({
     
     currentMode: function(){
         return Template.instance().logMode.get()
+    },
+
+    currentQC: function(){
+        return Session.get("currentQC")
+    },
+    
+    doc: function(){
+        var qc = Session.get("currentQC")
+        var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name})
+        if (output){
+            if (output.quality_check){
+            output.quality_check.QC_name = val_mapper[output.quality_check.QC]
+            output.quality_check.QC_color = class_mapper[output.quality_check.QC]
+            }}
+        
+        //console.log("output is", output)
+        return output
+    },
+    modeCSS: function(){
+        var logMode = Template.instance().logMode.get()
+        //console.log("css, log mode is", logMode)
+        var output = {}
+        if (logMode == "point"){
+            //output["isPoint"] = "in"
+            output["pointColor"] = "warning"
+            //output["isContour"] = ""
+            output["contourColor"] = "default"
+        }
+        else{
+            //output["isContour"] = "in"
+            //output["isPoint"] = ""
+            output["contourColor"] = "warning"
+            output["pointColor"] = "default"
+        }
+        return output
     }
+
     
 })
 
@@ -239,14 +286,16 @@ Template.view_images.events({
  },
  
  "click .swapmode": function(event, template){
+     var element = event.toElement.className.split(" ")//.slice(1).split("-")
+    var idx = element.indexOf("swapmode") + 1
+    //console.log("element is", element, "idx of filter is", idx)
+    element = element[idx]//.join(" ").split("+")
+    //console.log("element is", element)
+    //console.log("element is", element)     
+
      var currMode = template.logMode.get()
-     if (currMode == "point"){
-         currMode = "contour"
-     }
-     else{
-         currMode = "point"
-     }
-     template.logMode.set(currMode)
+
+     template.logMode.set(element)
      
  },
  
@@ -287,56 +336,14 @@ Template.view_images.events({
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.contours.set(points)
+ },
+
+ "click #menu-toggle": function(e, template){
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
  }
 
 })
-
-/*Accounts.ui.config({
-    passwordSignupFields: "USERNAME_ONLY"
-  });*/
-
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-
-
-
-var addPapaya = function(data){
-    //if (papayaContainers.length == 0){
-        if (papayaContainers.length != 0){
-            console.log("papayacontainers is", papayaContainers.pop())
-        }
-        
-    var params = {}
-    params["images"] = []
-    //console.log("this in the view images rendered template", data)
-        
-    for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
-        params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
-    }
-        var sLabelledFile = data.check_masks[i-1]
-        //console.log(sLabelledFile)
-        var oPartsLabelled = sLabelledFile.split("/");
-        var sLastPart = oPartsLabelled[oPartsLabelled.length-1];
-        //console.log(sLastPart)
-        //console.log("cmap", colormap)
-        //console.log("customCtab", myCustomColorTable)
-        //console.log("maxKeys", _.max(validKeys))
-        
-        
-        //params["contextManager"] = new ctxManager();
-        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
-        params["showControlBar"] = true
-        params["expandable"] = true
-        //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
-        //console.log("params", params)
-        //$("#modal-fullscreen").show()
-        papaya.Container.addViewer("viewer", params, function(){
-                                        //.modal("show"); 
-                                        //console.log(params)
-                                        })  
-                                        
-        $("#viewer").on("mousedrag", function(e){console.log("mousedrag")})       
-        //} //endif                           
-    }
 
 Template.view_images.rendered = function(){
     

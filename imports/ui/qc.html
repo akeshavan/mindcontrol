@@ -10,11 +10,7 @@
         {{> Template.dynamic template="view_images" data=modalData}}
       </div>
       <div class="modal-footer">
-          {{#with nextFile}}
-    
-    {{this.name}}
-    
-    {{/with}}
+
         <button type="button" class="btn btn-default" data-dismiss="modal" id="closemodal">Close</button>
       </div>
     </div>
@@ -23,88 +19,155 @@
 </template>
 
 <template name="view_images">
-    
-<div id="viewer" width="500px"></div>
-<br>
-
-  <!--<button class="btn btn-default pial" data-toggle="collapse"
-          data-target="#collapsePial" aria-expanded="false"
-          aria-controls="collapsePial">Edits</button>
-  <br><br>
-  <div class="collapse" id="collapsePial">
-      <kbd>
-
-        pbr-recon-edits {{doc.name}}
-
-      </kbd>
 
 
 
-  </div>-->
+    <div id="wrapper">
 
-
-
-    <div class="row">
-
-    <div class="col-md-6">
-
-<div class="panel panel-default">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                     <strong>{{currentQC.name}}</strong> <!--<button class="btn btn-default swapmode"> {{currentMode}} </button>-->
+                </li>
+                <li>
+                     <div class="panel panel-{{doc.quality_check.QC_color}}" >
   <div class="panel-heading">
-    <h3 class="panel-title">Quality Check Status</h3>
+    <h3 class="panel-title" data-toggle="collapse" data-target="#collapseQC">Quality Check Status</h3>
   </div>
+  <div id="collapseQC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
-    <strong>QC status:</strong> {{quality_check.QC}}
+    <strong>QC status:</strong> {{doc.quality_check.QC_name}}
     <br>
-    <strong>Last Checked At:</strong> {{checkedAt}}
+    <strong>Last Checked At:</strong> {{doc.checkedAt}}
     <br>
-    <strong>Last Checked By:</strong> {{checkedBy}}
+    <strong>Last Checked By:</strong> {{doc.checkedBy}}
     <br>
-    <strong>Notes:</strong> {{quality_check.notes_QC}}
+    <strong>Notes:</strong> {{doc.quality_check.notes_QC}}
     <br>
 
+  </div>
   </div>
 </div>
+                </li>
 
-  <div class="panel panel-default">
+                <li>
+                     <div class="panel panel-{{modeCSS.pointColor}}">
   <div class="panel-heading">
-    <h3 class="panel-title">Edit Quality Check</h3>
-  </div>
-  <div class="panel-body">
+    <h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3> 
     
+      
+     
+  </div>
+  <div id="collapseLP" class="panel-collapse collapse in" role="tabpanel">
+  <div class="panel-body">
+    <table class="table table-hover table-striped">
+          <tr>
+            <th>Coordinate</th>
+            <th>Annotation</th>
+            <th>Logged By</th>
+            <th></th>
+          </tr>
+        {{#each loggedPoints}}
+          <tr>
+            <td><a class="goto_coor"> {{this.world_coor.x}}, {{this.world_coor.y}}, {{this.world_coor.z}} </a> </td>
+            <td>{{> xEditable type="text" success=onPointNote placement="right" value=this.note}}</td>
+            <td>{{this.checkedBy}}</td>
+            <td>
+  <a class="remove-point"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+</td>
+          </tr>
+        {{/each}}
+        </table>
+  </div>
+  
+   <div class="panel-footer">Shift+click to log points. Annotate points in the table above.</div>
+   </div>
+</div>
+                </li>
+                <li>
+                     <div class="panel panel-{{modeCSS.contourColor}}">
+  <div class="panel-heading">
+    <h3 class="panel-title swapmode contour" data-toggle="collapse" data-target="#collapseC">Logged Contours</h3>
+  </div>
+  <div id="collapseC" class="panel-collapse collapse" role="tabpanel">
+  <div class="panel-body">
+    <table class="table table-hover table-striped">
+          <tr>
+            <th>Coordinate</th>
+            <th>Annotation</th>
+            <th>Logged By</th>
+            <th></th>
+          </tr>
+        {{#each loggedContours}}
+          <tr>
+            <td><a class="goto_cont"> {{this.name}} </a> </td>
+            <td>{{> xEditable type="text" success=onContourNote placement="right" value=this.note}}</td>
+            <td>{{this.checkedBy}}</td>
+            <td>
+  <a class="remove-contour"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+</td>
+          </tr>
+        {{/each}}
+        </table>
+  </div>
+   <div class="panel-footer">Shift+drag to log contours. Annotate contours in the table above.</div>
+  </div>
+</div>
+                </li>
+                
+                <li>
+                     <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title" data-target="#collapseEdit" data-toggle="collapse">Save Changes</h3>
+  </div>
+  <div id="collapseEdit" class="panel-collapse collapse in" role="tabpanel">
+    <div class="panel-body">
+
 
   <form id="QC_form" class="new-qc">
 
     <div class = "form-group">
         <div class="input-group">
-      
+
+<table class="table table-hover table-striped">
+          <tr>
+            <th>    
+                <div class="radio">
         
-    <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_pass" value="1" checked>
-        <strong>PASS</strong>
-      </label>
+        PASS
+        </label>
     </div>
-    <div class="radio">
+    </th>
+            <th>    <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_fail" value="0">
-        <strong>FAIL</strong>
+        FAIL
       </label>
-    </div>
-    <div class="radio">
+    </div></th>
+            <th>    <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_edit" value="2">
-        <strong>NEEDS EDITS</strong>
+        NEEDS EDITS
       </label>
-    </div>
-    <div class="radio">
+    </div></th>
+            <th>    <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_edited" value="3">
-        <strong>EDITED</strong>
+        EDITED
       </label>
-    </div>
+    </div></th>
+          </tr>
+</table>
+
+
+
+
       </div>
       <div class="input-group">
-          
+
     <label>Assign To: </label>
     <div class="form-group">
       <select id="user-assign" name="user_assign" width="100%" class="form-control">
@@ -115,11 +178,11 @@
               {{/each}}
       </select>
     </div>
-   
+
   <br>
       <label>
         Notes:</label> <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
-      
+
     </div>
     </div>
 <br>
@@ -127,75 +190,32 @@
           <button class="btn btn-success" type="submit">Save</button>
       </label>
   </form>
-        
-  </div>
-</div>
-    
-    
-    </div>
-    <div class="col-md-6">
 
- <button class="btn btn-default swapmode"> {{currentMode}} </button>
-<br><br>
+  </div>
+  </div>
+</div>
+                </li>
 
-        <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Logged Points</h3>
-  </div>
-  <div class="panel-body">
-    <table class="table table-hover table-striped">
-          <tr>
-            <th>Coordinate</th>
-            <th>Annotation</th> 
-            <th>Logged By</th>
-            <th></th>
-          </tr>
-        {{#each loggedPoints}}
-          <tr>
-            <td><a class="goto_coor"> {{this.world_coor.x}}, {{this.world_coor.y}}, {{this.world_coor.z}} </a> </td>
-            <td>{{> xEditable type="text" success=onPointNote placement="right" value=this.note}}</td> 
-            <td>{{this.checkedBy}}</td>
-            <td>
-  <a class="remove-point"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-</td>
-          </tr>
-        {{/each}}
-        </table>
-  </div>
-   <div class="panel-footer">Shift+click to log points. Annotate points in the table above.</div>
-</div>
-        
-        <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Logged Contours</h3>
-  </div>
-  <div class="panel-body">
-    <table class="table table-hover table-striped">
-          <tr>
-            <th>Coordinate</th>
-            <th>Annotation</th> 
-            <th>Logged By</th>
-            <th></th>
-          </tr>
-        {{#each loggedContours}}
-          <tr>
-            <td><a class="goto_cont"> {{this.name}} </a> </td>
-            <td>{{> xEditable type="text" success=onContourNote placement="right" value=this.note}}</td> 
-            <td>{{this.checkedBy}}</td>
-            <td>
-  <a class="remove-contour"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-</td>
-          </tr>
-        {{/each}}
-        </table>
-  </div>
-   <div class="panel-footer">Shift+drag to log contours. Annotate contours in the table above.</div>
-</div>
-         
-        
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        
+ <a class="btn btn-default" id="menu-toggle">Toggle Editor Menu</a>
+                        <br><br>
+                        <div id="viewer" width="500px"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-    
-    
-    
-    </div>
+
 </template>

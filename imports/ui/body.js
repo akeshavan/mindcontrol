@@ -15,7 +15,7 @@ import "./qc.html";
 var update_subjects = function(filter, list_of_remaining){
         console.log("list of remaining is", list_of_remaining)
         Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
-            console.log("result from get subject ids from filter is", result)
+            //console.log("result from get subject ids from filter is", result)
             var ss = Session.get("subjectSelector")
             ss["subject_id"]["$in"] = result
             Session.set("subjectSelector", ss)
@@ -177,7 +177,7 @@ Template.body.events({
 
 })
 
-Template.body.helpers({
+Template.body_sidebar.helpers({
     currentKeys: function(){
         var gSelector = Session.get("globalSelector")
         //console.log("current query is", gSelector)
@@ -212,11 +212,18 @@ Template.body.helpers({
     },
         
     savedQueries: function(){
+        Meteor.subscribe("userList")
         var user = Meteor.users.findOne(Meteor.userId(), {fields: {username:1, queries:1}})
         console.log("user", user)
         //var userentries = User.find({user:user.username})
         //console.log("userentries", userentries)
-        return user.queries
+        if (user != null){
+            if (Object.keys(user).indexOf("queries") >=0){
+                return user.queries
+            }
+        }
+
+        return []
     }
     
     

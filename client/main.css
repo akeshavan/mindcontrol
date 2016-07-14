@@ -128,6 +128,7 @@ a:hover {
 .bs-docs-sidenav.affix {
   top: 40px;
   left: 10px;
+  z-index: 10;
 }
 .bs-docs-sidenav.affix-bottom {
   position: absolute;
@@ -242,7 +243,7 @@ li a {
 
 
 .qbox {
-    padding-top:150px;
+    padding-top:250px;
     padding-left: 30px;
     z-index: 2;
 }
@@ -315,5 +316,9 @@ li a {
   .modal-fullscreen .modal-dialog {
      width: 1150px;
   }
+}
+
+.qc td, th {
+    padding: 5px;
 }
 
