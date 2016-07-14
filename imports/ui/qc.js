@@ -110,7 +110,7 @@ var logpoint = function(e, template, type){
                 currentContour = contours[contours.length-1]
             }
             template.contours.set(contours)
-            console.log("contour begin")
+            //console.log("contour begin")
             
         }
         
@@ -118,7 +118,7 @@ var logpoint = function(e, template, type){
             
             var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY)
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
-            console.log("mousemove", screenCoor,originalCoord)
+            //console.log("mousemove", screenCoor,originalCoord)
             var world = new papaya.core.Coordinate();
             papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
             
@@ -138,7 +138,7 @@ var logpoint = function(e, template, type){
                 
                     //draw_point(screenCoor, viewer, color, 3)
                     
-                    console.log("contour update")
+                    //console.log("contour update")
                 
                 }
             }
@@ -152,7 +152,7 @@ var logpoint = function(e, template, type){
              var currentContour = contours[contours.length-1]
              currentContour.complete = true
              template.contours.set(contours)
-             console.log("contour complete", currentContour)
+             //console.log("contour complete", currentContour)
              
          }
         
@@ -430,7 +430,12 @@ Template.view_images.events({
 
  "click #menu-toggle": function(e, template){
         e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
+        $("#wrapper").toggleClass("toggled")/*.promise().done(function(){
+            console.log("done toggling", papayaContainers[0].getViewerDimensions(), $("#viewer").height(), $("#viewer").width())
+            var viewer = papayaContainers[0].viewer
+            viewer.resizeViewer([$("#viewer").width(), $("#viewer").height()])
+            });*/
+        
  }
 
 })
