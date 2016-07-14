@@ -194,7 +194,12 @@ Template.view_images.helpers({
     
     currentMode: function(){
         return Template.instance().logMode.get()
+    },
+
+    currentQC: function(){
+        return Session.get("currentQC")
     }
+
     
 })
 
@@ -287,6 +292,11 @@ Template.view_images.events({
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.contours.set(points)
+ },
+
+ "click #menu-toggle": function(e, template){
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
  }
 
 })

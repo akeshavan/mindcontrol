@@ -10,11 +10,7 @@
         {{> Template.dynamic template="view_images" data=modalData}}
       </div>
       <div class="modal-footer">
-          {{#with nextFile}}
-    
-    {{this.name}}
-    
-    {{/with}}
+
         <button type="button" class="btn btn-default" data-dismiss="modal" id="closemodal">Close</button>
       </div>
     </div>
@@ -23,32 +19,19 @@
 </template>
 
 <template name="view_images">
-    
-<div id="viewer" width="500px"></div>
-<br>
-
-  <!--<button class="btn btn-default pial" data-toggle="collapse"
-          data-target="#collapsePial" aria-expanded="false"
-          aria-controls="collapsePial">Edits</button>
-  <br><br>
-  <div class="collapse" id="collapsePial">
-      <kbd>
-
-        pbr-recon-edits {{doc.name}}
-
-      </kbd>
 
 
 
-  </div>-->
+    <div id="wrapper">
 
-
-
-    <div class="row">
-
-    <div class="col-md-6">
-
-<div class="panel panel-default">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                     <button class="btn btn-default swapmode"> {{currentMode}} </button>
+                </li>
+                <li>
+                    <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Quality Check Status</h3>
   </div>
@@ -64,8 +47,9 @@
 
   </div>
 </div>
-
-  <div class="panel panel-default">
+                </li>
+                <li>
+                     <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Edit Quality Check</h3>
   </div>
@@ -130,15 +114,9 @@
 
   </div>
 </div>
-
-
-    </div>
-    <div class="col-md-6">
-
- <button class="btn btn-default swapmode"> {{currentMode}} </button>
-<br><br>
-
-        <div class="panel panel-default">
+                </li>
+                <li>
+                     <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Logged Points</h3>
   </div>
@@ -164,8 +142,9 @@
   </div>
    <div class="panel-footer">Shift+click to log points. Annotate points in the table above.</div>
 </div>
-
-        <div class="panel panel-default">
+                </li>
+                <li>
+                            <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Logged Contours</h3>
   </div>
@@ -191,11 +170,28 @@
   </div>
    <div class="panel-footer">Shift+drag to log contours. Annotate contours in the table above.</div>
 </div>
+                </li>
 
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>{{currentQC.name}}</h1>
+ <a class="btn btn-default" id="menu-toggle">Toggle Editor Menu</a>
+                        <br><br>
+                        <div id="viewer" width="500px"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
 
     </div>
 
-
-
-    </div>
 </template>
