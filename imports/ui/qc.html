@@ -33,7 +33,7 @@
                 <li>
                      <div class="panel panel-{{doc.quality_check.QC_color}}" >
   <div class="panel-heading">
-    <h3 class="panel-title" data-toggle="collapse" data-target="#collapseQC">Quality Check Status</h3>
+    <h3 class="panel-title" data-toggle="collapse" data-target="#collapseQC">Status: {{doc.quality_check.QC_name}}</h3>
   </div>
   <div id="collapseQC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
@@ -88,7 +88,7 @@
                 <li>
                      <div class="panel panel-{{modeCSS.contourColor}}">
   <div class="panel-heading">
-    <h3 class="panel-title swapmode contour" data-toggle="collapse" data-target="#collapseC">Logged Contours</h3>
+    <h3 class="panel-title swapmode contour" data-toggle="collapse" data-target="#collapseC" >Logged Curves</h3>
   </div>
   <div id="collapseC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
@@ -201,6 +201,11 @@
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
+        
+        {{#unless currentUser}}
+        <div class="alert alert-danger" role="alert"><strong>Please log in to edit!</strong></div>
+        {{/unless}}
+        
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
