@@ -10,15 +10,27 @@ var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
+papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
+    return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
+        screenSlice.xDim);
+};
+
+
+
+papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateY = function (yLoc, screenSlice) {
+    return papaya.viewer.Viewer.validDimBounds((yLoc - screenSlice.finalTransform[1][2]) / screenSlice.finalTransform[1][1],
+        screenSlice.yDim);
+};
+
 var fill_all_points = function(matrix_coor){
     if (matrix_coor){
          
          var viewer = papayaContainers[0].viewer
          var canvas = viewer.canvas
          var context = canvas.getContext('2d');
-           context.strokeStyle = curveColor //"#df4b26";
-          context.lineJoin = "round";
-          context.lineWidth = 3;
+         context.strokeStyle = curveColor //"#df4b26";
+         context.lineJoin = "round";
+         context.lineWidth = 3;
          context.beginPath();
          var prev = {}
          matrix_coor.forEach(function(val, idx, arr){
@@ -64,6 +76,8 @@ var fill_all = function(template){
     fill_all_loggedPoints(lp) 
 }
 
+var tmpScreen = []
+
 var logpoint = function(e, template, type){
     
         //console.log("lets draw some lines")
@@ -72,7 +86,7 @@ var logpoint = function(e, template, type){
   
 
         
-    if(e.shiftKey){
+    if(e.shiftKey && e.altKey == false){
         //convert mouse position to matrix space
         
         var currentCoor = papayaContainers[0].viewer.cursorPosition
@@ -111,17 +125,15 @@ var logpoint = function(e, template, type){
                 currentContour = contours[contours.length-1]
             }
             template.contours.set(contours)
+            
             //console.log("contour begin")
             
         }
         
         else if (type=="mousemove" && template.logMode.get() == "contour"){
             
-            //var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY)
+            //papayaContainers[0].viewer.cursorPosition isn't updated on mousedrag
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
-            //console.log("mousemove", screenCoor,originalCoord)
-            //var world = new papaya.core.Coordinate();
-            //papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
             
             var contours = template.contours.get()
             var currentContour = contours[contours.length-1]
@@ -133,13 +145,12 @@ var logpoint = function(e, template, type){
                     //currentContour.world_coor.push(world)
                     template.contours.set(contours)
 
-                
-                }
+                    
             }
             
             
             
-        }
+        }}
         
          else if (type=="mouseup" && template.logMode.get() == "contour"){
              var contours = template.contours.get()
@@ -367,12 +378,15 @@ Template.view_images.events({
      
      logpoint(event, template, "mousemove")
      fill_all(template)
+     
      //console.log("mousemove")
     
  },
  
   "mousedown #papayaContainer0": function(event, template){
      //console.log("mousedown")
+     $("#papayaContainer0").off("mousedown")
+     //console.log(event)
      logpoint(event, template, "mousedown")
      fill_all(template)
      //console.log("mousemove")
@@ -433,6 +447,12 @@ Template.view_images.events({
             viewer.resizeViewer([$("#viewer").width(), $("#viewer").height()])
             });*/
         
+ },
+ "click #resize": function(e, template){
+     console.log("in resize")
+     var viewer = papayaContainers[0].viewer
+     viewer.resizeViewer(papayaContainers[0].getViewerDimensions())
+     
  }
 
 })
