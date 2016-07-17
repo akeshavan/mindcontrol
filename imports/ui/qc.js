@@ -7,28 +7,32 @@ import "./module_templates.js"
 
 //var staticURL = "http://127.0.0.1:4002/" 
 var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-
-var fill_canvas = function(type, points, viewer){
-    
-    if (type == "points"){
-        //do stuff
-    }
-    
-    else if (type=="contour"){
-        //do lines.s
-    }
-    
-}
-
+var curveColor =  "rgb(255,235,59)"
+var pointColor = "rgb(255,0,0)"
 
 var fill_all_points = function(matrix_coor){
     if (matrix_coor){
-        matrix_coor.forEach(function(val, idx, arr){
-         var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val);
          
          var viewer = papayaContainers[0].viewer
-         if (viewer.intersectsMainSlice(val)){
-             draw_point(screenCoor, viewer, "rgb(0,0,255)", 3)
+         var canvas = viewer.canvas
+         var context = canvas.getContext('2d');
+           context.strokeStyle = curveColor //"#df4b26";
+          context.lineJoin = "round";
+          context.lineWidth = 3;
+         context.beginPath();
+         var prev = {}
+         matrix_coor.forEach(function(val, idx, arr){
+             var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val);
+             if (viewer.intersectsMainSlice(val)){
+                 //draw_point(screenCoor, viewer, curveColor, 3)
+                 if (idx){
+                     context.moveTo(prev.x, prev.y)
+                     context.lineTo(screenCoor.x, screenCoor.y);
+                     context.closePath();
+                     context.stroke();
+                 }
+                 prev = screenCoor
+                 
          }
               
      })
@@ -44,12 +48,20 @@ var fill_all_loggedPoints = function(lp){
          var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val.matrix_coor);
          var viewer = papayaContainers[0].viewer
          if (viewer.intersectsMainSlice(val.matrix_coor)){
-             draw_point(screenCoor, viewer, "rgb(255,0,0)", 5)
+             draw_point(screenCoor, viewer, pointColor, 5)
          }
               
      })
     }
     
+}
+
+var fill_all = function(template){
+    var contours = template.contours.get()
+    var lp = template.loggedPoints.get()
+    
+    contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor) })  
+    fill_all_loggedPoints(lp) 
 }
 
 var logpoint = function(e, template, type){
@@ -58,29 +70,14 @@ var logpoint = function(e, template, type){
                 
     var viewer = papayaContainers[0].viewer
   
-    var contours = template.contours.get()
-    var lp = template.loggedPoints.get()
-    
-    contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor) })  
-    fill_all_loggedPoints(lp) 
+
         
     if(e.shiftKey){
         //convert mouse position to matrix space
         
         var currentCoor = papayaContainers[0].viewer.cursorPosition
-        var coor = new papaya.core.Coordinate(currentCoor.x, currentCoor.y, currentCoor.z)
-        
-        //convert matrix space to screen space
-        var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(coor);
-        
-        //convert screen space to world space
-        var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y);
-        
-        //console.log("is originalCoord the same as currentCoord??", coor, originalCoord)
-        
-        var world = new papaya.core.Coordinate();
-        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-        
+        var originalCoord = new papaya.core.Coordinate(currentCoor.x, currentCoor.y, currentCoor.z)
+        var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY) //papayaContainers[0].viewer.convertCoordinateToScreen(originalCoord);
         
         
         if (template.logMode.get() == "point" && type=="click"){
@@ -89,12 +86,16 @@ var logpoint = function(e, template, type){
             if (points == null){
                 points = []
             }
-            points.push({matrix_coor: coor, world_coor: world, checkedBy: Meteor.user().username})
+            
+            var world = new papaya.core.Coordinate();
+            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+            
+            points.push({matrix_coor: originalCoord, world_coor: world, checkedBy: Meteor.user().username})
             template.loggedPoints.set(points)
-            var color = "rgb(255, 0, 0)"
-            var viewer = papayaContainers[0].viewer
+            //var color = "rgb(255, 0, 0)"
+            //var viewer = papayaContainers[0].viewer
         
-            draw_point(screenCoor, viewer, color, 5)
+            draw_point(screenCoor, viewer, pointColor, 5)
         }
         
         
@@ -104,7 +105,7 @@ var logpoint = function(e, template, type){
                 contours.push({complete: false, matrix_coor:[], world_coor:[], checkedBy: Meteor.user().username})
             }
             
-            var currentContour = contours[contours.length-1]
+            var currentContour = contours[contours.length-1] //OR: selected contour
             if (currentContour.complete){
                 contours.push({complete: false, matrix_coor:[], world_coor:[], checkedBy: Meteor.user().username})
                 currentContour = contours[contours.length-1]
@@ -116,11 +117,11 @@ var logpoint = function(e, template, type){
         
         else if (type=="mousemove" && template.logMode.get() == "contour"){
             
-            var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY)
+            //var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY)
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
             //console.log("mousemove", screenCoor,originalCoord)
-            var world = new papaya.core.Coordinate();
-            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+            //var world = new papaya.core.Coordinate();
+            //papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
             
             var contours = template.contours.get()
             var currentContour = contours[contours.length-1]
@@ -129,16 +130,9 @@ var logpoint = function(e, template, type){
                 if (currentContour.complete==false){
                     
                     currentContour.matrix_coor.push(originalCoord)
-                    currentContour.world_coor.push(world)
+                    //currentContour.world_coor.push(world)
                     template.contours.set(contours)
-                    var color = "rgb(0, 0, 255)"
-                    var viewer = papayaContainers[0].viewer
-                
-                
-                
-                    //draw_point(screenCoor, viewer, color, 3)
-                    
-                    //console.log("contour update")
+
                 
                 }
             }
@@ -152,13 +146,9 @@ var logpoint = function(e, template, type){
              var currentContour = contours[contours.length-1]
              currentContour.complete = true
              template.contours.set(contours)
-             //console.log("contour complete", currentContour)
              
          }
         
-        //Session.set("loggedPoints", points)
-        
-        //draw
         
         
     }
@@ -376,6 +366,7 @@ Template.view_images.events({
  "mousemove #papayaContainer0": function(event, template){
      
      logpoint(event, template, "mousemove")
+     fill_all(template)
      //console.log("mousemove")
     
  },
@@ -383,12 +374,14 @@ Template.view_images.events({
   "mousedown #papayaContainer0": function(event, template){
      //console.log("mousedown")
      logpoint(event, template, "mousedown")
+     fill_all(template)
      //console.log("mousemove")
     
  },
  
    "mouseup #papayaContainer0": function(event, template){
      logpoint(event, template, "mouseup")
+     fill_all(template)
      //console.log("mousemove")
     
  },
@@ -398,7 +391,8 @@ Template.view_images.events({
      papayaContainers[0].viewer.gotoCoordinate(this.matrix_coor)
      var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(this.matrix_coor);
      var viewer = papayaContainers[0].viewer
-     draw_point(screenCoor, viewer, "rgb(255,0,0)", 5)     
+     draw_point(screenCoor, viewer, pointColor, 5)  
+     fill_all(template)   
  },
  
  "click .goto_cont": function(event, template){
@@ -411,6 +405,7 @@ Template.view_images.events({
          draw_point(screenCoor, viewer, "rgb(0,0,255)", 3)     
      })*/
      fill_all_points(this.matrix_coor)
+     fill_all(template)
      
  },
  
@@ -419,6 +414,7 @@ Template.view_images.events({
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.loggedPoints.set(points)
+     fill_all(template)
  },
  
   "click .remove-contour": function(event, template){
@@ -426,6 +422,7 @@ Template.view_images.events({
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.contours.set(points)
+     fill_all(template)
  },
 
  "click #menu-toggle": function(e, template){
