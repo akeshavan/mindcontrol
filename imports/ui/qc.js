@@ -72,6 +72,7 @@ var fill_all = function(template){
     
     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
+        
         val.contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor)}) 
         })  
     fill_all_loggedPoints(lp) 
@@ -116,17 +117,17 @@ var logpoint = function(e, template, type){
         
         else if (type=="mousedown" && template.logMode.get() == "contour"){
             var contours = template.contours.get()
-            console.log("on mousedown, contours is", contours)
+            //console.log("on mousedown, contours is", contours)
             if (!contours.length){
                 contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
                                 checkedBy: Meteor.user().username, name:"Drawing"})
-                console.log("pushed contours", contours)
+                //console.log("pushed contours", contours)
             }
             
             var selectContour = contours[contours.length-1].contours //OR: selected contour
-            console.log("selectContours is", selectContour)
+            //console.log("selectContours is", selectContour)
             var currentContour = selectContour[selectContour.length-1]
-            console.log("currentContours is", currentContour)
+            //console.log("currentContours is", currentContour)
             
             if (currentContour.complete){
                 selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
@@ -144,6 +145,8 @@ var logpoint = function(e, template, type){
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
             
             var contours = template.contours.get()
+            
+            if (contours.length){
             var selectContour = contours[contours.length-1].contours
             //console.log("on mousemove", selectContour)
             var currentContour = selectContour[selectContour.length-1]
@@ -156,23 +159,26 @@ var logpoint = function(e, template, type){
                     template.contours.set(contours)
 
                     
-            }
+                    }
             
             
             
-        }}
+                }
+        }//end if contours
+        
+        }
         
          else if (type=="mouseup" && template.logMode.get() == "contour"){
              var contours = template.contours.get()
-             console.log("on mouseup, contours is", contours)
+             //console.log("on mouseup, contours is", contours)
              var selectContour = contours[contours.length-1].contours
-             console.log("on mouseup, selectcontours is", selectContour)
+             //console.log("on mouseup, selectcontours is", selectContour)
 
              var currentContour = selectContour[selectContour.length-1]
              
              //var currentContour = contours[contours.length-1]
              currentContour.complete = true
-             console.log("mouseup", currentContour)
+             //console.log("mouseup", currentContour)
              template.contours.set(contours)
              
          }
@@ -181,21 +187,6 @@ var logpoint = function(e, template, type){
         
     }
     
-    else{
-        if (template.logMode.get() == "contour"){
-            var contours = template.contours.get()
-            if (contours != null){
-                var currentContour = contours[contours.length-1]
-                if (currentContour != null){
-                    currentContour.complete = true
-                    template.contours.set(contours)
-                    //console.log("ended contour")
-                }
-                
-            }
-            
-        }
-    }
     
     return true
     
@@ -393,13 +384,7 @@ Template.view_images.events({
  },
 
  "click .touchscreen": function(event, template){
-    //var element = event.toElement.className.split(" ")//.slice(1).split("-")
-    //var idx = element.indexOf("swapmode") + 1
-    //console.log("element is", element, "idx of filter is", idx)
-    //element = element[idx]//.join(" ").split("+")
-    //console.log("element is", element)
-    //console.log("element is", element)     
-
+    
      var currMode = template.touchscreen.get()
 
      template.touchscreen.set(!currMode)
@@ -415,7 +400,7 @@ Template.view_images.events({
     
  },
  
-  "mousedown #papayaContainer0": function(event, template){
+ "mousedown #papayaContainer0": function(event, template){
      //console.log("mousedown")
      $("#papayaContainer0").off("mousedown")
      //console.log(event)
@@ -425,7 +410,7 @@ Template.view_images.events({
     
  },
  
-   "mouseup #papayaContainer0": function(event, template){
+ "mouseup #papayaContainer0": function(event, template){
      logpoint(event, template, "mouseup")
      fill_all(template)
      //console.log("mousemove")
@@ -457,6 +442,7 @@ Template.view_images.events({
  
  "click .remove-point": function(event, template){
      var points = template.loggedPoints.get()
+     console.log(this, template)
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.loggedPoints.set(points)
@@ -465,8 +451,12 @@ Template.view_images.events({
  
   "click .remove-contour": function(event, template){
      var points = template.contours.get()
-     var idx = points.indexOf(this)
-     points.splice(idx, 1)
+     var selected = points[0].contours
+     //console.log(Template.instance().contours.get())
+     console.log(this, "points is", selected.length)
+     var idx = selected.indexOf(this)
+     selected.splice(idx, 1)
+     console.log(idx, "points is", points)
      template.contours.set(points)
      fill_all(template)
  },

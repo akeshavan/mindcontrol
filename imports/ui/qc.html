@@ -92,26 +92,29 @@
   </div>
   <div id="collapseC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
+      {{#each loggedContours}}
+      {{this.name}}, {{this.checkedBy}}
     <table class="table table-hover table-striped">
           <tr>
             <th>Coordinate</th>
             <th>Annotation</th>
-            <th>Logged By</th>
+            <!--<th>Logged By</th>-->
             <th></th>
           </tr>
-        {{#each loggedContours}}
+        
           {{#each this.contours}}
           <tr>
             <td><a class="goto_cont"> {{this.name}} </a> </td>
             <td>{{> xEditable type="text" success=onContourNote placement="right" value=this.note}}</td>
-            <td>{{this.checkedBy}}</td>
+            <!--<td>{{this.checkedBy}}</td>-->
             <td>
   <a class="remove-contour"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 </td>
           </tr>
           {{/each}}
-        {{/each}}
+        
         </table>
+        {{/each}}
   </div>
    <div class="panel-footer">Shift+drag to draw curves. Annotate curves in the table above.</div>
   </div>
