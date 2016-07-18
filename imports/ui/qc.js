@@ -70,7 +70,10 @@ var fill_all = function(template){
     var contours = template.contours.get()
     var lp = template.loggedPoints.get()
     
-    contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor) })  
+    contours.forEach(function(val, idx, arr){
+        //console.log("in fillall", val)
+        val.contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor)}) 
+        })  
     fill_all_loggedPoints(lp) 
 }
 
@@ -113,14 +116,21 @@ var logpoint = function(e, template, type){
         
         else if (type=="mousedown" && template.logMode.get() == "contour"){
             var contours = template.contours.get()
+            console.log("on mousedown, contours is", contours)
             if (!contours.length){
-                contours.push({complete: false, matrix_coor:[], world_coor:[], checkedBy: Meteor.user().username})
+                contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
+                                checkedBy: Meteor.user().username, name:"Drawing"})
+                console.log("pushed contours", contours)
             }
             
-            var currentContour = contours[contours.length-1] //OR: selected contour
+            var selectContour = contours[contours.length-1].contours //OR: selected contour
+            console.log("selectContours is", selectContour)
+            var currentContour = selectContour[selectContour.length-1]
+            console.log("currentContours is", currentContour)
+            
             if (currentContour.complete){
-                contours.push({complete: false, matrix_coor:[], world_coor:[], checkedBy: Meteor.user().username})
-                currentContour = contours[contours.length-1]
+                selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
+                currentContour = selectContour[selectContour.length-1]
             }
             template.contours.set(contours)
             
@@ -134,7 +144,9 @@ var logpoint = function(e, template, type){
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
             
             var contours = template.contours.get()
-            var currentContour = contours[contours.length-1]
+            var selectContour = contours[contours.length-1].contours
+            //console.log("on mousemove", selectContour)
+            var currentContour = selectContour[selectContour.length-1]
 
             if (currentContour){
                 if (currentContour.complete==false){
@@ -152,8 +164,15 @@ var logpoint = function(e, template, type){
         
          else if (type=="mouseup" && template.logMode.get() == "contour"){
              var contours = template.contours.get()
-             var currentContour = contours[contours.length-1]
+             console.log("on mouseup, contours is", contours)
+             var selectContour = contours[contours.length-1].contours
+             console.log("on mouseup, selectcontours is", selectContour)
+
+             var currentContour = selectContour[selectContour.length-1]
+             
+             //var currentContour = contours[contours.length-1]
              currentContour.complete = true
+             console.log("mouseup", currentContour)
              template.contours.set(contours)
              
          }
@@ -258,7 +277,7 @@ Template.view_images.helpers({
     loggedContours: function(){
         var contours = Template.instance().contours.get()
         if (contours != null){
-            contours.forEach(function(val, idx, arr){val.name = "Curve "+idx})
+            contours.forEach(function(val, idx, arr){val.contours.forEach(function(val, idx, arr){val.name = "Curve "+idx})})
         }
         return contours
     },
