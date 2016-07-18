@@ -15,8 +15,6 @@ papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc,
         screenSlice.xDim);
 };
 
-
-
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateY = function (yLoc, screenSlice) {
     return papaya.viewer.Viewer.validDimBounds((yLoc - screenSlice.finalTransform[1][2]) / screenSlice.finalTransform[1][1],
         screenSlice.yDim);
@@ -243,6 +241,7 @@ Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
     this.contours = new ReactiveVar([])
     this.logMode = new ReactiveVar("point")
+    this.touchscreen = new ReactiveVar(false)
 })
 
 Template.view_images.helpers({
@@ -371,6 +370,20 @@ Template.view_images.events({
      var currMode = template.logMode.get()
 
      template.logMode.set(element)
+     
+ },
+
+ "click .touchscreen": function(event, template){
+    //var element = event.toElement.className.split(" ")//.slice(1).split("-")
+    //var idx = element.indexOf("swapmode") + 1
+    //console.log("element is", element, "idx of filter is", idx)
+    //element = element[idx]//.join(" ").split("+")
+    //console.log("element is", element)
+    //console.log("element is", element)     
+
+     var currMode = template.touchscreen.get()
+
+     template.touchscreen.set(!currMode)
      
  },
  
