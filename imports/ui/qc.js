@@ -237,9 +237,9 @@ var addPapaya = function(data){
         //} //endif                           
     }
 
-var template_decorator = function(template_instance_value, lp, idx){
+var template_decorator = function(template_instance_value, lp, idx, key){
     var update_point_note = function(res, val){
-            lp[idx]["note"] = val
+            lp[idx][key] = val
             //console.log("logged points are", lp)
             //console.log("template instance", template_instance)
             template_instance_value.set(lp)
@@ -283,14 +283,36 @@ Template.view_images.helpers({
         //console.log("poitn note is", this)
         var lp = Template.instance().loggedPoints.get()
         var idx = lp.indexOf(this)
-        return  template_decorator(Template.instance().loggedPoints, lp, idx)
+        return  template_decorator(Template.instance().loggedPoints, lp, idx, "note")
     },
     
     onContourNote: function(){
         //console.log("poitn note is", this)
+        //var lp = Template.instance().contours.get()
+        
+        var contours = Template.instance().contours.get()
+        if (contours){
+        var idx = Session.get("selectedDrawing")
+        var selected = contours[idx].contours
+        var idx = selected.indexOf(this)
+        //console.log("contour note", selected, idx)
+        var tempate_decorator2 = function(template_instance, selected, idx, contours){
+        return update_point_note = function(res, val){
+            selected[idx]["note"] = val
+            console.log("contours is", contours)
+            template_instance.set(contours)
+        }}
+        
+        return tempate_decorator2(Template.instance().contours, selected, idx, Template.instance().contours.get())}
+        
+        //return  template_decorator(Template.instance().contours, lp, idx)
+    },
+    
+    onDrawingNote: function(){
+        //console.log("poitn note is", this)
         var lp = Template.instance().contours.get()
         var idx = lp.indexOf(this)
-        return  template_decorator(Template.instance().contours, lp, idx)
+        return  template_decorator(Template.instance().contours, lp, idx, "name")
     },
     
     currentMode: function(){
