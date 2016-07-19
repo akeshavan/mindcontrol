@@ -12,6 +12,90 @@ var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
 
+papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
+    var radiological = (this.container.preferences.radiological === "Yes"),
+        showOrientation = (this.container.preferences.showOrientation === "Yes");
+
+    if (!this.initialized) {
+        this.drawEmptyViewer();
+        return;
+    }
+
+    this.context.save();
+    
+    var draw = Session.get("isDrawing")
+    if (draw){
+        skipUpdate = true
+    }
+    
+    if (skipUpdate) {
+        this.axialSlice.repaint(this.currentCoord.z, force, this.worldSpace);
+        this.coronalSlice.repaint(this.currentCoord.y, force, this.worldSpace);
+        this.sagittalSlice.repaint(this.currentCoord.x, force, this.worldSpace);
+    } else {
+        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_AXIAL)) {
+            this.axialSlice.updateSlice(this.currentCoord.z, force, this.worldSpace);
+        }
+
+        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_CORONAL)) {
+            this.coronalSlice.updateSlice(this.currentCoord.y, force, this.worldSpace);
+        }
+
+        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_SAGITTAL)) {
+            this.sagittalSlice.updateSlice(this.currentCoord.x, force, this.worldSpace);
+        }
+    }
+
+    if (this.hasSurface() && (!papaya.utilities.PlatformUtils.smallScreen || force || (this.selectedSlice === this.surfaceView))) {
+        this.surfaceView.draw();
+    }
+
+    // intialize screen slices
+    if (this.container.preferences.smoothDisplay === "No") {
+        this.context.imageSmoothingEnabled = false;
+        this.context.webkitImageSmoothingEnabled = false;
+        this.context.mozImageSmoothingEnabled = false;
+        this.context.msImageSmoothingEnabled = false;
+    } else {
+        this.context.imageSmoothingEnabled = true;
+        this.context.webkitImageSmoothingEnabled = true;
+        this.context.mozImageSmoothingEnabled = true;
+        this.context.msImageSmoothingEnabled = true;
+    }
+
+    // draw screen slices
+    this.drawScreenSlice(this.mainImage);
+
+    if (this.container.orthogonal) {
+        this.drawScreenSlice(this.lowerImageTop);
+        this.drawScreenSlice(this.lowerImageBot);
+
+        if (this.hasSurface()) {
+            this.drawScreenSlice(this.lowerImageBot2);
+        }
+    }
+
+    if (showOrientation || radiological) {
+        this.drawOrientation();
+    }
+
+    if (this.container.preferences.showCrosshairs === "Yes" && !draw) {
+        this.drawCrosshairs();
+    }
+
+    if (this.container.preferences.showRuler === "Yes") {
+        this.drawRuler();
+    }
+
+    if (this.container.display) {
+        this.container.display.drawDisplay(this.currentCoord.x, this.currentCoord.y, this.currentCoord.z,
+            this.getCurrentValueAt(this.currentCoord.x, this.currentCoord.y, this.currentCoord.z));
+    }
+
+    if (this.container.contextManager && this.container.contextManager.drawToViewer) {
+        this.container.contextManager.drawToViewer(this.context);
+    }
+};
 
 
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
@@ -156,6 +240,7 @@ var logpoint = function(e, template, type){
                 currentContour = selectContour[selectContour.length-1]
             }
             template.contours.set(contours)
+            Session.set("isDrawing", true)
             
             //console.log("contour begin")
             
@@ -179,7 +264,7 @@ var logpoint = function(e, template, type){
                     currentContour.matrix_coor.push(originalCoord)
                     //currentContour.world_coor.push(world)
                     template.contours.set(contours)
-
+                    Session.set("isDrawing", true)
                     
                     }
             
@@ -202,13 +287,14 @@ var logpoint = function(e, template, type){
              currentContour.complete = true
              //console.log("mouseup", currentContour)
              template.contours.set(contours)
+             Session.set("isDrawing", false)
              
          }
         
         
         
     }
-    
+    else{Session.set("isDrawing", false)}
     
     return true
     
