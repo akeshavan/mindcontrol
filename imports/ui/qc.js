@@ -671,9 +671,16 @@ Template.view_images.events({
 
 var load_hotkeys = function(template_instance){
     contextHotkeys.add({
-                    combo : "ctrl+z",
+                    combo : "d d",
                     callback : function(){
-                        console.log("you want to undo")
+                        var contours = template_instance.contours.get()
+                        var idx = Session.get("selectedDrawing")
+                        if (idx){
+                          contours[idx].contours.pop()
+                        }
+                        template_instance.contours.set(contours)
+                        papayaContainers[0].viewer.drawViewer(true)
+
                     }
                 })
 
