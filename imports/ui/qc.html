@@ -92,8 +92,29 @@
   </div>
   <div id="collapseC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
-      {{#each loggedContours}}
-      {{this.name}}, {{this.checkedBy}}
+
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                {{#each loggedContours}}
+      
+          
+          <div class="panel">
+            <div class="panel-heading" role="tab" id="heading{{@index}}">
+              <h4 class="panel-title">
+                  <table>
+                      <td>{{> xEditable type="text" success=onDrawingNote placement="right" value=this.name}}</td><td></td>
+                      <td> {{this.checkedBy}}</td>
+                      <td> <a id="select_button_group"><span class="glyphicon glyphicon-pencil {{#if (selectedDrawing @index)}} selectedDrawing{{/if}}" aria-hidden="true"></span></a> </td>
+                      <td> <a role="button" id="drawingDropdown" data-toggle="collapse" data-parent="#accordion" href="#collapse{{@index}}" aria-expanded="true" aria-controls="collapseOne">
+                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+                            </a></td>
+                      <td><a id="delete_button_group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                  </table>
+
+              </h4>
+            </div>
+            <div id="collapse{{@index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{@index}}">
+              <div class="panel-body">
+
     <table class="table table-hover table-striped">
           <tr>
             <th>Coordinate</th>
@@ -114,9 +135,16 @@
           {{/each}}
         
         </table>
+
+              </div>
+            </div>
+          </div>
+        
         {{/each}}
+        </div>
+        <button class="btn btn-success" id="addNewDrawing"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
   </div>
-   <div class="panel-footer">Shift+drag to draw curves. Annotate curves in the table above.</div>
+   <div class="panel-footer">Shift+click & drag to draw curves. Annotate curves in the table above.</div>
   </div>
 </div>
                 </li>

@@ -78,7 +78,12 @@ var fill_all = function(template){
     fill_all_loggedPoints(lp) 
 }
 
-var tmpScreen = []
+var getSelectedDrawing = function(template){
+    
+    var contours = template.contours.get()
+    var idx = Session.get("selectedDrawing")
+    return contours[idx].contours
+}
 
 var logpoint = function(e, template, type){
     
@@ -120,11 +125,12 @@ var logpoint = function(e, template, type){
             //console.log("on mousedown, contours is", contours)
             if (!contours.length){
                 contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
-                                checkedBy: Meteor.user().username, name:"Drawing"})
+                                checkedBy: Meteor.user().username, name:"Drawing 0"})
+                Session.set('selectedDrawing', 0)
                 //console.log("pushed contours", contours)
             }
             
-            var selectContour = contours[contours.length-1].contours //OR: selected contour
+            var selectContour = getSelectedDrawing(template)//contours[contours.length-1].contours //OR: selected contour
             //console.log("selectContours is", selectContour)
             var currentContour = selectContour[selectContour.length-1]
             //console.log("currentContours is", currentContour)
@@ -147,7 +153,7 @@ var logpoint = function(e, template, type){
             var contours = template.contours.get()
             
             if (contours.length){
-            var selectContour = contours[contours.length-1].contours
+            var selectContour = getSelectedDrawing(template) //contours[contours.length-1].contours
             //console.log("on mousemove", selectContour)
             var currentContour = selectContour[selectContour.length-1]
 
@@ -171,7 +177,7 @@ var logpoint = function(e, template, type){
          else if (type=="mouseup" && template.logMode.get() == "contour"){
              var contours = template.contours.get()
              //console.log("on mouseup, contours is", contours)
-             var selectContour = contours[contours.length-1].contours
+             var selectContour = getSelectedDrawing(template) //contours[contours.length-1].contours
              //console.log("on mouseup, selectcontours is", selectContour)
 
              var currentContour = selectContour[selectContour.length-1]
@@ -324,6 +330,21 @@ Template.view_images.helpers({
             output["pointColor"] = "default"
         }
         return output
+    },
+    
+    selectedDrawing: function(value){
+        var Idx = Session.get("selectedDrawing")
+        /*var num = []
+        Template.instance().contours.get().forEach(function(val, idx, arr){
+            if (Idx == idx){
+                num.push(true)
+            }
+            else{num.push(false)}
+        })
+        //console.log("num is in selectedDrawing", num)
+        return num*/
+        return value == Idx
+        
     }
 
     
@@ -331,7 +352,7 @@ Template.view_images.helpers({
 
 Template.view_images.events({
 
-"submit .new-qc": function(event, template){
+ "submit .new-qc": function(event, template){
 
         event.preventDefault();
         if (! Meteor.userId()) {
@@ -364,11 +385,9 @@ Template.view_images.events({
         
         //console.log("called updateQC method!")
     },
-
  "click #viewer": function(event, template){
      logpoint(event, template, "click")
  },
- 
  "click .swapmode": function(event, template){
      var element = event.toElement.className.split(" ")//.slice(1).split("-")
     var idx = element.indexOf("swapmode") + 1
@@ -382,7 +401,6 @@ Template.view_images.events({
      template.logMode.set(element)
      
  },
-
  "click .touchscreen": function(event, template){
     
      var currMode = template.touchscreen.get()
@@ -390,7 +408,6 @@ Template.view_images.events({
      template.touchscreen.set(!currMode)
      
  },
- 
  "mousemove #papayaContainer0": function(event, template){
      
      logpoint(event, template, "mousemove")
@@ -399,7 +416,6 @@ Template.view_images.events({
      //console.log("mousemove")
     
  },
- 
  "mousedown #papayaContainer0": function(event, template){
      //console.log("mousedown")
      $("#papayaContainer0").off("mousedown")
@@ -409,14 +425,12 @@ Template.view_images.events({
      //console.log("mousemove")
     
  },
- 
  "mouseup #papayaContainer0": function(event, template){
      logpoint(event, template, "mouseup")
      fill_all(template)
      //console.log("mousemove")
     
  },
- 
  "click .goto_coor": function(event, template){
      //console.log("clicked a coordinate", this, this.matrix_coor)
      papayaContainers[0].viewer.gotoCoordinate(this.matrix_coor)
@@ -425,7 +439,6 @@ Template.view_images.events({
      draw_point(screenCoor, viewer, pointColor, 5)  
      fill_all(template)   
  },
- 
  "click .goto_cont": function(event, template){
      //console.log("clicked a coordinate", this, this.matrix_coor)
      papayaContainers[0].viewer.gotoCoordinate(this.matrix_coor[0])
@@ -439,7 +452,6 @@ Template.view_images.events({
      fill_all(template)
      
  },
- 
  "click .remove-point": function(event, template){
      var points = template.loggedPoints.get()
      console.log(this, template)
@@ -448,19 +460,22 @@ Template.view_images.events({
      template.loggedPoints.set(points)
      fill_all(template)
  },
- 
-  "click .remove-contour": function(event, template){
+ "click .remove-contour": function(event, template){
      var points = template.contours.get()
-     var selected = points[0].contours
+     var selected = points[Session.get("selectedDrawing")].contours//TODO: not always 0 fool
      //console.log(Template.instance().contours.get())
      console.log(this, "points is", selected.length)
      var idx = selected.indexOf(this)
      selected.splice(idx, 1)
      console.log(idx, "points is", points)
+     
+     if (selected.length ==0){
+          points.splice(Session.get("selectedDrawing"),1)    
+          Session.set("selectedDrawing", points.length-1)
+     }
      template.contours.set(points)
      fill_all(template)
  },
-
  "click #menu-toggle": function(e, template){
         e.preventDefault();
         $("#wrapper").toggleClass("toggled")/*.promise().done(function(){
@@ -474,6 +489,31 @@ Template.view_images.events({
      console.log("in resize")
      var viewer = papayaContainers[0].viewer
      viewer.resizeViewer(papayaContainers[0].getViewerDimensions())
+     
+ },
+ "click #addNewDrawing": function(e, template){
+     var contours = template.contours.get()
+     contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
+                                checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
+     template.contours.set(contours)
+     Session.set('selectedDrawing', contours.length-1)                   
+ },
+ "click #drawingDropdown": function(e, template){
+     idx = template.contours.get().indexOf(this)
+     console.log("seelcted,", idx)
+     Session.set("selectedDrawing", idx)
+ },
+ "click #select_button_group": function(e, template){
+     idx = template.contours.get().indexOf(this)
+     console.log("seelcted,", idx)
+     Session.set("selectedDrawing", idx)
+ },
+ "click #delete_button_group": function(e, template){
+     var contours = template.contours.get()
+     var idx = contours.indexOf(this)
+     contours.splice(idx, 1)
+     template.contours.set(contours)
+     Session.set("selectedDrawing", contours.length-1)
      
  }
 
