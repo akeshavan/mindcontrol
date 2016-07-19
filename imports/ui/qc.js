@@ -373,17 +373,24 @@ Template.view_images.helpers({
     
     selectedDrawing: function(value){
         var Idx = Session.get("selectedDrawing")
-        /*var num = []
-        Template.instance().contours.get().forEach(function(val, idx, arr){
-            if (Idx == idx){
-                num.push(true)
-            }
-            else{num.push(false)}
-        })
-        //console.log("num is in selectedDrawing", num)
-        return num*/
         return value == Idx
         
+    },
+    
+    selectedDrawingName: function(){
+        if (Template.instance().logMode.get() == "contour"){
+            var idx = Session.get("selectedDrawing")
+            var contours = Template.instance().contours.get()
+            //console.log("idx is", idx, "contours is", contours)
+            if (idx == null){
+                addNewDrawing(Template.instance())
+                Session.set("selectedDrawing", contours.length)
+                //var contours = Template.instance().contours.get()
+                //return contours[contours.length-1].name
+            }
+            Session.set("selectedDrawing", contours.length-1)
+            return contours[contours.length-1].name
+        }
     }
 
     
@@ -564,7 +571,7 @@ Template.view_images.events({
 })
 
 
-var load_hotkeys = function(){
+var load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "ctrl+z",
                     callback : function(){
@@ -576,6 +583,21 @@ var load_hotkeys = function(){
                     combo : "ctrl+s",
                     callback : function(){
                         console.log("you want to save")
+                    }
+                })
+                
+    contextHotkeys.add({
+                    combo : "t t",
+                    callback : function(){
+                        console.log("you want to toggle modes")
+                        var currMode = template_instance.logMode.get()
+                        if (currMode == "point"){
+                            currMode = "contour"
+                        }
+                        else(
+                            currMode ="point"
+                        )
+                        template_instance.logMode.set(currMode)
                     }
                 })
     contextHotkeys.load()
@@ -608,7 +630,7 @@ Template.view_images.rendered = function(){
                     Template.instance().contours.set([])
                 }
                 addPapaya(output)
-                load_hotkeys()
+                load_hotkeys(Template.instance())
             }
             
             
