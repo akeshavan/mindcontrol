@@ -13,6 +13,8 @@ var pointColor = "rgb(255,0,0)"
 
 
 papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
+  var draw = Session.get("isDrawing")
+  if (!draw){
     var radiological = (this.container.preferences.radiological === "Yes"),
         showOrientation = (this.container.preferences.showOrientation === "Yes");
 
@@ -23,10 +25,9 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
 
     this.context.save();
 
-    var draw = Session.get("isDrawing")
-    if (draw){
-        skipUpdate = true
-    }
+
+        //skipUpdate = true
+
 
     if (skipUpdate) {
         this.axialSlice.repaint(this.currentCoord.z, force, this.worldSpace);
@@ -96,6 +97,7 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
         this.container.contextManager.drawToViewer(this.context);
     }
     //console.log("mindcontrol template is", this.mindcontrol_template)
+  }
     fill_all(this.mindcontrol_template)
 
 };
@@ -241,6 +243,7 @@ var logpoint = function(e, template, type){
             if (currentContour.complete){
                 selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
                 currentContour = selectContour[selectContour.length-1]
+                currentContour.matrix_coor.push(originalCoord)
             }
             template.contours.set(contours)
             Session.set("isDrawing", true)
@@ -550,7 +553,7 @@ Template.view_images.events({
  "mousemove #papayaContainer0": function(event, template){
 
      logpoint(event, template, "mousemove")
-     fill_all(template)
+     //fill_all(template)
 
      //console.log("mousemove")
 
@@ -560,19 +563,19 @@ Template.view_images.events({
      $("#papayaContainer0").off("mousedown")
      //console.log(event)
      logpoint(event, template, "mousedown")
-     fill_all(template)
+     //fill_all(template)
      //console.log("mousemove")
 
  },
  "mouseup #papayaContainer0": function(event, template){
      logpoint(event, template, "mouseup")
-     fill_all(template)
+     //fill_all(template)
      //console.log("mousemove")
 
  },
  "mouseout #papayaContainer0": function(event, template){
      logpoint(event, template, "mouseout")
-     fill_all(template)
+     //fill_all(template)
  },
  "click .goto_coor": function(event, template){
      //console.log("clicked a coordinate", this, this.matrix_coor)
@@ -580,7 +583,7 @@ Template.view_images.events({
      var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(this.matrix_coor);
      var viewer = papayaContainers[0].viewer
      draw_point(screenCoor, viewer, pointColor, 5)
-     fill_all(template)
+     //fill_all(template)
  },
  "click .goto_cont": function(event, template){
      //console.log("clicked a coordinate", this, this.matrix_coor)
@@ -601,7 +604,8 @@ Template.view_images.events({
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.loggedPoints.set(points)
-     fill_all(template)
+     papayaContainers[0].viewer.drawViewer(true)
+     //fill_all(template)
  },
  "click .remove-contour": function(event, template){
      var points = template.contours.get()
@@ -617,7 +621,7 @@ Template.view_images.events({
           Session.set("selectedDrawing", points.length-1)
      }
      template.contours.set(points)
-     fill_all(template)
+     papayaContainers[0].viewer.drawViewer(true) //fill_all(template)
  },
  "click #menu-toggle": function(e, template){
         e.preventDefault();
@@ -658,6 +662,7 @@ Template.view_images.events({
      contours.splice(idx, 1)
      template.contours.set(contours)
      Session.set("selectedDrawing", contours.length-1)
+     papayaContainers[0].viewer.drawViewer(true)
 
  }
 
