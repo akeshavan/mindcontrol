@@ -54,10 +54,10 @@
                 <li>
                      <div class="panel panel-{{modeCSS.pointColor}}">
   <div class="panel-heading">
-    <h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3> 
-    
-      
-     
+    <h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3>
+
+
+
   </div>
   <div id="collapseLP" class="panel-collapse collapse in" role="tabpanel">
   <div class="panel-body">
@@ -80,7 +80,7 @@
         {{/each}}
         </table>
   </div>
-  
+
    <div class="panel-footer">Shift+click to log points. Annotate points in the table above.</div>
    </div>
 </div>
@@ -115,7 +115,7 @@
   </div>
 </div>
                 </li>
-                
+
                 <li>
                      <div class="panel panel-default">
   <div class="panel-heading">
@@ -132,9 +132,9 @@
 
 <table class="table table-hover table-striped">
           <tr>
-            <th>    
+            <th>
                 <div class="radio">
-        
+
       <label>
         <input type="radio" name="QC" id="options_pass" value="1" checked>
         PASS
@@ -201,18 +201,25 @@
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
-        
+
         {{#unless currentUser}}
         <div class="alert alert-danger" role="alert"><strong>Please log in to edit!</strong></div>
         {{/unless}}
-        
+
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        
+
  <a class="btn btn-default" id="menu-toggle">Toggle Editor Menu</a>
  <a class="btn btn-default" id="resize">Resize</a>
+  <a class="btn btn-default" id="touchscreen">
+{{#if isTouch}}
+Touchscreen
+{{else}}
+Not touchscreen
+{{/if}}
+  </a>
                         <br><br>
                         <div id="viewer" width="500px"></div>
 
