@@ -322,3 +322,18 @@ li a {
     padding: 5px;
 }
 
+h4 td, th{
+    padding-right: 15px;
+    padding-top: 0;
+    padding-bottom: 0;
+
+}
+
+.selectedDrawing {
+    box-shadow:
+        0 0 6px 3px #fff,  /* inner white */
+        0 0 5px 3px #f0f, /* middle magenta */
+        0 0 7px 4px #0ff; /* outer cyan */
+}
+
+

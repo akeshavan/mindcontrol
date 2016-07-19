@@ -2,10 +2,18 @@ import "./body.html"
 import "./qc.html"
 import {Subjects} from "../api/module_tables.js"
 
+contextHotkeys =  new Hotkeys({
+    autoLoad : false
+});
+
+
+
 FlowRouter.route('/', {
   action: function() {
     console.log("rendering /")
     BlazeLayout.render("body", {content: "base", "sidebar_content": "body_sidebar"});
+    if (contextHotkeys){contextHotkeys.unload()}
+    
   }
 });
 

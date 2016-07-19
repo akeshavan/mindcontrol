@@ -54,12 +54,17 @@
                 <li>
                      <div class="panel panel-{{modeCSS.pointColor}}">
   <div class="panel-heading">
-    <h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3>
+
+    <!--<h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3> -->
+            <table>
+            <th>Logged Points</th>
+        <th><a data-toggle="collapse" data-target="#collapseLP"> <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></th>
+        <th><a><span class="glyphicon glyphicon-pencil swapmode point"></span></a> </th></table>
 
 
-
+     
   </div>
-  <div id="collapseLP" class="panel-collapse collapse in" role="tabpanel">
+  <div id="collapseLP" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
     <table class="table table-hover table-striped">
           <tr>
@@ -88,30 +93,68 @@
                 <li>
                      <div class="panel panel-{{modeCSS.contourColor}}">
   <div class="panel-heading">
-    <h3 class="panel-title swapmode contour" data-toggle="collapse" data-target="#collapseC" > Logged Curves</h3>
+    <!--<h4 class="panel-title" > -->
+        <table>
+            <th>Logged Curves</th>
+        <th><a data-toggle="collapse" data-target="#collapseC"> <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></th>
+        <th><a><span class="glyphicon glyphicon-pencil swapmode contour"></span></a> </th></table>
+        <!--</h4>-->
   </div>
   <div id="collapseC" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
+
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                {{#each loggedContours}}
+
+
+          <div class="panel">
+            <div class="panel-heading" role="tab" id="heading{{@index}}">
+              <h4 class="panel-title">
+                  <table>
+                      <td>{{> xEditable type="text" success=onDrawingNote placement="right" value=this.name}}</td><td></td>
+                      <td> {{this.checkedBy}}</td>
+                      <td> <a id="select_button_group"><span class="glyphicon glyphicon-pencil {{#if (selectedDrawing @index)}} selectedDrawing{{/if}}" aria-hidden="true"></span></a> </td>
+                      <td> <a role="button" id="drawingDropdown" data-toggle="collapse" data-parent="#accordion" href="#collapse{{@index}}" aria-expanded="true" aria-controls="collapseOne">
+                            <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+                            </a></td>
+                      <td><a id="delete_button_group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                  </table>
+
+              </h4>
+            </div>
+            <div id="collapse{{@index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{@index}}">
+              <div class="panel-body">
+
     <table class="table table-hover table-striped">
           <tr>
             <th>Coordinate</th>
             <th>Annotation</th>
-            <th>Logged By</th>
+            <!--<th>Logged By</th>-->
             <th></th>
           </tr>
-        {{#each loggedContours}}
+
+          {{#each this.contours}}
           <tr>
             <td><a class="goto_cont"> {{this.name}} </a> </td>
             <td>{{> xEditable type="text" success=onContourNote placement="right" value=this.note}}</td>
-            <td>{{this.checkedBy}}</td>
+            <!--<td>{{this.checkedBy}}</td>-->
             <td>
   <a class="remove-contour"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 </td>
           </tr>
-        {{/each}}
+          {{/each}}
+
         </table>
+
+              </div>
+            </div>
+          </div>
+
+        {{/each}}
+        </div>
+        <button class="btn btn-success" id="addNewDrawing"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
   </div>
-   <div class="panel-footer">Shift+drag to draw curves. Annotate curves in the table above.</div>
+   <div class="panel-footer">Shift+click & drag to draw curves. Annotate curves in the table above.</div>
   </div>
 </div>
                 </li>
@@ -213,6 +256,7 @@
 
  <a class="btn btn-default" id="menu-toggle">Toggle Editor Menu</a>
  <a class="btn btn-default" id="resize">Resize</a>
+
   <a class="btn btn-default" id="touchscreen">
 {{#if isTouch}}
 Touchscreen
@@ -220,6 +264,9 @@ Touchscreen
 Not touchscreen
 {{/if}}
   </a>
+
+ Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
+
                         <br><br>
                         <div id="viewer" width="500px"></div>
 
