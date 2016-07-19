@@ -174,7 +174,7 @@ var logpoint = function(e, template, type){
         
         }
         
-         else if (type=="mouseup" && template.logMode.get() == "contour"){
+         else if ((type=="mouseup" || type=="mouseout") && template.logMode.get() == "contour"){
              var contours = template.contours.get()
              //console.log("on mouseup, contours is", contours)
              var selectContour = getSelectedDrawing(template) //contours[contours.length-1].contours
@@ -430,6 +430,10 @@ Template.view_images.events({
      fill_all(template)
      //console.log("mousemove")
     
+ },
+ "mouseout #papayaContainer0": function(event, template){
+     logpoint(event, template, "mouseout")
+     fill_all(template)
  },
  "click .goto_coor": function(event, template){
      //console.log("clicked a coordinate", this, this.matrix_coor)
