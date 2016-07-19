@@ -82,10 +82,22 @@ var fill_all = function(template){
     fill_all_loggedPoints(lp) 
 }
 
+var addNewDrawing= function(template){
+    
+     var contours = template.contours.get()
+     contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
+                                checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
+     template.contours.set(contours)
+     Session.set('selectedDrawing', contours.length-1)   
+}
+
 var getSelectedDrawing = function(template){
     
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
+    if (idx==null){
+        addNewDrawing(template)
+    }
     return contours[idx].contours
 }
 
@@ -297,6 +309,7 @@ Template.view_images.helpers({
         var contours = Template.instance().contours.get()
         if (contours){
         var idx = Session.get("selectedDrawing")
+        if (contours[idx]){
         var selected = contours[idx].contours
         var idx = selected.indexOf(this)
         //console.log("contour note", selected, idx)
@@ -307,7 +320,7 @@ Template.view_images.helpers({
             template_instance.set(contours)
         }}
         
-        return tempate_decorator2(Template.instance().contours, selected, idx, Template.instance().contours.get())}
+        return tempate_decorator2(Template.instance().contours, selected, idx, Template.instance().contours.get())}}
         
         //return  template_decorator(Template.instance().contours, lp, idx)
     },
@@ -420,7 +433,7 @@ Template.view_images.events({
     //console.log("element is", element, "idx of filter is", idx)
     element = element[idx]//.join(" ").split("+")
     //console.log("element is", element)
-    //console.log("element is", element)     
+    console.log("element is", element)     
 
      var currMode = template.logMode.get()
 
@@ -522,11 +535,12 @@ Template.view_images.events({
      
  },
  "click #addNewDrawing": function(e, template){
-     var contours = template.contours.get()
+     /*var contours = template.contours.get()
      contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}], 
                                 checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
      template.contours.set(contours)
-     Session.set('selectedDrawing', contours.length-1)                   
+     Session.set('selectedDrawing', contours.length-1)  */
+     addNewDrawing(template)                 
  },
  "click #drawingDropdown": function(e, template){
      idx = template.contours.get().indexOf(this)
@@ -555,6 +569,13 @@ var load_hotkeys = function(){
                     combo : "ctrl+z",
                     callback : function(){
                         console.log("you want to undo")
+                    }
+                })
+                
+    contextHotkeys.add({
+                    combo : "ctrl+s",
+                    callback : function(){
+                        console.log("you want to save")
                     }
                 })
     contextHotkeys.load()
