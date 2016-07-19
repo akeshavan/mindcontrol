@@ -4,11 +4,15 @@ import {Subjects} from "../api/module_tables.js"
 import "../api/publications.js"
 import "../api/methods.js"
 import "./module_templates.js"
+import "./routers.js"
 
 //var staticURL = "http://127.0.0.1:4002/" 
 var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
+
+
+
 
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
     return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
@@ -545,6 +549,17 @@ Template.view_images.events({
 
 })
 
+
+var load_hotkeys = function(){
+    contextHotkeys.add({
+                    combo : "ctrl+z",
+                    callback : function(){
+                        console.log("you want to undo")
+                    }
+                })
+    contextHotkeys.load()
+}
+
 Template.view_images.rendered = function(){
     
     if(!this._rendered) {
@@ -555,6 +570,8 @@ Template.view_images.rendered = function(){
         
     this.autorun(function(){
         var qc = Session.get("currentQC")
+        
+
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)
         if (qc){
@@ -570,6 +587,7 @@ Template.view_images.rendered = function(){
                     Template.instance().contours.set([])
                 }
                 addPapaya(output)
+                load_hotkeys()
             }
             
             
