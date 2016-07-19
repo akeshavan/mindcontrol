@@ -95,6 +95,9 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
     if (this.container.contextManager && this.container.contextManager.drawToViewer) {
         this.container.contextManager.drawToViewer(this.context);
     }
+    //console.log("mindcontrol template is", this.mindcontrol_template)
+    fill_all(this.mindcontrol_template)
+
 };
 
 
@@ -335,7 +338,7 @@ var addPapaya = function(data){
                                         //console.log(params)
                                         })
         papaya.Container.allowPropagation = true;
-        $("#viewer").on("mousedrag", function(e){console.log("mousedrag")})
+
         //} //endif
     }
 
@@ -721,6 +724,7 @@ Template.view_images.rendered = function(){
                 }
                 addPapaya(output)
                 load_hotkeys(Template.instance())
+                papayaContainers[0].viewer.mindcontrol_template = Template.instance()
             }
 
 
