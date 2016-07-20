@@ -173,19 +173,23 @@ var fill_all = function(template){
 
 var addNewDrawing= function(template){
 
+     //console.log("in add new drawing")
      var contours = template.contours.get()
-     contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}],
-                                checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
+     contours.push({contours: [],
+                    checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
      template.contours.set(contours)
      Session.set('selectedDrawing', contours.length-1)
+     return contours.length-1
 }
 
 var getSelectedDrawing = function(template){
 
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
-    if (idx==null){
-        addNewDrawing(template)
+    //console.log("in getSelectedDrawing idx is", idx)
+    if (idx==null || idx >= contours.length){
+        idx = addNewDrawing(template)
+        contours = template.contours.get()
     }
     return contours[idx].contours
 }
@@ -235,12 +239,17 @@ var logpoint = function(e, template, type){
                 //console.log("pushed contours", contours)
             }
 
+
             var selectContour = getSelectedDrawing(template)//contours[contours.length-1].contours //OR: selected contour
             //console.log("selectContours is", selectContour)
+            if (selectContour.length == 0){
+              selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
+            }
+
             var currentContour = selectContour[selectContour.length-1]
             //console.log("currentContours is", currentContour)
 
-            if (currentContour.complete){
+            if (currentContour.complete==true){
                 selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
                 currentContour = selectContour[selectContour.length-1]
                 currentContour.matrix_coor.push(originalCoord)
@@ -675,8 +684,11 @@ var load_hotkeys = function(template_instance){
                     callback : function(){
                         var contours = template_instance.contours.get()
                         var idx = Session.get("selectedDrawing")
-                        if (idx){
+                        if (idx != null){
                           contours[idx].contours.pop()
+                          if (contours[idx].contours.length==0){
+                            contours.splice(idx, 1)
+                          }
                         }
                         template_instance.contours.set(contours)
                         papayaContainers[0].viewer.drawViewer(true)
