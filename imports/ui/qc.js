@@ -127,15 +127,17 @@ var fill_all_points = function(matrix_coor){
          matrix_coor.forEach(function(val, idx, arr){
              var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val);
              if (viewer.intersectsMainSlice(val)){
-                 //draw_point(screenCoor, viewer, curveColor, 3)
-                 if (idx){
+                 draw_point(screenCoor, viewer, curveColor, 3)
+                 if (idx && prev !=null){
                      context.moveTo(prev.x, prev.y)
                      context.lineTo(screenCoor.x, screenCoor.y);
                      context.closePath();
                      context.stroke();
                  }
                  prev = screenCoor
-
+         }
+         else{
+           prev = null
          }
 
      })
@@ -187,7 +189,7 @@ var getSelectedDrawing = function(template){
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
     //console.log("in getSelectedDrawing idx is", idx)
-    if (idx==null || idx >= contours.length){
+    if (idx==null || idx >= contours.length || idx < 0){
         idx = addNewDrawing(template)
         contours = template.contours.get()
     }
@@ -301,6 +303,7 @@ var logpoint = function(e, template, type){
              //var currentContour = contours[contours.length-1]
              currentContour.complete = true
              //console.log("mouseup", currentContour)
+             currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
              template.contours.set(contours)
              Session.set("isDrawing", false)
 
@@ -369,6 +372,16 @@ var val_mapper = {"-1": "Not Checked", "0": "Fail", "1": "Pass", "2": "Needs Edi
 var class_mapper = {"-1": "warning", "0": "danger",
                     "1": "success", "2": "primary", "3": "info"}
 
+var snapToGrid = function(coords){
+  out_coords = []
+  //console.log("non-snapped", coords)
+  coords.forEach(function(val, idx, arr){
+    if (idx==0){console.log(val)}
+    out_coords.push(new papaya.core.Coordinate(Math.floor(val.x), Math.floor(val.y), Math.floor(val.z)))
+  })
+  //console.log("out coords is", out_coords)
+  return out_coords
+}
 
 Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
@@ -490,7 +503,12 @@ Template.view_images.helpers({
                 //return contours[contours.length-1].name
             }
             Session.set("selectedDrawing", contours.length-1)
-            return contours[contours.length-1].name
+            var output = contours[contours.length-1]
+            if (output != null){
+              return contours[contours.length-1].name
+            }
+
+
         }
     },
 
