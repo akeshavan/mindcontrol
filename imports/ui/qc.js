@@ -127,15 +127,17 @@ var fill_all_points = function(matrix_coor){
          matrix_coor.forEach(function(val, idx, arr){
              var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val);
              if (viewer.intersectsMainSlice(val)){
-                 //draw_point(screenCoor, viewer, curveColor, 3)
-                 if (idx){
+                 draw_point(screenCoor, viewer, curveColor, 3)
+                 if (idx && prev !=null){
                      context.moveTo(prev.x, prev.y)
                      context.lineTo(screenCoor.x, screenCoor.y);
                      context.closePath();
                      context.stroke();
                  }
                  prev = screenCoor
-
+         }
+         else{
+           prev = null
          }
 
      })
@@ -374,6 +376,7 @@ var snapToGrid = function(coords){
   out_coords = []
   //console.log("non-snapped", coords)
   coords.forEach(function(val, idx, arr){
+    if (idx==0){console.log(val)}
     out_coords.push(new papaya.core.Coordinate(Math.floor(val.x), Math.floor(val.y), Math.floor(val.z)))
   })
   //console.log("out coords is", out_coords)
