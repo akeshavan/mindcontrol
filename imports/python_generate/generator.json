@@ -1,0 +1,60 @@
+{"start_tag":"{{",
+  "end_tag":"}}",
+  "modules": [
+  {"name": "Exams",
+    "entry_type": "demographics",
+  "fields": [
+    {"function_name": "get_filter_field",
+      "id": "msid",
+      "name": "msid"
+    },
+    {"function_name": "get_filter_field",
+      "id": "subject_id",
+      "name": "Exam ID"
+    },
+    {"function_name": "get_filter_field",
+      "id": "Study Tag",
+      "name": "Study Tag"
+    },
+    {"function_name": "get_filter_field",
+      "id": "DCM_InstitutionName",
+      "name": "Site"
+    },
+    {"function_name": "get_filter_field",
+      "id": "metrics.DCM_InstitutionName",
+      "name": "Date"
+    }
+  ],
+  "graph_type":"datehist",
+  "showgraph": true},
+  {"name": "Freesurfer",
+  "entry_type": "freesurfer",
+  "fields":[
+    {"function_name":"get_filter_field",
+     "id":"subject_id",
+      "name":"Exam ID"
+    },
+    {"function_name":"get_qc_viewer",
+     "id":"name",
+      "name":"Freesurfer ID"
+    },
+    {"function_name":"get_qc_filter_field",
+     "id":"quality_check.qc",
+      "name":"QC"
+    },
+    {"function_name":"get_filter_field",
+     "id":"checkedBy",
+      "name":"checked by"
+    },
+    {"function_name":"get_filter_field",
+     "id":"quality_check.user_assign",
+     "name":"Assigned To"
+    },
+    {"function_name":null,
+     "id":"quality_check.notes_QC",
+      "name":"Notes"
+    }
+  ],
+  "graph_type":"histogram"}
+
+]}
