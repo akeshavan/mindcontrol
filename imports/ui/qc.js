@@ -839,6 +839,7 @@ Template.view_images.events({
 
  "click .load": function(e, template){
     console.log("you want to load", this)
+    papaya.Container.addImage(0, this.absolute_path)
  }
 
 })
