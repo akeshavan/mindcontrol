@@ -11,7 +11,12 @@ var staticURL = "http://127.0.0.1:3002/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
+/*-----------------------------------------------
 
+Papaya things: TODO: figure out inheritance in JS
+because this is gross
+
+-------------------------------------------------*/
 papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
   var draw = Session.get("isDrawing")
   if (!draw){
@@ -101,7 +106,6 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
     fill_all(this.mindcontrol_template)
 
 };
-
 
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
     return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
@@ -320,19 +324,51 @@ var logpoint = function(e, template, type){
 
 }
 
+var get_config = function(){
+
+        var source_json = "../python_generate/generator.json"
+        //console.log(HTTP.get(source_json).content)
+        myobject = HTTP.get(source_json, function(data){console.log("data is", data)} )
+        console.log(myobject)
+
+}
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
 var addPapaya = function(data){
     //if (papayaContainers.length == 0){
+
+        var params = {}
+        params["images"] = []
+        params["papayaLoadableImages"] = []
+        //console.log("this in the view images rendered template", data)
+
+        for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
+            params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
+
+        }
+
         if (papayaContainers.length != 0){
+            var prev_volumes = papayaContainers[0].params.images
+            var isSame = arraysEqual(prev_volumes, params["images"])
+            if (isSame){
+                return
+            }
             console.log("papayacontainers is", papayaContainers.pop())
         }
 
-    var params = {}
-    params["images"] = []
-    //console.log("this in the view images rendered template", data)
 
-    for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
-        params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
-    }
         var sLabelledFile = data.check_masks[i-1]
         //console.log(sLabelledFile)
         var oPartsLabelled = sLabelledFile.split("/");
@@ -344,7 +380,10 @@ var addPapaya = function(data){
 
 
         //params["contextManager"] = new ctxManager();
-        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(), min:0, max:2035, gradation:false, alpha:0.5}//colormap
+        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(),
+                                              min:0, max:2035,
+                                              gradation:false,
+                                              alpha:0.5}//colormap
         params["showControlBar"] = true
         params["expandable"] = true
         //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
@@ -384,6 +423,50 @@ var snapToGrid = function(coords){
   //console.log("out coords is", out_coords)
   return out_coords
 }
+
+var load_hotkeys = function(template_instance){
+    contextHotkeys.add({
+                    combo : "d d",
+                    callback : function(){
+                        var contours = template_instance.contours.get()
+                        var idx = Session.get("selectedDrawing")
+                        if (idx != null){
+                          contours[idx].contours.pop()
+                          if (contours[idx].contours.length==0){
+                            contours.splice(idx, 1)
+                          }
+                        }
+                        template_instance.contours.set(contours)
+                        papayaContainers[0].viewer.drawViewer(true)
+
+                    }
+                })
+
+    contextHotkeys.add({
+                    combo : "ctrl+s",
+                    callback : function(){
+                        console.log("you want to save")
+                    }
+                })
+
+    contextHotkeys.add({
+                    combo : "t t",
+                    callback : function(){
+                        console.log("you want to toggle modes")
+                        var currMode = template_instance.logMode.get()
+                        if (currMode == "point"){
+                            currMode = "contour"
+                        }
+                        else(
+                            currMode ="point"
+                        )
+                        template_instance.logMode.set(currMode)
+                    }
+                })
+    contextHotkeys.load()
+}
+
+/*Template-related things: OnCreated, helpers, events, and rendered*/
 
 Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
@@ -732,49 +815,6 @@ Template.view_images.events({
 
 })
 
-
-var load_hotkeys = function(template_instance){
-    contextHotkeys.add({
-                    combo : "d d",
-                    callback : function(){
-                        var contours = template_instance.contours.get()
-                        var idx = Session.get("selectedDrawing")
-                        if (idx != null){
-                          contours[idx].contours.pop()
-                          if (contours[idx].contours.length==0){
-                            contours.splice(idx, 1)
-                          }
-                        }
-                        template_instance.contours.set(contours)
-                        papayaContainers[0].viewer.drawViewer(true)
-
-                    }
-                })
-
-    contextHotkeys.add({
-                    combo : "ctrl+s",
-                    callback : function(){
-                        console.log("you want to save")
-                    }
-                })
-
-    contextHotkeys.add({
-                    combo : "t t",
-                    callback : function(){
-                        console.log("you want to toggle modes")
-                        var currMode = template_instance.logMode.get()
-                        if (currMode == "point"){
-                            currMode = "contour"
-                        }
-                        else(
-                            currMode ="point"
-                        )
-                        template_instance.logMode.set(currMode)
-                    }
-                })
-    contextHotkeys.load()
-}
-
 Template.view_images.rendered = function(){
 
     if(!this._rendered) {
@@ -804,6 +844,7 @@ Template.view_images.rendered = function(){
                 addPapaya(output)
                 load_hotkeys(Template.instance())
                 papayaContainers[0].viewer.mindcontrol_template = Template.instance()
+                get_config()
             }
 
 
