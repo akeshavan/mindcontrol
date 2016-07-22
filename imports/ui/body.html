@@ -1,30 +1,3 @@
-<!--<body>
-  <div class="container">
-    <header>
-      <h1>Todo List ({{incompleteCount}})</h1>
-
-      <label class="hide-completed">
-        <input type="checkbox" />
-        Hide Completed Tasks
-      </label>
-
-      {{> loginButtons}}
-
-      {{#if currentUser}}
-        <form class="new-task">
-          <input type="text" name="text" placeholder="Type to add new tasks" />
-        </form>
-      {{/if}}
-    </header>
-
-    <ul>
-      {{#each tasks}}
-        {{> task}}
-      {{/each}}
-    </ul>
-  </div>
-</body>-->
-
 <body data-spy="scroll" data-target=".bs-docs-sidebar">
     
     <head><title>MindControl Refactor</title></head>
@@ -43,8 +16,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
             
-            <li><a data-intro='Step 1: Login or create an account' data-step="1">{{> loginButtons}}</a></li>
-            <!--<li><a class="tutorial">Tutorial</a></li>-->
+            <li><a>{{> loginButtons}}</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
