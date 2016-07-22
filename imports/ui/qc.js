@@ -6,8 +6,8 @@ import "../api/methods.js"
 import "./module_templates.js"
 import "./routers.js"
 
-var staticURL = "http://127.0.0.1:3002/"
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+//var staticURL = "http://127.0.0.1:3002/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
@@ -193,7 +193,7 @@ var getSelectedDrawing = function(template){
 
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
-    //console.log("in getSelectedDrawing idx is", idx)
+    console.log("in getSelectedDrawing idx is", idx)
     if (idx==null || idx >= contours.length || idx < 0){
         idx = addNewDrawing(template)
         contours = template.contours.get()
@@ -587,7 +587,7 @@ Template.view_images.helpers({
                 //var contours = Template.instance().contours.get()
                 //return contours[contours.length-1].name
             }
-            Session.set("selectedDrawing", contours.length-1)
+            //Session.set("selectedDrawing", contours.length-1)
             var output = contours[contours.length-1]
             if (output != null){
               return contours[contours.length-1].name
@@ -640,7 +640,6 @@ Template.view_images.events({
                 form_data[field_name] = form_values[i]["value"]
                 }
         }
-        console.log(form_data)
         //lp = Session.get("loggedPoints")
         //console.log("this data", this.data)
 
@@ -781,13 +780,15 @@ Template.view_images.events({
  },
  "click #drawingDropdown": function(e, template){
      idx = template.contours.get().indexOf(this)
-     console.log("seelcted,", idx)
+     //console.log("seelcted,", idx)
      Session.set("selectedDrawing", idx)
+     //console.log("Session's selected Drawing", Session.get("selectedDrawing"))
  },
  "click #select_button_group": function(e, template){
      idx = template.contours.get().indexOf(this)
-     console.log("seelcted,", idx)
+     //console.log("seelcted,", idx)
      Session.set("selectedDrawing", idx)
+     //console.log("Session's selected Drawing in click", Session.get("selectedDrawing"))
  },
  "click #delete_button_group": function(e, template){
      var contours = template.contours.get()
