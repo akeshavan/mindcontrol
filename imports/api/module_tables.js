@@ -33,7 +33,7 @@ TabularTables.freesurfer =  new Tabular.Table({
               get_qc_viewer("freesurfer", "name", "Freesurfer ID"), //tableFields["viewFS"],
               get_qc_filter_field("freesurfer", "quality_check.QC", "QC"), //tableFields["QC"],
               get_filter_field("freesurfer", "checkedBy", "checked by"),
-              get_filter_field("freesurfer", "quality_check.user_assign", "Assigned To"),
+              get_filter_list_field("freesurfer", "quality_check.user_assign", "Assigned To"),
               {data:"quality_check.notes_QC", title:"Notes"}
               //tableFields["assignedTo"]
               ]

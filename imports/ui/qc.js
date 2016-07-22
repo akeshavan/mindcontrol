@@ -543,12 +543,22 @@ Template.view_images.events({
 
 
         form_values = $("#QC_form").serializeArray()
+        //console.log("form values are", form_values)
         form_data = {}
         for (i=0;i<form_values.length;i++){
-            form_data[form_values[i]["name"]] = form_values[i]["value"]
+            var field_name = form_values[i]["name"]
+            if (field_name == "user_assign"){
+                if (Object.keys(form_data).indexOf(field_name) < 0){
+                    form_data[field_name] = []
+                }
+                form_data[field_name].push(form_values[i]["value"])
+            }
+            else{
+                form_data[field_name] = form_values[i]["value"]
+                }
         }
-        //console.log(form_data)
-        lp = Session.get("loggedPoints")
+        console.log(form_data)
+        //lp = Session.get("loggedPoints")
         //console.log("this data", this.data)
 
         var qc = Session.get("currentQC")
@@ -558,7 +568,7 @@ Template.view_images.events({
         update["checkedAt"] = new Date()
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
-
+        console.log("update to", update)
         //console.log("update is", update)
 
         Meteor.call("updateQC", qc, update, function(error, result){

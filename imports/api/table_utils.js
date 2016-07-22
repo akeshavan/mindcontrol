@@ -52,6 +52,34 @@ get_filter_field = function(entry_type, field_name, title){
     
 }
 
+get_filter_list_field = function(entry_type, field_name, title){
+    
+    var returnfunc = {data:field_name, 
+                      title:title, 
+                      render: function(val, type, doc){
+                                var html = ""
+                                if (val != null){
+                                    console.log("val is", val)
+                                if(typeof val == "string"){
+                                    val = [val]
+                                }
+                                val.forEach(function(val2, idx, arr){
+                                    if (val != null){
+                                        tmp = '<a class="filter '+entry_type+'+'+field_name+'+'+val2+'">'+val2+'</a>'
+                                        html = html +" "+ tmp
+                                    }
+                                    
+                                })
+                                return Spacebars.SafeString(html)}
+                                else{return ""}
+                          
+                                
+                            }//end function
+                      }; //end returnfunc
+    return returnfunc
+    
+}
+
 get_qc_filter_field = function(entry_type, field_name, title){
     
 
