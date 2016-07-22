@@ -220,9 +220,10 @@
 
     <label>Assign To: </label>
     <div class="form-group">
-      <select id="user-assign" name="user_assign" width="100%" class="form-control">
+      <select id="user-assign" name="user_assign" width="100%" class="form-control" multiple="multiple">
 
           <option disabled="disabled" selected="selected">Assign To</option>
+          
               {{#each user}}
                   <option value="{{this.username}}">{{this.username}}</option>
               {{/each}}
