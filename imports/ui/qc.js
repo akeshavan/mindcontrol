@@ -618,6 +618,21 @@ Template.view_images.helpers({
       else{
         return false
       }
+    },
+
+    loadableImages: function(){
+        var images = Session.get("loadableImages")
+        var to_display = []
+        var output = []
+
+        images.forEach(function(val, idx, arr){
+            var last = val.split("/").pop()
+            var tmp = {}
+            tmp["absolute_path"] = images[idx]
+            tmp["name"] = last
+            to_display.push(tmp)
+        })
+        return to_display
     }
 
 
@@ -820,6 +835,10 @@ Template.view_images.events({
 
    template.contours.set(contours)
    papayaContainers[0].viewer.drawViewer(true)
+ },
+
+ "click .load": function(e, template){
+    console.log("you want to load", this)
  }
 
 })

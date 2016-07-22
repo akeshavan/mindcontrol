@@ -273,8 +273,23 @@ Not touchscreen
 {{/if}}
   </a>
 
- Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
+<!-- Single button -->
+{{#if loadableImages.length}}
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Loadable Images <span class="caret"></span>
+  </button>
+  <div class="dropdown-menu">
+      <ul>
+          {{#each loadableImages}}
+          <li><a class="dropdown-item load">{{this.name}}</a></li>
+          {{/each}}
+      </ul>
 
+  </div>
+</div>{{/if}}
+                        Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
                         <br><br>
                         <div id="viewer" width="500px"></div>
 
