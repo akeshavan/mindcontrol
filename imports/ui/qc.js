@@ -343,12 +343,20 @@ var addPapaya = function(data, entry_type, template_instance){
 
         var params = {}
         params["images"] = []
+        var loadableImages = []
+        Session.set("loadableImages", loadableImages)
+        for (i=0;i<data.check_masks.length;i++){ //never load more than 2 images
+            var url = staticURL+data["check_masks"][i]+"?dl=0"
+            if (i>=2){
+                loadableImages.push(url)
 
-        for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
-            params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
+            }
+            else{
+                params["images"].push(url)
+            }
 
         }
-
+        Session.set("loadableImages", loadableImages)
         if (papayaContainers.length != 0){
             var prev_volumes = papayaContainers[0].params.images
             var isSame = arraysEqual(prev_volumes, params["images"])
@@ -472,6 +480,7 @@ Template.view_images.onCreated(function(){
     this.contours = new ReactiveVar([])
     this.logMode = new ReactiveVar("point")
     this.touchscreen = new ReactiveVar(false)
+    this.loadableImages = new ReactiveVar([])
 })
 
 Template.view_images.helpers({
