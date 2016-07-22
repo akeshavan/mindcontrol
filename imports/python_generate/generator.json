@@ -39,7 +39,7 @@
       "name":"Freesurfer ID"
     },
     {"function_name":"get_qc_filter_field",
-     "id":"quality_check.qc",
+     "id":"quality_check.QC",
       "name":"QC"
     },
     {"function_name":"get_filter_field",
