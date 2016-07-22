@@ -167,8 +167,9 @@ var fill_all = function(template){
 
     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
-
-        val.contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor)})
+        if (val.visible==true || val.visible==null){
+          val.contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor)})
+        }
         })
     fill_all_loggedPoints(lp)
 }
@@ -305,6 +306,7 @@ var logpoint = function(e, template, type){
              //console.log("mouseup", currentContour)
              currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
              template.contours.set(contours)
+             //papayaContainers[0].viewer.drawViewer(true)
              Session.set("isDrawing", false)
 
          }
@@ -514,6 +516,17 @@ Template.view_images.helpers({
 
     isTouch: function(){
       return Template.instance().touchscreen.get()
+    },
+
+    visibilityStatus: function(idx){
+      var contours = Template.instance().contours.get()
+      var select = contours[idx]
+      if (select.visible == true || select.visible==null){
+        return true
+      }
+      else{
+        return false
+      }
     }
 
 
@@ -691,6 +704,20 @@ Template.view_images.events({
      Session.set("selectedDrawing", contours.length-1)
      papayaContainers[0].viewer.drawViewer(true)
 
+ },
+
+ "click .toggle-visibility": function(e, template){
+   var contours = template.contours.get()
+   var idx = contours.indexOf(this)
+   if (contours[idx].visible == true ||contours[idx].visible == null){
+     contours[idx].visible = false
+   }
+   else{
+     contours[idx].visible = true
+   }
+
+   template.contours.set(contours)
+   papayaContainers[0].viewer.drawViewer(true)
  }
 
 })
