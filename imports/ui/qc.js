@@ -6,8 +6,8 @@ import "../api/methods.js"
 import "./module_templates.js"
 import "./routers.js"
 
-var staticURL = "http://127.0.0.1:3002/"
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+/var staticURL = "http://127.0.0.1:3002/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
