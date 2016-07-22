@@ -2,7 +2,7 @@
   "end_tag":"}}",
   "modules": [
   {"name": "Exams",
-    "entry_type": "demographics",
+    "entry_type": "demographic",
   "fields": [
     {"function_name": "get_filter_field",
       "id": "msid",

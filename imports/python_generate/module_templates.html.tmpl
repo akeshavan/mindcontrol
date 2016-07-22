@@ -16,14 +16,14 @@
     </button>
     <br>
     <br>
-    <div class="collapse {% if showgraph %}in{% endif %}" id="collapseExample" aria-labelledby="collapseExample">
+    <div class="collapse {% if module.showgraph %}in{% endif %}" id="collapseExample" aria-labelledby="collapseExample">
         <div id="d3vis_date_{{module.entry_type}}"></div>
     </div>
 
 {% elif module.graph_type=="histogram"%}
  <br>
   <br>
-    Selected Metric: {{currentMetric}}
+    Selected Metric: {{start_tag}}currentMetric{{end_tag}}
   <div class="d3board">
 
         <svg id="d3vis_{{module.entry_type}}"></svg>
@@ -33,7 +33,7 @@
     <select id="metric-select-{{module.entry_type}}" class="form-control">
     <option disabled="disabled" selected="selected" >Please Select</option>
     {{start_tag}}#each metric{{end_tag}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{start_tag}}this{{end_tag}}">{{start_tag}}this{{end_tag}}</option>
     {{start_tag}}/each{{end_tag}}
 </select>
 
@@ -76,7 +76,7 @@
 
                      {{start_tag}}#each currentSelector{{end_tag}}
                     <span class="tag label label-info">
-                      <span class="{{start_tag}}this.mapper{{end_tag}}">{{start_tag}}this.name{{end_Tag}}</span>
+                      <span class="{{start_tag}}this.mapper{{end_tag}}">{{start_tag}}this.name{{end_tag}}</span>
                       <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a>
                     </span>
                     <br><br>
