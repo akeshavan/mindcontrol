@@ -6,8 +6,8 @@ import "../api/methods.js"
 import "./module_templates.js"
 import "./routers.js"
 
-//var staticURL = "http://127.0.0.1:3002/"
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+var staticURL = "http://127.0.0.1:3002/"
+//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
@@ -193,7 +193,7 @@ var getSelectedDrawing = function(template){
 
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
-    console.log("in getSelectedDrawing idx is", idx)
+    //console.log("in getSelectedDrawing idx is", idx)
     if (idx==null || idx >= contours.length || idx < 0){
         idx = addNewDrawing(template)
         contours = template.contours.get()
@@ -324,14 +324,6 @@ var logpoint = function(e, template, type){
 
 }
 
-var get_config = function(){
-
-        var source_json = "../python_generate/generator.json"
-        //console.log(HTTP.get(source_json).content)
-        myobject = HTTP.get(source_json, function(data){console.log("data is", data)} )
-        console.log(myobject)
-
-}
 function arraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;
@@ -346,13 +338,11 @@ function arraysEqual(a, b) {
   return true;
 }
 
-var addPapaya = function(data){
+var addPapaya = function(data, entry_type, template_instance){
     //if (papayaContainers.length == 0){
 
         var params = {}
         params["images"] = []
-        params["papayaLoadableImages"] = []
-        //console.log("this in the view images rendered template", data)
 
         for (i=0;i<data.check_masks.length;i++){ //skipped the brainmask
             params["images"].push(staticURL+data["check_masks"][i]+"?dl=0")
@@ -368,32 +358,41 @@ var addPapaya = function(data){
             console.log("papayacontainers is", papayaContainers.pop())
         }
 
+        Meteor.call("get_generator", entry_type, function(err, res){
 
-        var sLabelledFile = data.check_masks[i-1]
-        //console.log(sLabelledFile)
-        var oPartsLabelled = sLabelledFile.split("/");
-        var sLastPart = oPartsLabelled[oPartsLabelled.length-1];
-        //console.log(sLastPart)
-        //console.log("cmap", colormap)
-        //console.log("customCtab", myCustomColorTable)
-        //console.log("maxKeys", _.max(validKeys))
+            var cmap = res.colormaps
+            var idxs = Object.keys(cmap)
+            for (i=0;i<idxs.length;i++){
+                var idx = idxs[i]
+                console.log("index is", idx)
+                var opts = cmap[idx]
+                console.log("options are", opts)
+                var name = params.images[idx]
+                console.log("name is", name)
+                var split_name = name.split("/")
+                split_name = split_name[split_name.length-1]
+                console.log("split_name is", split_name)
+                if (opts.name == "custom.Freesurfer"){
+                    params[split_name] = {lut: new myCustomColorTable(),
+                                                  min:0, max:2035,
+                                                  gradation:false,
+                                                  alpha:opts.alpha}//colormap
+                }
 
 
-        //params["contextManager"] = new ctxManager();
-        params["segmentation.nii.gz?dl=0"] = {lut: new myCustomColorTable(),
-                                              min:0, max:2035,
-                                              gradation:false,
-                                              alpha:0.5}//colormap
-        params["showControlBar"] = true
-        params["expandable"] = true
-        //params["images"] = [staticURL+Rparams.mse+"/nii/"+Rparams.imageFilename+".nii.gz"]
-        //console.log("params", params)
-        //$("#modal-fullscreen").show()
-        papaya.Container.addViewer("viewer", params, function(){
-                                        //.modal("show");
-                                        //console.log(params)
-                                        })
-        papaya.Container.allowPropagation = true;
+            }
+            console.log("params is", params)
+            params["showControlBar"] = true
+            papaya.Container.addViewer("viewer", params, function(err, params){
+                                            //.modal("show");
+                                            console.log(err, params)
+                                            })
+            papaya.Container.allowPropagation = true;
+            papayaContainers[0].viewer.mindcontrol_template = template_instance//Template.instance()
+
+        })
+
+
 
         //} //endif
     }
@@ -842,10 +841,10 @@ Template.view_images.rendered = function(){
                 else{
                     Template.instance().contours.set([])
                 }
-                addPapaya(output)
+                addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
-                papayaContainers[0].viewer.mindcontrol_template = Template.instance()
-                get_config()
+
+                //get_config()
             }
 
 

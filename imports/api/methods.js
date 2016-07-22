@@ -105,6 +105,22 @@ Meteor.methods({
         var topull = {"name": name, "selector": query}
         Meteor.users.update(this.userId, {$pull: {queries: topull}})
         
+    },
+
+    get_generator: function(entry_type){
+        if (Meteor.isServer){
+        var myjson = {};
+        myjson = JSON.parse(Assets.getText("generator.json"));
+        if (entry_type == null){
+            return myjson
+        }
+        else{
+        console.log("entry_Type", entry_type)
+        //console.log("myjson", myjson.modules)
+        var output =  myjson.modules.find(function(o){return o.entry_type == entry_type})
+        console.log("output is", output)
+        return output
+        }}
     }
     
   });
