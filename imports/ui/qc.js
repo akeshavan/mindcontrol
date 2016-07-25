@@ -373,25 +373,27 @@ var addPapaya = function(data, entry_type, template_instance){
         Meteor.call("get_generator", entry_type, function(err, res){
 
             var cmap = res.colormaps
-            var idxs = Object.keys(cmap)
-            for (i=0;i<idxs.length;i++){
-                var idx = idxs[i]
-                console.log("index is", idx)
-                var opts = cmap[idx]
-                console.log("options are", opts)
-                var name = params.images[idx]
-                console.log("name is", name)
-                var split_name = name.split("/")
-                split_name = split_name[split_name.length-1]
-                console.log("split_name is", split_name)
-                if (opts.name == "custom.Freesurfer"){
-                    params[split_name] = {lut: new myCustomColorTable(),
-                                                  min:0, max:2035,
-                                                  gradation:false,
-                                                  alpha:opts.alpha}//colormap
+            if (cmap){
+                var idxs = Object.keys(cmap)
+                for (i=0;i<idxs.length;i++){
+                    var idx = idxs[i]
+                    console.log("index is", idx)
+                    var opts = cmap[idx]
+                    console.log("options are", opts)
+                    var name = params.images[idx]
+                    console.log("name is", name)
+                    var split_name = name.split("/")
+                    split_name = split_name[split_name.length-1]
+                    console.log("split_name is", split_name)
+                    if (opts.name == "custom.Freesurfer"){
+                        params[split_name] = {lut: new myCustomColorTable(),
+                                                      min:0, max:2035,
+                                                      gradation:false,
+                                                      alpha:opts.alpha}//colormap
+                    }
+    
+    
                 }
-
-
             }
             console.log("params is", params)
             params["showControlBar"] = true
