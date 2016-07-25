@@ -246,7 +246,8 @@ var logpoint = function(e, template, type){
                 //console.log("pushed contours", contours)
             }
 
-
+            var world = new papaya.core.Coordinate();
+            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
             var selectContour = getSelectedDrawing(template)//contours[contours.length-1].contours //OR: selected contour
             //console.log("selectContours is", selectContour)
             if (selectContour.length == 0){
@@ -260,6 +261,7 @@ var logpoint = function(e, template, type){
                 selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
                 currentContour = selectContour[selectContour.length-1]
                 currentContour.matrix_coor.push(originalCoord)
+                currentContour.world_coor.push(world)
             }
             template.contours.set(contours)
             Session.set("isDrawing", true)
@@ -272,7 +274,8 @@ var logpoint = function(e, template, type){
 
             //papayaContainers[0].viewer.cursorPosition isn't updated on mousedrag
             var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
-
+            var world = new papaya.core.Coordinate();
+            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
             var contours = template.contours.get()
 
             if (contours.length){
@@ -284,7 +287,7 @@ var logpoint = function(e, template, type){
                 if (currentContour.complete==false){
 
                     currentContour.matrix_coor.push(originalCoord)
-                    //currentContour.world_coor.push(world)
+                    currentContour.world_coor.push(world)
                     template.contours.set(contours)
                     Session.set("isDrawing", true)
 
@@ -624,15 +627,16 @@ Template.view_images.helpers({
         var images = Session.get("loadableImages")
         var to_display = []
         var output = []
-
-        images.forEach(function(val, idx, arr){
-            var last = val.split("/").pop()
-            var tmp = {}
-            tmp["absolute_path"] = images[idx]
-            tmp["name"] = last
-            to_display.push(tmp)
-        })
-        return to_display
+        if (images){
+            images.forEach(function(val, idx, arr){
+                var last = val.split("/").pop()
+                var tmp = {}
+                tmp["absolute_path"] = images[idx]
+                tmp["name"] = last
+                to_display.push(tmp)
+            })
+            return to_display
+        }
     }
 
 
