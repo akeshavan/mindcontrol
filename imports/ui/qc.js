@@ -107,7 +107,7 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
 
 };
 
-/*
+
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
     return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
         screenSlice.xDim);
@@ -117,7 +117,7 @@ papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateY = function (yLoc,
     return papaya.viewer.Viewer.validDimBounds((yLoc - screenSlice.finalTransform[1][2]) / screenSlice.finalTransform[1][1],
         screenSlice.yDim);
 };
-*/
+
 var fill_all_points = function(matrix_coor){
     if (matrix_coor){
 
@@ -312,7 +312,7 @@ var logpoint = function(e, template, type){
              //var currentContour = contours[contours.length-1]
              currentContour.complete = true
              //console.log("mouseup", currentContour)
-             //currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
+             currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
              template.contours.set(contours)
              //papayaContainers[0].viewer.drawViewer(true)
              Session.set("isDrawing", false)
