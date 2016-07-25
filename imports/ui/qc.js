@@ -391,6 +391,9 @@ var addPapaya = function(data, entry_type, template_instance){
                                                       gradation:false,
                                                       alpha:opts.alpha}//colormap
                     }
+                    else{
+                        params[split_name] = {lut: opts.name, alpha: opts.alpha}
+                    }
     
     
                 }
