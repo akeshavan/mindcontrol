@@ -474,6 +474,20 @@ var load_hotkeys = function(template_instance){
                         template_instance.logMode.set(currMode)
                     }
                 })
+    
+    contextHotkeys.add({
+                    combo : "z z",
+                    callback : function(){
+                        console.log("you want to hide the last overlay")
+                        idx = papayaContainers[0].viewer.screenVolumes.length - 1
+                        var isHidden = papayaContainers[0].viewer.screenVolumes[idx].hidden
+                        
+                        if (!isHidden){papaya.Container.hideImage(0, idx)}
+                        else{papaya.Container.showImage(0, idx)}
+                        //papaya.Container.showImage(0, imageIndex)
+                    }
+                })            
+                
     contextHotkeys.load()
 }
 
