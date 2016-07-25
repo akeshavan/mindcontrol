@@ -428,7 +428,7 @@ var snapToGrid = function(coords){
   //console.log("non-snapped", coords)
   coords.forEach(function(val, idx, arr){
     if (idx==0){console.log(val)}
-    out_coords.push(new papaya.core.Coordinate(Math.floor(val.x), Math.floor(val.y), Math.floor(val.z)))
+    out_coords.push(new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z)))
   })
   //console.log("out coords is", out_coords)
   return out_coords
