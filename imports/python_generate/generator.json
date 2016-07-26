@@ -21,15 +21,15 @@
       "name": "Site"
     },
     {"function_name": "get_filter_field",
-      "id": "metrics.DCM_InstitutionName",
+      "id": "metrics.DCM_StudyDate",
       "name": "Date"
     }
   ],
   "graph_type":"datehist",
-  "showgraph": true},
-    {
-      "name": "Freesurfer",
-      "entry_type": "freesurfer",
+  "showgraph": false},
+  {
+      "name": "Mindboggle",
+      "entry_type": "mindboggle",
       "fields": [
         {
           "function_name": "get_filter_field",
@@ -52,7 +52,7 @@
           "name": "checked by"
         },
         {
-          "function_name": "get_filter_field",
+          "function_name": "get_filter_list_field",
           "id": "quality_check.user_assign",
           "name": "Assigned To"
         },
@@ -67,6 +67,50 @@
         "1": {
           "name": "custom.Freesurfer",
           "alpha": 0.5
+        }
+      }
+    },
+  {"name": "Alignment",
+    "entry_type": "align",
+  "fields": [
+    
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "Freesurfer ID"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":null,
+  "colormaps": {
+        "1": {
+          "name": "Grayscale",
+          "alpha": 1
         }
       }
     }
