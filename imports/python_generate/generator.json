@@ -16,9 +16,9 @@
       "id": "Study Tag",
       "name": "Study Tag"
     },
-    {"function_name": "get_filter_field",
-      "id": "DCM_InstitutionName",
-      "name": "Site"
+    {"function_name": "get_filter_list_field",
+      "id": "status",
+      "name": "status"
     },
     {"function_name": "get_filter_field",
       "id": "metrics.DCM_StudyDate",

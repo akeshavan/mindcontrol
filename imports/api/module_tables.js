@@ -31,7 +31,7 @@ name:"demographic",
       
     
       
-        get_filter_field("demographic", "DCM_InstitutionName", "Site"),
+        get_filter_list_field("demographic", "status", "status"),
       
     
       
