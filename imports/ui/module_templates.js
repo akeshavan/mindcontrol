@@ -137,6 +137,65 @@ Template.align.rendered = function() {
 
 
 
+Template.freesurfer.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("freesurfer")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+Template.antsCT.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("antsCT")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+Template.nifti.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
 
 
 Template.demographic.helpers({
@@ -178,6 +237,54 @@ selector: function(){return get_filter("align")},
 
 
 
+Template.freesurfer.helpers({
+
+selector: function(){return get_filter("freesurfer")},
+
+
+
+metric: function(){
+        return get_metrics("freesurfer")
+    },
+currentMetric: function(){
+        return Session.get("current_freesurfer")
+    }
+
+
+
+})
+
+
+
+Template.antsCT.helpers({
+
+selector: function(){return get_filter("antsCT")},
+
+
+
+metric: function(){
+        return get_metrics("antsCT")
+    },
+currentMetric: function(){
+        return Session.get("current_antsCT")
+    }
+
+
+
+})
+
+
+
+Template.nifti.helpers({
+
+selector: function(){return get_filter("nifti")},
+
+
+
+})
+
+
+
 
   
 
@@ -187,6 +294,28 @@ selector: function(){return get_filter("align")},
         var metric = $(event.currentTarget).val()
         console.log("metric: ", metric)
         Session.set("current_mindboggle", metric)
+    }
+   })
+  
+
+  
+
+  
+   Template.freesurfer.events({
+    "change #metric-select-freesurfer": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_freesurfer", metric)
+    }
+   })
+  
+
+  
+   Template.antsCT.events({
+    "change #metric-select-antsCT": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_antsCT", metric)
     }
    })
   

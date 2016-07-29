@@ -12,7 +12,7 @@
       "id": "subject_id",
       "name": "Exam ID"
     },
-    {"function_name": "get_filter_field",
+    {"function_name": "get_filter_list_field",
       "id": "Study Tag",
       "name": "Study Tag"
     },
@@ -66,7 +66,7 @@
       "colormaps": {
         "1": {
           "name": "custom.Freesurfer",
-          "alpha": 0.5
+          "alpha": 0.25
         }
       }
     },
@@ -113,5 +113,138 @@
           "alpha": 1
         }
       }
+    },
+    {"name": "Freesurfer",
+    "entry_type": "freesurfer",
+  "fields": [
+
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "Freesurfer ID"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":"histogram",
+  "colormaps": {
+        "1": {
+          "name": "custom.Freesurfer",
+          "alpha": 0.25
+        }
+      }
+    },
+    {"name": "Ants Cortical Thickness",
+    "entry_type": "antsCT",
+  "fields": [
+
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "Freesurfer ID"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":"histogram",
+  "colormaps": {
+        "1": {
+          "name": "custom.Freesurfer",
+          "alpha": 0.25
+        }
+      }
+    },
+     {"name": "Nifti Files",
+    "entry_type": "nifti",
+  "fields": [
+
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "name"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":null,
+  "colormaps": {
+        "0": {
+          "name": "Grayscale",
+          "alpha": 1
+        }
+      }
     }
+
 ]}

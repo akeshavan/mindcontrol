@@ -27,7 +27,7 @@ name:"demographic",
       
     
       
-        get_filter_field("demographic", "Study Tag", "Study Tag"),
+        get_filter_list_field("demographic", "Study Tag", "Study Tag"),
       
     
       
@@ -100,6 +100,108 @@ name:"align",
     
       
         get_filter_list_field("align", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
+TabularTables.freesurfer =  new Tabular.Table({
+name:"freesurfer",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("freesurfer", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("freesurfer", "name", "Freesurfer ID"),
+      
+    
+      
+        get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("freesurfer", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("freesurfer", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
+TabularTables.antsCT =  new Tabular.Table({
+name:"antsCT",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("antsCT", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("antsCT", "name", "Freesurfer ID"),
+      
+    
+      
+        get_qc_filter_field("antsCT", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("antsCT", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("antsCT", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
+TabularTables.nifti =  new Tabular.Table({
+name:"nifti",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("nifti", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("nifti", "name", "name"),
+      
+    
+      
+        get_qc_filter_field("nifti", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("nifti", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("nifti", "quality_check.user_assign", "Assigned To"),
       
     
       
