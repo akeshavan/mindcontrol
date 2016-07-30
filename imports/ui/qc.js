@@ -6,8 +6,8 @@ import "../api/methods.js"
 import "./module_templates.js"
 import "./routers.js"
 
-var staticURL = "http://127.0.0.1:3002/"
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+//var staticURL = "http://127.0.0.1:3002/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
@@ -604,6 +604,29 @@ Template.view_images.onCreated(function(){
     this.logMode = new ReactiveVar("point")
     this.touchscreen = new ReactiveVar(false)
     this.loadableImages = new ReactiveVar([])
+    
+    window.peer = new Peer({
+      key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
+      debug: 3,
+      config: {'iceServers': [
+        { url: 'stun:stun.l.google.com:19302' },
+        { url: 'stun:stun1.l.google.com:19302' },
+      ]}
+            
+    });
+    
+    peer.on('open', function () {
+      console.log("peer ID is", peer.id);
+    });
+    
+    
+    peer.on("connection", function(conn){
+        console.log("conn is", conn)
+        conn.on("data", function(data){console.log("data is", data)})
+        
+    });
+    
+    
 })
 
 Template.view_images.helpers({
