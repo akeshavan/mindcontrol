@@ -626,7 +626,8 @@ var sync_templates_decorator = function(template_instance){ return function(data
     console.log("template_instance is", template_instance)
     if ("loggedPoints" in data){
         var key = "loggedPoints"
-        var current = template_instance[key].get()
+        //console.log("template instance of loggedPoints")
+        var current = template_instance.loggedPoints.get()
         //var userentries = get_stuff_of_user(template_instance, key, data['user'])
         console.log(data[key], "current is", current)
         if (current == null){
@@ -705,6 +706,7 @@ Template.view_images.onCreated(function(){
     });
     
     var my_template = this
+    
     peer.on("connection", function(conn){
         console.log("conn is", conn)
         conn.on("data", sync_templates_decorator(my_template))
@@ -739,19 +741,23 @@ Template.view_images.helpers({
         var conns = get_open_connections(this)
         if (!conns.length){
             
+            
             var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
+            if (dude){
             console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
-            peer.connect(dude.profile[name])
+            peer.connect(dude.profile[name])}
         }
         
         console.log("a peerjs connection exists, now we add a listener")
         for(var i = 0; i<conns.length; i++){
-            conns[i].on("data", sync_templates_decorator(my_template))
+            conns[i].on("data", sync_templates_decorator(template_instance))
         }
         
       }
 
-      
+      if (to_return == null){
+          return []
+      }
       return to_return
       
     },
