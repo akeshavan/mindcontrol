@@ -14,7 +14,15 @@ var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 var curveColor =  "rgb(255,235,59)"
 var pointColor = "rgb(255,0,0)"
 
-
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
 
 fill_all_points = function(matrix_coor){
     if (matrix_coor){
@@ -81,14 +89,16 @@ var addNewDrawing= function(template){
 
      //console.log("in add new drawing")
      var contours = template.contours.get()
-     contours.push({contours: [],
-                    checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
+     var entry = {contours: [],
+                    checkedBy: Meteor.user().username, name:"Drawing "+contours.length, uuid: guid()}
+     contours.push(entry)
      template.contours.set(contours)
+     send_to_peers({"action": "insert", "data":{"contours": entry}})
      Session.set('selectedDrawing', contours.length-1)
      return contours.length-1
 }
 
-var getSelectedDrawing = function(template){
+var getSelectedDrawingEntry = function(template){
 
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
@@ -97,7 +107,13 @@ var getSelectedDrawing = function(template){
         idx = addNewDrawing(template)
         contours = template.contours.get()
     }
-    return contours[idx].contours
+    return contours[idx]
+}
+
+var getSelectedDrawing = function(template){
+
+    var entry = getSelectedDrawingEntry(template)
+    return entry.contours
 }
 
 var logpoint = function(e, template, type){
@@ -125,7 +141,7 @@ var logpoint = function(e, template, type){
 
             var world = new papaya.core.Coordinate();
             papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-            var entry = {matrix_coor: originalCoord, world_coor: world, checkedBy: Meteor.user().username}
+            var entry = {matrix_coor: originalCoord, world_coor: world, checkedBy: Meteor.user().username, uuid: guid()}
             points.push(entry)
             template.loggedPoints.set(points)
             //var color = "rgb(255, 0, 0)"
@@ -141,8 +157,11 @@ var logpoint = function(e, template, type){
             var contours = template.contours.get()
             //console.log("on mousedown, contours is", contours)
             if (!contours.length){
-                contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}],
-                                checkedBy: Meteor.user().username, name:"Drawing 0"})
+                var entry = {contours: [{complete: false, matrix_coor:[], world_coor:[]}],
+                                checkedBy: Meteor.user().username, name:"Drawing 0", uuid: guid()}
+                contours.push(entry)
+                
+                send_to_peers({"action": "insert", "data":{"contours": entry}})
                 Session.set('selectedDrawing', 0)
                 //console.log("pushed contours", contours)
             }
@@ -165,7 +184,10 @@ var logpoint = function(e, template, type){
                 currentContour.world_coor.push(world)
             }
             template.contours.set(contours)
+            
+            send_to_peers({"action": "update", "data":{"contours": getSelectedDrawingEntry(template)}})
             Session.set("isDrawing", true)
+            
 
             //console.log("contour begin")
 
@@ -190,6 +212,7 @@ var logpoint = function(e, template, type){
                     currentContour.matrix_coor.push(originalCoord)
                     currentContour.world_coor.push(world)
                     template.contours.set(contours)
+                    //send_to_peers({"action": "update", "data":{"contours": getSelectedDrawingEntry(template)}})
                     Session.set("isDrawing", true)
 
                     }
@@ -214,6 +237,7 @@ var logpoint = function(e, template, type){
              //console.log("mouseup", currentContour)
              currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
              template.contours.set(contours)
+             send_to_peers({"action": "update", "data":{"contours": getSelectedDrawingEntry(template)}})
              //papayaContainers[0].viewer.drawViewer(true)
              Session.set("isDrawing", false)
 
@@ -404,25 +428,11 @@ var get_qc_name = function(){
     return name
 }
 
-var get_stuff_of_user = function(template, key, user){
-    if (!user){
-        var userentry = Meteor.users.findOne({_id: Meteor.userId()})
-        var user = userentry.username
-    }
-    var points = template[key].get()
-    var userPoints = []
-    points.forEach(function(val, idx, arr){
-        if (val.checkedBy == user){
-            userPoints.push(val)
-        }
-    })
-    return userPoints
-}
 
 var sync_templates_decorator = function(template_instance){ return function(data){
     var data = JSON.parse(data)
     console.log("you want to sync a template w/ data", data)
-    console.log("template_instance is", template_instance)
+    //console.log("template_instance is", template_instance)
     
     if (data["action"] == "insert"){
         for (var key in data["data"]){
@@ -435,15 +445,28 @@ var sync_templates_decorator = function(template_instance){ return function(data
             else{
                 current = current.concat(data["data"][key])
             }
-            console.log("current is", current)
+            //console.log("current is", current)
             template_instance[key].set(current)
-            papayaContainers[0].viewer.drawViewer(true)
+            
         }
         
     }
     
     
-    
+    if (data["action"] == "update"){
+        for (var key in data["data"]){
+            //console.log("you want to update entry in", key, "with uuid", data["data"][key]["uuid"])
+            var current = template_instance[key].get()
+            //console.log("current is", current)
+            var entry = _.find(current, function(e){return e.uuid == data["data"][key]["uuid"]})
+            //console.log("found the entry to update", entry)
+            var idx = current.indexOf(entry)
+            console.log("idx is", idx)
+            current[idx] = data["data"][key]
+            template_instance[key].set(current)
+        }
+    }
+    papayaContainers[0].viewer.drawViewer(true)
     
 
     
@@ -465,16 +488,16 @@ var get_open_connections = function(template_instance){
 var send_to_peers = function(data){
     console.log("you want to send", data, "to peers")
     var conns = get_open_connections()
-    console.log("cons are", conns)
+    //console.log("cons are", conns)
     data["user"] = Meteor.users.findOne({_id: Meteor.userId()}).username
     /*conns.forEach(function(val, idx, arr){
       val.send(data)  
     })*/
     for(var i =0; i<conns.length;i++){
         var conn = conns[i]
-        console.log("con is", conn)
+        //console.log("con is", conn)
         conn.send(JSON.stringify(data))
-        console.log("sent?")
+        //console.log("sent?")
     }
 }
 
