@@ -333,6 +333,8 @@ var logpoint = function(e, template, type){
             //var viewer = papayaContainers[0].viewer
 
             draw_point(screenCoor, viewer, pointColor, 5)
+            var points = get_stuff_of_user(template, "loggedPoints")
+            send_to_peers({"loggedPoints": points})
         }
 
 
@@ -603,10 +605,40 @@ var get_qc_name = function(){
     return name
 }
 
+var get_stuff_of_user = function(template, key, user){
+    if (!user){
+        var userentry = Meteor.users.findOne({_id: Meteor.userId()})
+        var user = userentry.username
+    }
+    var points = template[key].get()
+    var userPoints = []
+    points.forEach(function(val, idx, arr){
+        if (val.checkedBy == user){
+            userPoints.push(val)
+        }
+    })
+    return userPoints
+}
+
 var sync_templates_decorator = function(template_instance){ return function(data){
-    
+    var data = JSON.parse(data)
     console.log("you want to sync a template w/ data", data)
     console.log("template_instance is", template_instance)
+    if ("loggedPoints" in data){
+        var key = "loggedPoints"
+        var current = template_instance[key].get()
+        //var userentries = get_stuff_of_user(template_instance, key, data['user'])
+        console.log(data[key], "current is", current)
+        if (current == null){
+            current = data[key]
+        }
+        else{
+            current = current.concat(data[key])
+        }
+        console.log("current is", current)
+        template_instance[key].set(current)
+        papayaContainers[0].viewer.drawViewer(true)
+    }
     
 }}
 
@@ -625,10 +657,17 @@ var get_open_connections = function(template_instance){
 
 var send_to_peers = function(data){
     console.log("you want to send", data, "to peers")
-    for (var peer in connections){
-        var conn = connections[peer]
-        conn.send(data)
-        console.log("sent to", peer)
+    var conns = get_open_connections()
+    console.log("cons are", conns)
+    data["user"] = Meteor.users.findOne({_id: Meteor.userId()}).username
+    /*conns.forEach(function(val, idx, arr){
+      val.send(data)  
+    })*/
+    for(var i =0; i<conns.length;i++){
+        var conn = conns[i]
+        console.log("con is", conn)
+        conn.send(JSON.stringify(data))
+        console.log("sent?")
     }
 }
 
