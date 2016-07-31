@@ -1,7 +1,7 @@
 import "./qc.js"
 
 papaya.volume.Orientation.prototype.convertCoordinate = function (coord, coordConverted) {
-    console.log("in this convertCoordinate")
+    //console.log("in this convertCoordinate")
     /*coordConverted.x = papayaRoundFast((coord.x * this.orientMat[0][0]) + (coord.y * this.orientMat[0][1]) +
         (coord.z * this.orientMat[0][2]) + (this.orientMat[0][3]));
     coordConverted.y = papayaRoundFast((coord.x * this.orientMat[1][0]) + (coord.y * this.orientMat[1][1]) +

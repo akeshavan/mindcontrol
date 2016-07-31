@@ -357,7 +357,9 @@ var snapToGrid = function(coords){
   out_coords = []
   //console.log("non-snapped", coords)
   coords.forEach(function(val, idx, arr){
-    if (idx==0){console.log(val)}
+    if (idx==0){
+        //console.log(val)
+        }
     out_coords.push(new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z)))
   })
   //console.log("out coords is", out_coords)
@@ -431,14 +433,14 @@ var get_qc_name = function(){
 
 var sync_templates_decorator = function(template_instance){ return function(data){
     var data = JSON.parse(data)
-    console.log("you want to sync a template w/ data", data)
+    //console.log("you want to sync a template w/ data", data)
     //console.log("template_instance is", template_instance)
     
     if (data["action"] == "insert"){
         for (var key in data["data"]){
             var current = template_instance[key].get()
-            console.log("template instance, and key are", template_instance, key)
-            console.log(data["data"][key], "current is", current)
+            //console.log("template instance, and key are", template_instance, key)
+            //console.log(data["data"][key], "current is", current)
             if (current == null){
                 current = [data["data"][key]]
             }
@@ -461,7 +463,7 @@ var sync_templates_decorator = function(template_instance){ return function(data
             var entry = _.find(current, function(e){return e.uuid == data["data"][key]["uuid"]})
             //console.log("found the entry to update", entry)
             var idx = current.indexOf(entry)
-            console.log("idx is", idx)
+            //console.log("idx is", idx)
             current[idx] = data["data"][key]
             template_instance[key].set(current)
         }
@@ -486,7 +488,7 @@ var get_open_connections = function(template_instance){
 }
 
 var send_to_peers = function(data){
-    console.log("you want to send", data, "to peers")
+    //console.log("you want to send", data, "to peers")
     var conns = get_open_connections()
     //console.log("cons are", conns)
     data["user"] = Meteor.users.findOne({_id: Meteor.userId()}).username
