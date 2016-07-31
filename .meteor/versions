@@ -87,6 +87,7 @@ standard-minifier-css@1.0.7
 standard-minifier-js@1.0.7
 templating@1.1.11
 templating-tools@1.0.4
+tmeasday:presence@1.0.6
 tracker@1.0.14
 twbs:bootstrap@3.3.6
 ui@1.0.11

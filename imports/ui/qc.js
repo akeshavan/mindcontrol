@@ -207,7 +207,6 @@ papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
 
 };
 
-
 papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
     return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
         screenSlice.xDim);
@@ -598,42 +597,124 @@ var load_hotkeys = function(template_instance){
 
 /*Template-related things: OnCreated, helpers, events, and rendered*/
 
+var get_qc_name = function(){
+    var qc = Session.get("currentQC")
+    var name = qc.entry_type + "_" + qc.name
+    return name
+}
+
+var sync_templates_decorator = function(template_instance){ return function(data){
+    
+    console.log("you want to sync a template w/ data", data)
+    console.log("template_instance is", template_instance)
+    
+}}
+
+var get_open_connections = function(template_instance){
+    var conns = []
+    for (var key in peer.connections){
+        if (peer.connections[key][0].open){
+            conns.push(peer.connections[key][0])
+            if (template_instance){
+                peer.connections[key][0].on("data", sync_templates_decorator(template_instance))
+            }
+            }
+        }
+    return conns
+}
+
+var send_to_peers = function(data){
+    console.log("you want to send", data, "to peers")
+    for (var peer in connections){
+        var conn = connections[peer]
+        conn.send(data)
+        console.log("sent to", peer)
+    }
+}
+
 Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
     this.contours = new ReactiveVar([])
     this.logMode = new ReactiveVar("point")
     this.touchscreen = new ReactiveVar(false)
     this.loadableImages = new ReactiveVar([])
-    
+    this.connections = {}
+    Meteor.subscribe("presences")
     window.peer = new Peer({
       key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
       debug: 3,
       config: {'iceServers': [
         { url: 'stun:stun.l.google.com:19302' },
         { url: 'stun:stun1.l.google.com:19302' },
-      ]}
-            
+      ]}    
     });
     
     peer.on('open', function () {
       console.log("peer ID is", peer.id);
+      
+      var current_profile = Meteor.users.findOne({_id: Meteor.userId()}).profile
+      if (!current_profile){
+          current_profile = {}
+      }
+      var name = get_qc_name()
+      current_profile[name] = peer.id
+      Meteor.users.update({_id: Meteor.userId()}, {
+        $set: {
+          profile: current_profile
+        }})
+        console.log("profile si", Meteor.users.findOne({_id: Meteor.userId()}).profile)
     });
     
-    
+    var my_template = this
     peer.on("connection", function(conn){
         console.log("conn is", conn)
-        conn.on("data", function(data){console.log("data is", data)})
+        conn.on("data", sync_templates_decorator(my_template))
         
     });
     
+
+    
+    
     
 })
+
+
 
 Template.view_images.helpers({
 
     user: function(){
         Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
+    },
+    
+    peerUsers: function(){
+        
+      var userIds = Presences.find().map(function(presence) {return presence.userId;});
+      // exclude the currentUser
+      var name = get_qc_name()
+
+      var template_instance = Template.instance()
+      var to_return =  Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
+      
+      if (to_return.count){
+        var conns = get_open_connections(this)
+        if (!conns.length){
+            
+            var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
+            console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
+            peer.connect(dude.profile[name])
+        }
+        
+        console.log("a peerjs connection exists, now we add a listener")
+        for(var i = 0; i<conns.length; i++){
+            conns[i].on("data", sync_templates_decorator(my_template))
+        }
+        
+      }
+
+      
+      return to_return
+      
     },
 
     loggedPoints: function(){
@@ -902,11 +983,13 @@ Template.view_images.events({
  },
  "click .remove-point": function(event, template){
      var points = template.loggedPoints.get()
-     console.log(this, template)
+     //console.log(this, template)
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.loggedPoints.set(points)
      papayaContainers[0].viewer.drawViewer(true)
+     send_to_peers({"loggedPoints": points})
+     
      //fill_all(template)
  },
  "click .remove-contour": function(event, template){
