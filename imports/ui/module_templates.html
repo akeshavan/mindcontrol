@@ -5,6 +5,8 @@
 
     {{> mindboggle }}
 
+    {{> dura }}
+
     {{> align }}
 
     {{> freesurfer }}
@@ -70,6 +72,21 @@
     <div id="mindboggle_table">
 
         {{> tabular table=TabularTables.mindboggle selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
+<template name="dura">
+
+<h1 id="Brain Mask">Brain Mask</h1>
+
+
+
+    <div id="dura_table">
+
+        {{> tabular table=TabularTables.dura selector=selector class="table table-striped table-bordered table-condensed"}}
 
     </div>
 
@@ -188,6 +205,10 @@
                         
                         <li><a href="#Mindboggle">
                             <span class="badge badge-inverse"></span> Mindboggle</a>
+                        </li>
+                        
+                        <li><a href="#Brain Mask">
+                            <span class="badge badge-inverse"></span> Brain Mask</a>
                         </li>
                         
                         <li><a href="#Alignment">

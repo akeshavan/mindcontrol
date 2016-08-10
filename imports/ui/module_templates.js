@@ -122,6 +122,21 @@ Template.mindboggle.rendered = function() {
 
 
 
+Template.dura.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
 Template.align.rendered = function() {
 
       if (!this.rendered){
@@ -227,6 +242,16 @@ currentMetric: function(){
 
 
 
+Template.dura.helpers({
+
+selector: function(){return get_filter("dura")},
+
+
+
+})
+
+
+
 Template.align.helpers({
 
 selector: function(){return get_filter("align")},
@@ -296,6 +321,8 @@ selector: function(){return get_filter("nifti")},
         Session.set("current_mindboggle", metric)
     }
    })
+  
+
   
 
   

@@ -76,6 +76,40 @@ name:"mindboggle",
     })
 
 
+TabularTables.dura =  new Tabular.Table({
+name:"dura",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("dura", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("dura", "name", "ID"),
+      
+    
+      
+        get_qc_filter_field("dura", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("dura", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("dura", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
 TabularTables.align =  new Tabular.Table({
 name:"align",
     autoWidth: false,
