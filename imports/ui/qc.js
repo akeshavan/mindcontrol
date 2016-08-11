@@ -492,7 +492,7 @@ var addPapaya = function(data, entry_type, template_instance){
                                                       alpha:opts.alpha}//colormap
                     }
                     else{
-                        params[split_name] = {lut: opts.name, alpha: opts.alpha}
+                        params[split_name] = {lut: opts.name, alpha: opts.alpha, min: opts.min, max: opts.max}
                     }
     
     

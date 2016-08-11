@@ -108,9 +108,15 @@
   ],
   "graph_type":null,
   "colormaps": {
+        "0":{"name":"Grayscale",
+             "alpha": 1,
+             "min": 0,
+             "max": 1500},
         "1": {
-          "name": "custom.Freesurfer",
-          "alpha": 0.25
+          "name": "Spectrum",
+          "alpha": 0.15,
+          "min":0,
+          "max":1.15
         }
       }
     },
