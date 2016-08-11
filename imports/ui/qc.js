@@ -500,6 +500,9 @@ var addPapaya = function(data, entry_type, template_instance){
             }
             console.log("params is", params)
             params["showControlBar"] = true
+            //params["orthogonal"] = false
+            params["mainView"] = "coronal"
+
             papaya.Container.addViewer("viewer", params, function(err, params){
                                             //.modal("show");
                                             console.log(err, params)
@@ -915,6 +918,7 @@ Template.view_images.events({
      console.log("in resize")
      var viewer = papayaContainers[0].viewer
      viewer.resizeViewer(papayaContainers[0].getViewerDimensions())
+     papayaContainers[0].resizeViewerComponents(true);
 
  },
  "click #addNewDrawing": function(e, template){
