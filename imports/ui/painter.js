@@ -306,9 +306,11 @@ var end_paint = function(template, originalCoord, screenCoor){
     var currentPaint = painters[N-1]
     var world = new papaya.core.Coordinate();
     papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-
+    var currVal = Session.get("paintValue")
+    
     currentPaint.matrix_coor.push(originalCoord)
     currentPaint.world_coor.push(world)
+    currentPaint.paintValue = currVal
     template.painters.set(painters)
     
     
@@ -322,12 +324,12 @@ var end_paint = function(template, originalCoord, screenCoor){
     context.stroke();      
     context.closePath();
     
-    var currVal = Session.get("paintValue")
+    
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
         setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
     })
     Session.set("isDrawing", false)
-    viewer.drawViewer(true,true)
+    viewer.drawViewer(true,false)
     //console.log(currentPaint)
                
 
