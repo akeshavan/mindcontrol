@@ -29,3 +29,12 @@ FlowRouter.route('/:entry_type/:name', {
 
   }
 });
+
+FlowRouter.route('/:username', {
+  action: function(params) {
+    console.log(params)
+    BlazeLayout.render("body", {content: "tasks", "sidebar_content": null});
+    if (contextHotkeys){contextHotkeys.unload()}
+    
+  }
+});
