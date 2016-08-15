@@ -306,6 +306,38 @@ var continue_paint = function(template, originalCoord, screenCoor){
     
 }
 
+var line = function(x0, y0, z0, x1, y1, z1, val){
+   var dx = Math.abs(x1-x0);
+   var dy = Math.abs(y1-y0);
+   var sx = (x0 < x1) ? 1 : -1;
+   var sy = (y0 < y1) ? 1 : -1;
+   var err = dx-dy;
+   var new_arr = []
+   while(true){
+     old_value = setValue(x0,y0, z0, val);  // Do what you need to for this
+     new_arr.push({x: x0, y:y0, z: z0, old_val: old_value})
+     if ((x0==x1) && (y0==y1)) break;
+     var e2 = 2*err;
+     if (e2 >-dy){ err -= dy; x0  += sx; }
+     if (e2 < dx){ err += dx; y0  += sy; }
+   }
+   //console.log("new arr is", new_arr)
+   return new_arr
+}
+
+var fill_lines = function(currPaint, currVal){
+    var new_coor = []
+    currPaint.matrix_coor.forEach(function(val, idx, arr){
+        if (idx){
+            var prev = arr[idx-1]
+            var new_arr = line(prev.x, prev.y, prev.z, val.x, val.y, val.z, currVal)
+            new_coor = new_coor.concat(new_arr)
+        }
+    })
+    //console.log("new coor", new_coor)
+    return new_coor
+}
+
 var end_paint = function(template, originalCoord, screenCoor){
     var painters = template.painters.get()
     var N = painters.length
@@ -330,15 +362,15 @@ var end_paint = function(template, originalCoord, screenCoor){
     context.stroke();      
     context.closePath();
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
-    
+    currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
     //currentPaint.original_vals = []
-    currentPaint.matrix_coor.forEach(function(val, idx, arr){
+    /*currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var old_val = setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
         if (val.old_val == null){
             val.old_val = old_val
         }
         //currentPaint.original_vals.push(old_val)
-    })
+    })*/
     Session.set("isDrawing", false)
     viewer.drawViewer(true,false)
     template.painters.set(painters)
