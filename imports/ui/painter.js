@@ -14,6 +14,7 @@ guid = function(){
 
 send_to_peers = function(data){
     //console.log("you want to send", data, "to peers")
+  if (use_peerJS){
     var conns = get_open_connections()
     //console.log("cons are", conns)
     data["user"] = Meteor.users.findOne({_id: Meteor.userId()}).username
@@ -26,6 +27,7 @@ send_to_peers = function(data){
         conn.send(JSON.stringify(data))
         //console.log("sent?")
     }
+  }
 }
 
 get_open_connections = function(template_instance){

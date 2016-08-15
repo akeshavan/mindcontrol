@@ -12,7 +12,7 @@ import "./painter.js"
 
 //var staticURL = "http://127.0.0.1:3002/"
 var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-
+use_peerJS = true
 
 
 
@@ -294,40 +294,42 @@ Template.view_images.onCreated(function(){
     this.painters = new ReactiveVar([])
     this.connections = {}
     Meteor.subscribe("presences")
-    window.peer = new Peer({
-      key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
-      debug: 3,
-      config: {'iceServers': [
-        { url: 'stun:stun.l.google.com:19302' },
-        { url: 'stun:stun1.l.google.com:19302' },
-      ]}    
-    });
     
-    peer.on('open', function () {
-      console.log("peer ID is", peer.id);
-      
-      var current_profile = Meteor.users.findOne({_id: Meteor.userId()}).profile
-      if (!current_profile){
-          current_profile = {}
-      }
-      var name = get_qc_name()
-      current_profile[name] = peer.id
-      Meteor.users.update({_id: Meteor.userId()}, {
-        $set: {
-          profile: current_profile
-        }})
-        console.log("profile si", Meteor.users.findOne({_id: Meteor.userId()}).profile)
-    });
-    
-    //TODO: sometimes this is null??? Then where do we set the listener?
-    var my_template = this
-    
-    peer.on("connection", function(conn){
-        console.log("conn is", conn)
-        conn.on("data", sync_templates_decorator(my_template))
+    if (use_peerJS){
+        window.peer = new Peer({
+          key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
+          debug: 3,
+          config: {'iceServers': [
+            { url: 'stun:stun.l.google.com:19302' },
+            { url: 'stun:stun1.l.google.com:19302' },
+          ]}    
+        });
         
-    });
-    
+        peer.on('open', function () {
+          console.log("peer ID is", peer.id);
+          
+          var current_profile = Meteor.users.findOne({_id: Meteor.userId()}).profile
+          if (!current_profile){
+              current_profile = {}
+          }
+          var name = get_qc_name()
+          current_profile[name] = peer.id
+          Meteor.users.update({_id: Meteor.userId()}, {
+            $set: {
+              profile: current_profile
+            }})
+            console.log("profile si", Meteor.users.findOne({_id: Meteor.userId()}).profile)
+        });
+        
+        //TODO: sometimes this is null??? Then where do we set the listener?
+        var my_template = this
+        
+        peer.on("connection", function(conn){
+            console.log("conn is", conn)
+            conn.on("data", sync_templates_decorator(my_template))
+            
+        });
+    }
 
     
     
@@ -344,39 +346,42 @@ Template.view_images.helpers({
     },
     
     peerUsers: function(){
-        
-      var userIds = Presences.find().map(function(presence) {return presence.userId;});
-      // exclude the currentUser
-      var name = get_qc_name()
-
-      var template_instance = Template.instance()
-      var to_return =  Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
       
-      if (to_return.count){
-        var conns = get_open_connections(this)
-        if (!conns.length){
-            
-            
-            var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
-            if (dude){
-            console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
-            var conn = peer.connect(dude.profile[name])
-            conn.on("data", sync_templates_decorator(template_instance))
+      if (use_peerJS){  
+          var userIds = Presences.find().map(function(presence) {return presence.userId;});
+          // exclude the currentUser
+          var name = get_qc_name()
+    
+          var template_instance = Template.instance()
+          var to_return =  Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
+          
+          if (to_return.count){
+            var conns = get_open_connections(this)
+            if (!conns.length){
+                
+                
+                var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
+                if (dude){
+                console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
+                var conn = peer.connect(dude.profile[name])
+                conn.on("data", sync_templates_decorator(template_instance))
+                }
+                
             }
             
-        }
-        
-        console.log("a peerjs connection exists, now we add a listener")
-        for(var i = 0; i<conns.length; i++){
-            conns[i].on("data", sync_templates_decorator(template_instance))
-        }
-        
+            console.log("a peerjs connection exists, now we add a listener")
+            for(var i = 0; i<conns.length; i++){
+                conns[i].on("data", sync_templates_decorator(template_instance))
+            }
+            
+          }
+    
+          if (to_return == null){
+              return []
+          }
+          return to_return
       }
-
-      if (to_return == null){
-          return []
-      }
-      return to_return
+      else{return 0}
       
     },
 
