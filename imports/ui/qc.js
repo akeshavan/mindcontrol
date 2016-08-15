@@ -10,8 +10,8 @@ import "./painter.js"
 
 
 
-//var staticURL = "http://127.0.0.1:3002/"
-var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+var staticURL = "http://127.0.0.1:3002/"
+//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 use_peerJS = false
 
 
