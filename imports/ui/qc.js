@@ -64,7 +64,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-var addPapaya = function(data, entry_type, template_instance){
+var addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
 
         var params = {}
@@ -124,7 +124,8 @@ var addPapaya = function(data, entry_type, template_instance){
             params["showControlBar"] = true
             papaya.Container.addViewer("viewer", params, function(err, params){
                                             //.modal("show");
-                                            console.log(err, params)
+                                            console.log("in papaya callback?", err, params)
+                                            //callback()
                                             })
             papaya.Container.allowPropagation = true;
             papayaContainers[0].viewer.mindcontrol_template = template_instance//Template.instance()
@@ -157,17 +158,34 @@ var load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "d d",
                     callback : function(){
-                        var contours = template_instance.contours.get()
-                        var idx = Session.get("selectedDrawing")
-                        if (idx != null){
-                          contours[idx].contours.pop()
-                          if (contours[idx].contours.length==0){
-                            contours.splice(idx, 1)
-                          }
+                        
+                        var currMode = template_instance.logMode.get()
+                        if (currMode == "contour"){
+                            var contours = template_instance.contours.get()
+                            var idx = Session.get("selectedDrawing")
+                            if (idx != null){
+                              contours[idx].contours.pop()
+                              if (contours[idx].contours.length==0){
+                                contours.splice(idx, 1)
+                              }
+                            }
+                            template_instance.contours.set(contours)
+                            papayaContainers[0].viewer.drawViewer(true)
                         }
-                        template_instance.contours.set(contours)
-                        papayaContainers[0].viewer.drawViewer(true)
-
+                        
+                        else if (currMode == "point"){
+                            
+                        }
+                        
+                        else if (currMode == "paint"){
+                            //TODO: undo painting when you have time.
+                            //var painters = template_instance.painters.get()
+                            //var currPaint = painters.pop()
+                            //restore_vals(currPaint)
+                            //template_instance.painters.set(painters)
+                            
+                        }
+                        
                     }
                 })
 
@@ -521,9 +539,11 @@ Template.view_images.helpers({
             })
             return to_display
         }
+    },
+    
+    loadPainter: function(){
+        return Session.get("reloadPainter")   
     }
-
-
 })
 
 Template.view_images.events({
@@ -561,6 +581,7 @@ Template.view_images.events({
         update["checkedAt"] = new Date()
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
+        update["painters"] = template.painters.get()
         console.log("update to", update)
         //console.log("update is", update)
 
@@ -748,10 +769,41 @@ Template.view_images.events({
     var c = viewer.currentCoord
     var offset = ori.convertIndexToOffset(papayaRoundFast(c.x),papayaRoundFast(c.y),papayaRoundFast(c.z))
     Session.set("paintValue", vol.imageData.data[offset])
+  },
+  
+  "click #loadPainter": function(event, template){
+      
+      var qc = Session.get("currentQC")
+      var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1, loggedPoints: 1, contours: 1})
+      if (output){
+        if (output.painters != null){
+            template.painters.set(output.painters)
+            if (output.painters.length){
+                var after_load = papayaload_callback(output)
+                after_load()
+                Session.set("reloadPainter", false)
+            }            
+        }
+      };
+    
   }
   
 
 })
+
+var papayaload_callback = function(output){
+return function(){
+                        console.log("output is", output)
+                        output.painters.forEach(function(val, idx, arr){
+                        var paintVal = val.paintValue
+                        val.matrix_coor.forEach(function(val2, idx2, arr2){
+                            setValue(papayaRoundFast(val2.x), papayaRoundFast(val2.y), papayaRoundFast(val2.z), paintVal)
+                        })
+                    papayaContainers[0].viewer.drawViewer(true, false)
+                    return output.painters.length
+                    })
+    }
+}
 
 Template.view_images.rendered = function(){
 
@@ -763,7 +815,7 @@ Template.view_images.rendered = function(){
 
     this.autorun(function(){
         var qc = Session.get("currentQC")
-
+        Session.set("reloadPainter", false)
 
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)
@@ -779,9 +831,17 @@ Template.view_images.rendered = function(){
                 else{
                     Template.instance().contours.set([])
                 }
+                if (output.painters != null){
+                    if (output.painters.length){
+                        Session.set("reloadPainter", true)
+                    }
+                }
+                
+                
+                
                 addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
-
+                
                 //get_config()
             }
 

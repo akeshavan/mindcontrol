@@ -123,7 +123,9 @@ setValue = function(x,y,z, val){
     var vol = viewer.screenVolumes[N-1].volume
     var ori = vol.header.orientation
     var offset = ori.convertIndexToOffset(x,y,z)
+    var old_val = vol.imageData.data[offset]
     vol.imageData.data[offset] = val
+    return old_val
 }
 
 setContoursToZero = function(contours){
@@ -296,7 +298,8 @@ var continue_paint = function(template, originalCoord, screenCoor){
 
     context.lineTo(screenCoor.x, screenCoor.y);
     context.moveTo(screenCoor.x, screenCoor.y);
-    context.stroke();                 
+    context.stroke();
+    context.closePath();                 
     
 }
 
@@ -324,15 +327,26 @@ var end_paint = function(template, originalCoord, screenCoor){
     context.stroke();      
     context.closePath();
     
-    
+    //currentPaint.original_vals = []
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
-        setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
+        var old_val = setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
+        //currentPaint.original_vals.push(old_val)
     })
     Session.set("isDrawing", false)
     viewer.drawViewer(true,false)
     //console.log(currentPaint)
                
 
+}
+
+restore_vals = function(currPaint){
+    
+    currPaint.matrix_coor.forEach(function(val, idx, arr){
+        setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currPaint.original_vals[idx])        
+    })
+    var viewer = papayaContainers[0].viewer
+    viewer.drawViewer(true,false)
+    
 }
 
 logpoint = function(e, template, type){
