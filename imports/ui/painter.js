@@ -48,7 +48,10 @@ var snapToGrid = function(coords){
     if (idx==0){
         //console.log(val)
         }
-    out_coords.push(new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z)))
+    var new_val = new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z))
+    
+    out_coords.push(new_val)
+
   })
   //console.log("out coords is", out_coords)
   return out_coords
@@ -314,7 +317,7 @@ var end_paint = function(template, originalCoord, screenCoor){
     currentPaint.matrix_coor.push(originalCoord)
     currentPaint.world_coor.push(world)
     currentPaint.paintValue = currVal
-    template.painters.set(painters)
+    
     
     
     var viewer = papayaContainers[0].viewer
@@ -326,26 +329,35 @@ var end_paint = function(template, originalCoord, screenCoor){
     context.moveTo(screenCoor.x, screenCoor.y);
     context.stroke();      
     context.closePath();
+    currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     
     //currentPaint.original_vals = []
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var old_val = setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
+        if (val.old_val == null){
+            val.old_val = old_val
+        }
         //currentPaint.original_vals.push(old_val)
     })
     Session.set("isDrawing", false)
     viewer.drawViewer(true,false)
+    template.painters.set(painters)
     //console.log(currentPaint)
                
 
 }
 
 restore_vals = function(currPaint){
-    
-    currPaint.matrix_coor.forEach(function(val, idx, arr){
-        setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currPaint.original_vals[idx])        
-    })
-    var viewer = papayaContainers[0].viewer
-    viewer.drawViewer(true,false)
+    console.log("restoring", currPaint)
+    if (currPaint){
+        currPaint.matrix_coor.reverse()
+        currPaint.matrix_coor.forEach(function(val, idx, arr){
+            setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), val.old_val)
+            //console.log( currPaint.original_vals[idx])        
+        })
+        var viewer = papayaContainers[0].viewer
+        viewer.drawViewer(true,false)
+    }
     
 }
 

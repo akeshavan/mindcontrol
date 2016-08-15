@@ -179,10 +179,10 @@ var load_hotkeys = function(template_instance){
                         
                         else if (currMode == "paint"){
                             //TODO: undo painting when you have time.
-                            //var painters = template_instance.painters.get()
-                            //var currPaint = painters.pop()
-                            //restore_vals(currPaint)
-                            //template_instance.painters.set(painters)
+                            var painters = template_instance.painters.get()
+                            var currPaint = painters.pop()
+                            restore_vals(currPaint)
+                            template_instance.painters.set(painters)
                             
                         }
                         
