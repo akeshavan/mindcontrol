@@ -5,292 +5,32 @@ import "../api/publications.js"
 import "../api/methods.js"
 import "./module_templates.js"
 import "./routers.js"
-
-var staticURL = "http://127.0.0.1:3002/"
-//var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-var curveColor =  "rgb(255,235,59)"
-var pointColor = "rgb(255,0,0)"
-
-/*-----------------------------------------------
-
-Papaya things: TODO: figure out inheritance in JS
-because this is gross
-
--------------------------------------------------*/
-
-papaya.volume.Orientation.prototype.convertCoordinate = function (coord, coordConverted) {
-    console.log("in this convertCoordinate")
-    /*coordConverted.x = papayaRoundFast((coord.x * this.orientMat[0][0]) + (coord.y * this.orientMat[0][1]) +
-        (coord.z * this.orientMat[0][2]) + (this.orientMat[0][3]));
-    coordConverted.y = papayaRoundFast((coord.x * this.orientMat[1][0]) + (coord.y * this.orientMat[1][1]) +
-        (coord.z * this.orientMat[1][2]) + (this.orientMat[1][3]));
-    coordConverted.z = papayaRoundFast((coord.x * this.orientMat[2][0]) + (coord.y * this.orientMat[2][1]) +
-        (coord.z * this.orientMat[2][2]) + (this.orientMat[2][3]));*/
-    coordConverted.x = (coord.x * this.orientMat[0][0]) + (coord.y * this.orientMat[0][1]) +
-        (coord.z * this.orientMat[0][2]) + (this.orientMat[0][3]);
-    coordConverted.y = (coord.x * this.orientMat[1][0]) + (coord.y * this.orientMat[1][1]) +
-        (coord.z * this.orientMat[1][2]) + (this.orientMat[1][3]);
-    coordConverted.z = (coord.x * this.orientMat[2][0]) + (coord.y * this.orientMat[2][1]) +
-        (coord.z * this.orientMat[2][2]) + (this.orientMat[2][3]);
-    return coordConverted;
-};
-
-papaya.volume.nifti.HeaderNIFTI.prototype.getOrigin = function (forceQ, forceS) {
-    var origin = new papaya.core.Coordinate(0, 0, 0),
-        qFormMatParams,
-        affineQform,
-        affineQformInverse,
-        affineSformInverse,
-        orientation,
-        someOffsets,
-        xyz, sense,
-        xIndex, yIndex, zIndex,
-        xFlip, yFlip, zFlip;
-
-    if ((this.nifti.qform_code > 0) && !forceS) {
-        if (this.qFormHasRotations()) {
-            affineQform = this.nifti.getQformMat();
-            affineQformInverse = numeric.inv(affineQform);
-            origin.setCoordinate(affineQformInverse[0][3], affineQformInverse[1][3], affineQformInverse[2][3]);
-        } else {
-            qFormMatParams = this.nifti.convertNiftiQFormToNiftiSForm(this.nifti.quatern_b, this.nifti.quatern_c,
-                this.nifti.quatern_d, this.nifti.qoffset_x, this.nifti.qoffset_y, this.nifti.qoffset_z,
-                this.nifti.pixDims[1], this.nifti.pixDims[2], this.nifti.pixDims[3], this.nifti.pixDims[0]);
-
-            orientation = this.nifti.convertNiftiSFormToNEMA(qFormMatParams);
-
-            if (!papaya.volume.Orientation.isValidOrientationString(orientation)) {
-                orientation = papaya.volume.nifti.HeaderNIFTI.ORIENTATION_DEFAULT;
-            }
-
-            xyz = orientation.substring(0, 3).toUpperCase();
-            sense = orientation.substring(3);
-            xIndex = xyz.indexOf('X');
-            yIndex = xyz.indexOf('Y');
-            zIndex = xyz.indexOf('Z');
-            xFlip = (sense.charAt(xIndex) === '+');
-            yFlip = (sense.charAt(yIndex) === '+');
-            zFlip = (sense.charAt(zIndex) === '+');
-
-            someOffsets = new Array(3);
-            someOffsets[0] = ((this.nifti.qoffset_x / this.nifti.pixDims[xIndex + 1])) * (xFlip ? -1 : 1);
-            someOffsets[1] = ((this.nifti.qoffset_y / this.nifti.pixDims[yIndex + 1])) * (yFlip ? -1 : 1);
-            someOffsets[2] = ((this.nifti.qoffset_z / this.nifti.pixDims[zIndex + 1])) * (zFlip ? -1 : 1);
-            //AK: last arg of this method used to be true (to round)
-            origin.setCoordinate(someOffsets[0], someOffsets[1], someOffsets[2], false);
-            //console.log("origin", origin)
-        }
-    } else if ((this.nifti.sform_code > 0) && !forceQ) {
-        if (this.sFormHasRotations()) {
-            affineSformInverse = numeric.inv(this.nifti.affine);
-            origin.setCoordinate(affineSformInverse[0][3], affineSformInverse[1][3], affineSformInverse[2][3]);
-        } else {
-            orientation = this.nifti.convertNiftiSFormToNEMA(this.nifti.affine);
-
-            if (!papaya.volume.Orientation.isValidOrientationString(orientation)) {
-                orientation = papaya.volume.nifti.HeaderNIFTI.ORIENTATION_DEFAULT;
-            }
-
-            xyz = orientation.substring(0, 3).toUpperCase();
-            sense = orientation.substring(3);
-            xIndex = xyz.indexOf('X');
-            yIndex = xyz.indexOf('Y');
-            zIndex = xyz.indexOf('Z');
-            xFlip = (sense.charAt(xIndex) === '+');
-            yFlip = (sense.charAt(yIndex) === '+');
-            zFlip = (sense.charAt(zIndex) === '+');
-
-            someOffsets = new Array(3);
-            someOffsets[0] = ((this.nifti.affine[0][3] / this.nifti.pixDims[xIndex + 1])) * (xFlip ? -1 : 1);
-            someOffsets[1] = ((this.nifti.affine[1][3] / this.nifti.pixDims[yIndex + 1])) * (yFlip ? -1 : 1);
-            someOffsets[2] = ((this.nifti.affine[2][3] / this.nifti.pixDims[zIndex + 1])) * (zFlip ? -1 : 1);
-            //console.log("sform code", xIndex, yIndex, zIndex)
-            origin.setCoordinate(someOffsets[0], someOffsets[1], someOffsets[2], true);
-        }
-    }
-
-    if (origin.isAllZeros()) {
-        origin.setCoordinate(this.nifti.dims[1] / 2.0, this.nifti.dims[2] / 2.0, this.nifti.dims[3] / 2.0);
-        //console.log("isALlZeros")
-    }
-    //console.log("origin is", origin)
-    return origin;
-};
-
-papaya.viewer.Viewer.prototype.drawViewer = function (force, skipUpdate) {
-  var draw = Session.get("isDrawing")
-  if (!draw){
-    var radiological = (this.container.preferences.radiological === "Yes"),
-        showOrientation = (this.container.preferences.showOrientation === "Yes");
-
-    if (!this.initialized) {
-        this.drawEmptyViewer();
-        return;
-    }
-
-    this.context.save();
+import "./papaya_changes.js"
+import "./painter.js"
 
 
-        //skipUpdate = true
+
+//var staticURL = "http://127.0.0.1:3002/"
+var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
+use_peerJS = false
 
 
-    if (skipUpdate) {
-        this.axialSlice.repaint(this.currentCoord.z, force, this.worldSpace);
-        this.coronalSlice.repaint(this.currentCoord.y, force, this.worldSpace);
-        this.sagittalSlice.repaint(this.currentCoord.x, force, this.worldSpace);
-    } else {
-        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_AXIAL)) {
-            this.axialSlice.updateSlice(this.currentCoord.z, force, this.worldSpace);
-        }
-
-        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_CORONAL)) {
-            this.coronalSlice.updateSlice(this.currentCoord.y, force, this.worldSpace);
-        }
-
-        if (force || (this.draggingSliceDir !== papaya.viewer.ScreenSlice.DIRECTION_SAGITTAL)) {
-            this.sagittalSlice.updateSlice(this.currentCoord.x, force, this.worldSpace);
-        }
-    }
-
-    if (this.hasSurface() && (!papaya.utilities.PlatformUtils.smallScreen || force || (this.selectedSlice === this.surfaceView))) {
-        this.surfaceView.draw();
-    }
-
-    // intialize screen slices
-    if (this.container.preferences.smoothDisplay === "No") {
-        this.context.imageSmoothingEnabled = false;
-        this.context.webkitImageSmoothingEnabled = false;
-        this.context.mozImageSmoothingEnabled = false;
-        this.context.msImageSmoothingEnabled = false;
-    } else {
-        this.context.imageSmoothingEnabled = true;
-        this.context.webkitImageSmoothingEnabled = true;
-        this.context.mozImageSmoothingEnabled = true;
-        this.context.msImageSmoothingEnabled = true;
-    }
-
-    // draw screen slices
-    this.drawScreenSlice(this.mainImage);
-
-    if (this.container.orthogonal) {
-        this.drawScreenSlice(this.lowerImageTop);
-        this.drawScreenSlice(this.lowerImageBot);
-
-        if (this.hasSurface()) {
-            this.drawScreenSlice(this.lowerImageBot2);
-        }
-    }
-
-    if (showOrientation || radiological) {
-        this.drawOrientation();
-    }
-
-    if (this.container.preferences.showCrosshairs === "Yes" && !draw) {
-        this.drawCrosshairs();
-    }
-
-    if (this.container.preferences.showRuler === "Yes") {
-        this.drawRuler();
-    }
-
-    if (this.container.display) {
-        this.container.display.drawDisplay(this.currentCoord.x, this.currentCoord.y, this.currentCoord.z,
-            this.getCurrentValueAt(this.currentCoord.x, this.currentCoord.y, this.currentCoord.z));
-    }
-
-    if (this.container.contextManager && this.container.contextManager.drawToViewer) {
-        this.container.contextManager.drawToViewer(this.context);
-    }
-    //console.log("mindcontrol template is", this.mindcontrol_template)
-  }
-    fill_all(this.mindcontrol_template)
-
-};
 
 
-papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateX = function (xLoc, screenSlice) {
-    return papaya.viewer.Viewer.validDimBounds((xLoc - screenSlice.finalTransform[0][2]) / screenSlice.finalTransform[0][0],
-        screenSlice.xDim);
-};
-
-papaya.viewer.Viewer.prototype.convertScreenToImageCoordinateY = function (yLoc, screenSlice) {
-    return papaya.viewer.Viewer.validDimBounds((yLoc - screenSlice.finalTransform[1][2]) / screenSlice.finalTransform[1][1],
-        screenSlice.yDim);
-};
-
-var fill_all_points = function(matrix_coor){
-    if (matrix_coor){
-
-         var viewer = papayaContainers[0].viewer
-         var canvas = viewer.canvas
-         var context = canvas.getContext('2d');
-         context.strokeStyle = curveColor //"#df4b26";
-         context.lineJoin = "round";
-         context.lineWidth = 3;
-         context.beginPath();
-         var prev = {}
-         matrix_coor.forEach(function(val, idx, arr){
-             var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val);
-             if (viewer.intersectsMainSlice(val)){
-                 draw_point(screenCoor, viewer, curveColor, 3)
-                 if (idx && prev !=null){
-                     context.moveTo(prev.x, prev.y)
-                     context.lineTo(screenCoor.x, screenCoor.y);
-                     context.closePath();
-                     context.stroke();
-                 }
-                 prev = screenCoor
-         }
-         else{
-           prev = null
-         }
-
-     })
-    }
-
-
-}
-
-var fill_all_loggedPoints = function(lp){
-
-    if (lp){
-        lp.forEach(function(val, idx, arr){
-         var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val.matrix_coor);
-         var viewer = papayaContainers[0].viewer
-         if (viewer.intersectsMainSlice(val.matrix_coor)){
-             draw_point(screenCoor, viewer, pointColor, 5)
-         }
-
-     })
-    }
-
-}
-
-var fill_all = function(template){
-    var contours = template.contours.get()
-    var lp = template.loggedPoints.get()
-
-    contours.forEach(function(val, idx, arr){
-        //console.log("in fillall", val)
-        if (val.visible==true || val.visible==null){
-          val.contours.forEach(function(val, idx, arr){fill_all_points(val.matrix_coor)})
-        }
-        })
-    fill_all_loggedPoints(lp)
-}
-
-var addNewDrawing= function(template){
+addNewDrawing= function(template){
 
      //console.log("in add new drawing")
      var contours = template.contours.get()
-     contours.push({contours: [],
-                    checkedBy: Meteor.user().username, name:"Drawing "+contours.length})
+     var entry = {contours: [],
+                    checkedBy: Meteor.user().username, name:"Drawing "+contours.length, uuid: guid()}
+     contours.push(entry)
      template.contours.set(contours)
+     send_to_peers({"action": "insert", "data":{"contours": entry}})
      Session.set('selectedDrawing', contours.length-1)
      return contours.length-1
 }
 
-var getSelectedDrawing = function(template){
+getSelectedDrawingEntry = function(template){
 
     var contours = template.contours.get()
     var idx = Session.get("selectedDrawing")
@@ -299,134 +39,16 @@ var getSelectedDrawing = function(template){
         idx = addNewDrawing(template)
         contours = template.contours.get()
     }
-    return contours[idx].contours
+    return contours[idx]
 }
 
-var logpoint = function(e, template, type){
+getSelectedDrawing = function(template){
 
-        //console.log("lets draw some lines")
-
-    var viewer = papayaContainers[0].viewer
-
-
-
-    if((e.shiftKey || template.touchscreen.get()) && e.altKey == false ){
-        //convert mouse position to matrix space
-
-        var currentCoor = papayaContainers[0].viewer.cursorPosition
-        var originalCoord = new papaya.core.Coordinate(currentCoor.x, currentCoor.y, currentCoor.z)
-        var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY) //papayaContainers[0].viewer.convertCoordinateToScreen(originalCoord);
-
-
-        if (template.logMode.get() == "point" && type=="click"){
-            //console.log("screne coord is", screenCoor)
-            var points = template.loggedPoints.get()
-            if (points == null){
-                points = []
-            }
-
-            var world = new papaya.core.Coordinate();
-            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-
-            points.push({matrix_coor: originalCoord, world_coor: world, checkedBy: Meteor.user().username})
-            template.loggedPoints.set(points)
-            //var color = "rgb(255, 0, 0)"
-            //var viewer = papayaContainers[0].viewer
-
-            draw_point(screenCoor, viewer, pointColor, 5)
-        }
-
-
-        else if (type=="mousedown" && template.logMode.get() == "contour"){
-            var contours = template.contours.get()
-            //console.log("on mousedown, contours is", contours)
-            if (!contours.length){
-                contours.push({contours: [{complete: false, matrix_coor:[], world_coor:[]}],
-                                checkedBy: Meteor.user().username, name:"Drawing 0"})
-                Session.set('selectedDrawing', 0)
-                //console.log("pushed contours", contours)
-            }
-
-            var world = new papaya.core.Coordinate();
-            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-            var selectContour = getSelectedDrawing(template)//contours[contours.length-1].contours //OR: selected contour
-            //console.log("selectContours is", selectContour)
-            if (selectContour.length == 0){
-              selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
-            }
-
-            var currentContour = selectContour[selectContour.length-1]
-            //console.log("currentContours is", currentContour)
-
-            if (currentContour.complete==true){
-                selectContour.push({complete: false, matrix_coor:[], world_coor:[]})
-                currentContour = selectContour[selectContour.length-1]
-                currentContour.matrix_coor.push(originalCoord)
-                currentContour.world_coor.push(world)
-            }
-            template.contours.set(contours)
-            Session.set("isDrawing", true)
-
-            //console.log("contour begin")
-
-        }
-
-        else if (type=="mousemove" && template.logMode.get() == "contour"){
-
-            //papayaContainers[0].viewer.cursorPosition isn't updated on mousedrag
-            var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
-            var world = new papaya.core.Coordinate();
-            papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-            var contours = template.contours.get()
-
-            if (contours.length){
-            var selectContour = getSelectedDrawing(template) //contours[contours.length-1].contours
-            //console.log("on mousemove", selectContour)
-            var currentContour = selectContour[selectContour.length-1]
-
-            if (currentContour){
-                if (currentContour.complete==false){
-
-                    currentContour.matrix_coor.push(originalCoord)
-                    currentContour.world_coor.push(world)
-                    template.contours.set(contours)
-                    Session.set("isDrawing", true)
-
-                    }
-
-
-
-                }
-        }//end if contours
-
-        }
-
-         else if ((type=="mouseup" || type=="mouseout") && template.logMode.get() == "contour"){
-             var contours = template.contours.get()
-             //console.log("on mouseup, contours is", contours)
-             var selectContour = getSelectedDrawing(template) //contours[contours.length-1].contours
-             //console.log("on mouseup, selectcontours is", selectContour)
-
-             var currentContour = selectContour[selectContour.length-1]
-
-             //var currentContour = contours[contours.length-1]
-             currentContour.complete = true
-             //console.log("mouseup", currentContour)
-             currentContour.matrix_coor = snapToGrid(currentContour.matrix_coor)
-             template.contours.set(contours)
-             //papayaContainers[0].viewer.drawViewer(true)
-             Session.set("isDrawing", false)
-
-         }
-
-
-
-    }
-    else{Session.set("isDrawing", false)}
-
-    return true
-
+    var entry = getSelectedDrawingEntry(template)
+    return entry.contours
 }
+
+
 
 function arraysEqual(a, b) {
   if (a === b) return true;
@@ -442,7 +64,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-var addPapaya = function(data, entry_type, template_instance){
+var addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
 
         var params = {}
@@ -505,7 +127,8 @@ var addPapaya = function(data, entry_type, template_instance){
 
             papaya.Container.addViewer("viewer", params, function(err, params){
                                             //.modal("show");
-                                            console.log(err, params)
+                                            console.log("in papaya callback?", err, params)
+                                            //callback()
                                             })
             papaya.Container.allowPropagation = true;
             papayaContainers[0].viewer.mindcontrol_template = template_instance//Template.instance()
@@ -532,32 +155,40 @@ var val_mapper = {"-1": "Not Checked", "0": "Fail", "1": "Pass", "2": "Needs Edi
 var class_mapper = {"-1": "warning", "0": "danger",
                     "1": "success", "2": "primary", "3": "info"}
 
-var snapToGrid = function(coords){
-  out_coords = []
-  //console.log("non-snapped", coords)
-  coords.forEach(function(val, idx, arr){
-    if (idx==0){console.log(val)}
-    out_coords.push(new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z)))
-  })
-  //console.log("out coords is", out_coords)
-  return out_coords
-}
+
 
 var load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "d d",
                     callback : function(){
-                        var contours = template_instance.contours.get()
-                        var idx = Session.get("selectedDrawing")
-                        if (idx != null){
-                          contours[idx].contours.pop()
-                          if (contours[idx].contours.length==0){
-                            contours.splice(idx, 1)
-                          }
+                        
+                        var currMode = template_instance.logMode.get()
+                        if (currMode == "contour"){
+                            var contours = template_instance.contours.get()
+                            var idx = Session.get("selectedDrawing")
+                            if (idx != null){
+                              contours[idx].contours.pop()
+                              if (contours[idx].contours.length==0){
+                                contours.splice(idx, 1)
+                              }
+                            }
+                            template_instance.contours.set(contours)
+                            papayaContainers[0].viewer.drawViewer(true)
                         }
-                        template_instance.contours.set(contours)
-                        papayaContainers[0].viewer.drawViewer(true)
-
+                        
+                        else if (currMode == "point"){
+                            
+                        }
+                        
+                        else if (currMode == "paint"){
+                            //TODO: undo painting when you have time.
+                            var painters = template_instance.painters.get()
+                            var currPaint = painters.pop()
+                            restore_vals(currPaint)
+                            template_instance.painters.set(painters)
+                            
+                        }
+                        
                     }
                 })
 
@@ -576,9 +207,12 @@ var load_hotkeys = function(template_instance){
                         if (currMode == "point"){
                             currMode = "contour"
                         }
-                        else(
-                            currMode ="point"
-                        )
+                        else if  (currMode == "contour"){
+                            currMode ="paint"
+                        }
+                        else if (currMode == "paint"){
+                            currMode = "point"   
+                        }
                         template_instance.logMode.set(currMode)
                     }
                 })
@@ -601,19 +235,157 @@ var load_hotkeys = function(template_instance){
 
 /*Template-related things: OnCreated, helpers, events, and rendered*/
 
+var get_qc_name = function(){
+    var qc = Session.get("currentQC")
+    var name = qc.entry_type + "_" + qc.name
+    return name
+}
+
+
+var sync_templates_decorator = function(template_instance){ return function(data){
+    var data = JSON.parse(data)
+    //console.log("you want to sync a template w/ data", data)
+    //console.log("template_instance is", template_instance)
+    
+    if (data["action"] == "insert"){
+        for (var key in data["data"]){
+            var current = template_instance[key].get()
+            //console.log("template instance, and key are", template_instance, key)
+            //console.log(data["data"][key], "current is", current)
+            if (current == null){
+                current = [data["data"][key]]
+            }
+            else{
+                current = current.concat(data["data"][key])
+            }
+            //console.log("current is", current)
+            template_instance[key].set(current)
+            
+        }
+        
+    }
+    
+    
+    if (data["action"] == "update"){
+        for (var key in data["data"]){
+            //console.log("you want to update entry in", key, "with uuid", data["data"][key]["uuid"])
+            var current = template_instance[key].get()
+            //console.log("current is", current)
+            var entry = _.find(current, function(e){return e.uuid == data["data"][key]["uuid"]})
+            //console.log("found the entry to update", entry)
+            var idx = current.indexOf(entry)
+            //console.log("idx is", idx)
+            current[idx] = data["data"][key]
+            template_instance[key].set(current)
+        }
+    }
+    papayaContainers[0].viewer.drawViewer(true)
+    
+
+    
+}}
+
+
+
+
 Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
     this.contours = new ReactiveVar([])
     this.logMode = new ReactiveVar("point")
     this.touchscreen = new ReactiveVar(false)
     this.loadableImages = new ReactiveVar([])
+    this.painters = new ReactiveVar([])
+    this.connections = {}
+    Meteor.subscribe("presences")
+    
+    if (use_peerJS){
+        window.peer = new Peer({
+          key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
+          debug: 3,
+          config: {'iceServers': [
+            { url: 'stun:stun.l.google.com:19302' },
+            { url: 'stun:stun1.l.google.com:19302' },
+          ]}    
+        });
+        
+        peer.on('open', function () {
+          console.log("peer ID is", peer.id);
+          
+          var current_profile = Meteor.users.findOne({_id: Meteor.userId()}).profile
+          if (!current_profile){
+              current_profile = {}
+          }
+          var name = get_qc_name()
+          current_profile[name] = peer.id
+          Meteor.users.update({_id: Meteor.userId()}, {
+            $set: {
+              profile: current_profile
+            }})
+            console.log("profile si", Meteor.users.findOne({_id: Meteor.userId()}).profile)
+        });
+        
+        //TODO: sometimes this is null??? Then where do we set the listener?
+        var my_template = this
+        
+        peer.on("connection", function(conn){
+            console.log("conn is", conn)
+            conn.on("data", sync_templates_decorator(my_template))
+            
+        });
+    }
+
+    
+    
+    
 })
+
+
 
 Template.view_images.helpers({
 
     user: function(){
         Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
+    },
+    
+    peerUsers: function(){
+      
+      if (use_peerJS){  
+          var userIds = Presences.find().map(function(presence) {return presence.userId;});
+          // exclude the currentUser
+          var name = get_qc_name()
+    
+          var template_instance = Template.instance()
+          var to_return =  Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
+          
+          if (to_return.count){
+            var conns = get_open_connections(this)
+            if (!conns.length){
+                
+                
+                var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
+                if (dude){
+                console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
+                var conn = peer.connect(dude.profile[name])
+                conn.on("data", sync_templates_decorator(template_instance))
+                }
+                
+            }
+            
+            console.log("a peerjs connection exists, now we add a listener")
+            for(var i = 0; i<conns.length; i++){
+                conns[i].on("data", sync_templates_decorator(template_instance))
+            }
+            
+          }
+    
+          if (to_return == null){
+              return []
+          }
+          return to_return
+      }
+      else{return 0}
+      
     },
 
     loggedPoints: function(){
@@ -658,6 +430,14 @@ Template.view_images.helpers({
         //return  template_decorator(Template.instance().contours, lp, idx)
     },
 
+    paintValue: function(){
+        var val = Session.get("paintValue")
+        if (val == null){
+            Session.set("paintValue", 0)
+        }
+        return val
+    },
+
     onDrawingNote: function(){
         //console.log("poitn note is", this)
         var lp = Template.instance().contours.get()
@@ -694,12 +474,19 @@ Template.view_images.helpers({
             output["pointColor"] = "warning"
             //output["isContour"] = ""
             output["contourColor"] = "default"
+            output["paintColor"] = "default"
         }
-        else{
+        else if (logMode == "contour"){
             //output["isContour"] = "in"
             //output["isPoint"] = ""
             output["contourColor"] = "warning"
             output["pointColor"] = "default"
+            output["paintColor"] = "default"
+        }
+        else if (logMode == "paint"){
+            output["contourColor"] = "default"
+            output["pointColor"] = "default"
+            output["paintColor"] = "warning"
         }
         return output
     },
@@ -760,9 +547,11 @@ Template.view_images.helpers({
             })
             return to_display
         }
+    },
+    
+    loadPainter: function(){
+        return Session.get("reloadPainter")   
     }
-
-
 })
 
 Template.view_images.events({
@@ -800,6 +589,7 @@ Template.view_images.events({
         update["checkedAt"] = new Date()
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
+        update["painters"] = template.painters.get()
         console.log("update to", update)
         //console.log("update is", update)
 
@@ -882,11 +672,13 @@ Template.view_images.events({
  },
  "click .remove-point": function(event, template){
      var points = template.loggedPoints.get()
-     console.log(this, template)
+     //console.log(this, template)
      var idx = points.indexOf(this)
      points.splice(idx, 1)
      template.loggedPoints.set(points)
      papayaContainers[0].viewer.drawViewer(true)
+     send_to_peers({"action": "remove", "data":{"loggedPoints": this}})
+     
      //fill_all(template)
  },
  "click .remove-contour": function(event, template){
@@ -968,9 +760,59 @@ Template.view_images.events({
  "click .load": function(e, template){
     console.log("you want to load", this)
     papaya.Container.addImage(0, this.absolute_path)
- }
+ },
+ 
+ 'input #paintValue': function (event, template) {
+    Session.set("paintValue", event.currentTarget.value);
+  },
+  
+  "click #paintEraser": function(event, template){
+      Session.set("paintValue", 0)
+  },
+  
+  "click #paintPicker": function(event, template){
+    var viewer = papayaContainers[0].viewer
+    var N = viewer.screenVolumes.length
+    var vol = viewer.screenVolumes[N-1].volume
+    var ori = vol.header.orientation
+    var c = viewer.currentCoord
+    var offset = ori.convertIndexToOffset(papayaRoundFast(c.x),papayaRoundFast(c.y),papayaRoundFast(c.z))
+    Session.set("paintValue", vol.imageData.data[offset])
+  },
+  
+  "click #loadPainter": function(event, template){
+      
+      var qc = Session.get("currentQC")
+      var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1, loggedPoints: 1, contours: 1})
+      if (output){
+        if (output.painters != null){
+            template.painters.set(output.painters)
+            if (output.painters.length){
+                var after_load = papayaload_callback(output)
+                after_load()
+                Session.set("reloadPainter", false)
+            }            
+        }
+      };
+    
+  }
+  
 
 })
+
+var papayaload_callback = function(output){
+return function(){
+                        console.log("output is", output)
+                        output.painters.forEach(function(val, idx, arr){
+                        var paintVal = val.paintValue
+                        val.matrix_coor.forEach(function(val2, idx2, arr2){
+                            setValue(papayaRoundFast(val2.x), papayaRoundFast(val2.y), papayaRoundFast(val2.z), paintVal)
+                        })
+                    papayaContainers[0].viewer.drawViewer(true, false)
+                    return output.painters.length
+                    })
+    }
+}
 
 Template.view_images.rendered = function(){
 
@@ -982,7 +824,7 @@ Template.view_images.rendered = function(){
 
     this.autorun(function(){
         var qc = Session.get("currentQC")
-
+        Session.set("reloadPainter", false)
 
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)
@@ -998,9 +840,17 @@ Template.view_images.rendered = function(){
                 else{
                     Template.instance().contours.set([])
                 }
+                if (output.painters != null){
+                    if (output.painters.length){
+                        Session.set("reloadPainter", true)
+                    }
+                }
+                
+                
+                
                 addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
-
+                
                 //get_config()
             }
 

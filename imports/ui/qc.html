@@ -145,6 +145,61 @@
   </div>
 </div>
                 </li>
+                <li>
+                     <div class="panel panel-{{modeCSS.paintColor}}">
+  <div class="panel-heading">
+    <!--<h4 class="panel-title" > -->
+        <table>
+            <th>Painter</th>
+        <th><a data-toggle="collapse" data-target="#collapseP"> <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></th>
+        <th><a><span class="glyphicon glyphicon-pencil swapmode paint"></span></a> </th>
+        <th>{{paintValue}}</th>
+        {{#if loadPainter}}<th><button type="button" class="btn btn-xs btn-danger" id="loadPainter">Load</button></th>{{/if}}
+        </table>
+        <!--</h4>-->
+  </div>
+  <div id="collapseP" class="panel-collapse collapse" role="tabpanel">
+  <div class="panel-body">
+
+    
+    <form class="form-inline">
+      <div class="form-group">
+        <!--<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>-->
+        <div class="input-group">
+          <div class="input-group-addon"><i class="fa fa-paint-brush"></i></div>
+          <input type="text" class="form-control" id="paintValue" placeholder="Paint Value" value="{{paintValue}}">
+          <!--<div class="input-group-addon">.00</div>-->
+        </div>
+      </div>
+      <button type="button" class="btn btn-default btn-small" id="paintEraser"><span class="glyphicon glyphicon-erase"></span></button>
+      <button type="button" class="btn btn-default btn-small" id="paintPicker"><span class="fa fa-eyedropper"></span></button>
+    </form>
+    
+  </div>
+   <div class="panel-footer">Shift+click & drag to paint curves.</div>
+  </div>
+</div>
+                </li>
+
+                <li>
+                     {{#if peerUsers}}<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title" data-target="#collapseEdit" data-toggle="collapse">Logged On Users</h3>
+  </div>
+  <div id="collapseEdit" class="panel-collapse collapse in" role="tabpanel">
+    <div class="panel-body">
+
+    {{#each peerUsers}}
+    
+    {{username}}
+    
+    {{/each}}
+  
+
+  </div>
+  </div>
+</div> {{/if}}
+                </li>
 
                 <li>
                      <div class="panel panel-default">
