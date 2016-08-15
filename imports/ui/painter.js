@@ -266,7 +266,7 @@ var start_paint = function(template, originalCoord, screenCoor){
     var painters = template.painters.get()
     var world = new papaya.core.Coordinate();
     papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-    var entry = {matrix_coor: [originalCoord], world_coor: [world], checkedBy: Meteor.user().username, uuid: guid()}
+    var entry = {matrix_coor: [originalCoord], world_coor: [world], checkedBy: Meteor.user().username, uuid: guid(), start_point: screenCoor}
     painters.push(entry)
     template.painters.set(painters)
     Session.set("isDrawing", true)
@@ -277,8 +277,8 @@ var start_paint = function(template, originalCoord, screenCoor){
     context.strokeStyle = curveColor //"#df4b26";
     context.lineJoin = "round";
     context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(screenCoor.x, screenCoor.y)
+    //context.beginPath();
+    //context.moveTo(screenCoor.x, screenCoor.y)
     
 }
 
@@ -286,6 +286,8 @@ var continue_paint = function(template, originalCoord, screenCoor){
     var painters = template.painters.get()
     var N = painters.length
     var currentPaint = painters[N-1]
+    //console.log("is there a start point?", currentPaint.start_point)
+    var prevStart = currentPaint.start_point
     var viewer = papayaContainers[0].viewer
     var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
     var world = new papaya.core.Coordinate();
@@ -293,16 +295,17 @@ var continue_paint = function(template, originalCoord, screenCoor){
 
     currentPaint.matrix_coor.push(originalCoord)
     currentPaint.world_coor.push(world)
+    currentPaint.start_point = screenCoor
     template.painters.set(painters)
-    
-    
     
     draw_point(screenCoor, viewer, curveColor, 3)
     var canvas = viewer.canvas
     var context = canvas.getContext('2d');
-
+    context.beginPath();
+    
+    context.moveTo(prevStart.x, prevStart.y)
     context.lineTo(screenCoor.x, screenCoor.y);
-    context.moveTo(screenCoor.x, screenCoor.y);
+    //context.moveTo(screenCoor.x, screenCoor.y);
     context.stroke();
     context.closePath();                 
     
@@ -330,7 +333,7 @@ var line = function(x0, y0, z0, x1, y1, z1, val){
 var fill_lines = function(currPaint, currVal){
     var new_coor = []
     currPaint.matrix_coor.forEach(function(val, idx, arr){
-        if (idx){
+        if (idx>0 && idx<arr.length-1){
             var prev = arr[idx-1]
             var new_arr = line(prev.x, prev.y, prev.z, val.x, val.y, val.z, currVal)
             new_coor = new_coor.concat(new_arr)
@@ -364,6 +367,7 @@ var end_paint = function(template, originalCoord, screenCoor){
     context.stroke();      
     context.closePath();
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
+    //console.log(currentPaint.matrix_coor)
     currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
     //currentPaint.original_vals = []
     /*currentPaint.matrix_coor.forEach(function(val, idx, arr){
