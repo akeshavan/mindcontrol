@@ -129,8 +129,13 @@ setValue = function(x,y,z, val){
     var ori = vol.header.orientation
     var offset = ori.convertIndexToOffset(x,y,z)
     var old_val = vol.imageData.data[offset]
-    vol.imageData.data[offset] = val
-    return old_val
+    if (old_val != val){
+        vol.imageData.data[offset] = val
+        return old_val
+    }
+    else{
+        return null
+    }
 }
 
 setContoursToZero = function(contours){
@@ -264,9 +269,9 @@ var end_curve = function(template, originalCoord, screenCoor){
 
 var start_paint = function(template, originalCoord, screenCoor){
     var painters = template.painters.get()
-    var world = new papaya.core.Coordinate();
-    papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
-    var entry = {matrix_coor: [originalCoord], world_coor: [world], checkedBy: Meteor.user().username, uuid: guid(), start_point: screenCoor}
+    //var world = new papaya.core.Coordinate();
+    //papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+    var entry = {matrix_coor: [originalCoord], world_coor: [], checkedBy: Meteor.user().username, uuid: guid(), start_point: screenCoor}
     painters.push(entry)
     template.painters.set(painters)
     Session.set("isDrawing", true)
@@ -290,11 +295,11 @@ var continue_paint = function(template, originalCoord, screenCoor){
     var prevStart = currentPaint.start_point
     var viewer = papayaContainers[0].viewer
     var originalCoord = papayaContainers[0].viewer.convertScreenToImageCoordinate(screenCoor.x, screenCoor.y, viewer.mainImage);
-    var world = new papaya.core.Coordinate();
-    papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+    //var world = new papaya.core.Coordinate();
+    //papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
 
     currentPaint.matrix_coor.push(originalCoord)
-    currentPaint.world_coor.push(world)
+    //currentPaint.world_coor.push(world)
     currentPaint.start_point = screenCoor
     template.painters.set(painters)
     
@@ -320,7 +325,9 @@ var line = function(x0, y0, z0, x1, y1, z1, val){
    var new_arr = []
    while(true){
      old_value = setValue(x0,y0, z0, val);  // Do what you need to for this
-     new_arr.push({x: x0, y:y0, z: z0, old_val: old_value})
+     if (old_value != null){
+         new_arr.push({x: x0, y:y0, z: z0, old_val: old_value})
+     }
      if ((x0==x1) && (y0==y1)) break;
      var e2 = 2*err;
      if (e2 >-dy){ err -= dy; x0  += sx; }
@@ -347,12 +354,10 @@ var end_paint = function(template, originalCoord, screenCoor){
     var painters = template.painters.get()
     var N = painters.length
     var currentPaint = painters[N-1]
-    var world = new papaya.core.Coordinate();
-    papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
     var currVal = Session.get("paintValue")
     
     currentPaint.matrix_coor.push(originalCoord)
-    currentPaint.world_coor.push(world)
+    //currentPaint.world_coor.push(world)
     currentPaint.paintValue = currVal
     
     
@@ -369,6 +374,11 @@ var end_paint = function(template, originalCoord, screenCoor){
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     //console.log(currentPaint.matrix_coor)
     currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
+    currentPaint.matrix_coor.forEach(function(val, idx, arr){
+        var world = new papaya.core.Coordinate();
+        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+        currentPaint.world_coor.push(world)
+    })
     //currentPaint.original_vals = []
     /*currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var old_val = setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), currVal)
@@ -380,6 +390,7 @@ var end_paint = function(template, originalCoord, screenCoor){
     Session.set("isDrawing", false)
     viewer.drawViewer(true,false)
     template.painters.set(painters)
+    console.log("currentPaint is", currentPaint)
     //console.log(currentPaint)
                
 
