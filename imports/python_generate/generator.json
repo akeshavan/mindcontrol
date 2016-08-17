@@ -64,6 +64,11 @@
       ],
       "graph_type": "histogram",
       "colormaps": {
+        "0":{"name": "Grayscale",
+            "alpha": 1,
+            "min": 0,
+            "max": 255
+        },
         "1": {
           "name": "custom.Freesurfer",
           "alpha": 0.25
