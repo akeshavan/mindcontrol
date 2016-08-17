@@ -317,12 +317,13 @@ var continue_paint = function(template, originalCoord, screenCoor){
 }
 
 var line = function(x0, y0, z0, x1, y1, z1, val){
+   var new_arr = []
+   if (z0 == z1){
    var dx = Math.abs(x1-x0);
    var dy = Math.abs(y1-y0);
    var sx = (x0 < x1) ? 1 : -1;
    var sy = (y0 < y1) ? 1 : -1;
    var err = dx-dy;
-   var new_arr = []
    while(true){
      old_value = setValue(x0,y0, z0, val);  // Do what you need to for this
      if (old_value != null){
@@ -332,8 +333,10 @@ var line = function(x0, y0, z0, x1, y1, z1, val){
      var e2 = 2*err;
      if (e2 >-dy){ err -= dy; x0  += sx; }
      if (e2 < dx){ err += dx; y0  += sy; }
+
    }
    //console.log("new arr is", new_arr)
+   }
    return new_arr
 }
 
