@@ -1,5 +1,6 @@
 import "./body.html"
 import "./qc.html"
+import "./subject_reduce.html"
 import {Subjects} from "../api/module_tables.js"
 
 contextHotkeys =  new Hotkeys({
@@ -34,6 +35,15 @@ FlowRouter.route('/:username', {
   action: function(params) {
     console.log(params)
     BlazeLayout.render("body", {content: "tasks", "sidebar_content": null});
+    if (contextHotkeys){contextHotkeys.unload()}
+    
+  }
+});
+
+FlowRouter.route('/reduce/msid/:msid', {
+  action: function(params) {
+    console.log(params)
+    BlazeLayout.render("subject");
     if (contextHotkeys){contextHotkeys.unload()}
     
   }
