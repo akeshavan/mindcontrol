@@ -32,10 +32,34 @@ Check out the [demo](http://mindcontrol.herokuapp.com/). [This data is from the 
 
 * create an account by clicking **sign in** on the top navigation bar
 * click on a site (for example, Baltimore) to only show exams from that site
+
+![site-filtering](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/filtering_by_site_and_date.gif)
+
 * In the freesurfer table, click the select box to change the metric of the histogram
+
+![switch histograms](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/histogram_switch.gif)
+
 * Brush the histogram to filter the table, which only shows freesurfer id's that match the brush range 
+
+![brushing and viewing images](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/histogram_brushing_and_image_viewing.gif)
+
 * Save your filter by typing a name in the left text-box
-* Download the freesurfer metrics for your filter by clicking 'Download' on the left 
 * Click 'reset' to undo the filtering
 * Click on a Freesurfer subject id to open a new window that shows the aparc+aseg file
 * Mark Pass, Fail, Needs Edits, or Edited, and leave some comments about the image. Click 'save'
+* You can log points
+
+![log points](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/logLesion.gif)
+
+* You can log curves
+
+![log curves](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/logContour.gif)
+
+* Edit voxels:
+
+![edit voxels](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/dura_edit.gif)
+
+* (beta) You can collaborate on the same image:
+
+![collaborate](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/syncedViewers.gif)
+
