@@ -32,9 +32,6 @@ Check out the [demo](http://mindcontrol.herokuapp.com/). [This data is from the 
 
 * create an account by clicking **sign in** on the top navigation bar
 * click on a site (for example, Baltimore) to only show exams from that site
-
-![site-filtering](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/filtering_by_site_and_date.gif)
-
 * In the freesurfer table, click the select box to change the metric of the histogram
 
 ![switch histograms](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/histogram_switch.gif)
