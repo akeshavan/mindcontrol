@@ -50,7 +50,7 @@ var snapToGrid = function(coords){
     if (idx==0){
         //console.log(val)
         }
-    var new_val = new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z))
+    var new_val = new papaya.core.Coordinate(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z))
     
     out_coords.push(new_val)
 
@@ -411,7 +411,7 @@ restore_vals = function(currPaint){
     if (currPaint){
         currPaint.matrix_coor.reverse()
         currPaint.matrix_coor.forEach(function(val, idx, arr){
-            setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), val.old_val)
+            setValue(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z), val.old_val)
             //console.log( currPaint.original_vals[idx])        
         })
         var viewer = papayaContainers[0].viewer

@@ -1,6 +1,4 @@
-<body data-spy="scroll" data-target=".bs-docs-sidebar">
-    
-    <head><title>MindControl Refactor</title></head>
+<template name="navbar">
      <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -21,6 +19,12 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+</template>
+
+<template name="main_body" data-spy="scroll" data-target=".bs-docs-sidebar">
+    
+    <head><title>MindControl Refactor</title></head>
+    {{> navbar}}
 
     <div class="row">
 
@@ -37,7 +41,7 @@
 
 <!--{{> qc_modal}}-->
 
-</body>
+</template>
 
 <template name="tasks">
 
