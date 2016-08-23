@@ -1,26 +1,6 @@
-<template name="qc_modal">
-<div class="modal modal-fullscreen" id="modal-fullscreen" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">{{modalData.name}}</h4>
-      </div>
-      <div class="modal-body">
-        {{> Template.dynamic template="view_images" data=modalData}}
-      </div>
-      <div class="modal-footer">
-
-        <button type="button" class="btn btn-default" data-dismiss="modal" id="closemodal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-</template>
-
 <template name="view_images">
 
-
+{{> navbar}}
 
     <div id="wrapper">
 

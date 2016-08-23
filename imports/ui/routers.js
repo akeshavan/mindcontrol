@@ -12,7 +12,7 @@ contextHotkeys =  new Hotkeys({
 FlowRouter.route('/', {
   action: function() {
     console.log("rendering /")
-    BlazeLayout.render("body", {content: "base", "sidebar_content": "body_sidebar"});
+    BlazeLayout.render("main_body", {content: "base", "sidebar_content": "body_sidebar"});
     if (contextHotkeys){contextHotkeys.unload()}
     
   }
