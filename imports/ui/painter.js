@@ -377,10 +377,17 @@ var end_paint = function(template, originalCoord, screenCoor){
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     //console.log(currentPaint.matrix_coor)
     currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
+    currentPaint.offset = []
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var world = new papaya.core.Coordinate();
-        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+        papayaContainers[0].viewer.getWorldCoordinateAtIndex(val.x, val.y, val.z, world);
         currentPaint.world_coor.push(world)
+        /*var viewer = papayaContainers[0].viewer
+        var N = viewer.screenVolumes.length
+        var vol = viewer.screenVolumes[N-1].volume
+        var ori = vol.header.orientation
+        var offset = ori.convertIndexToOffset(val.x,val.y,val.z)
+        currentPaint.offset.push(offset)*/
     })
     //currentPaint.original_vals = []
     /*currentPaint.matrix_coor.forEach(function(val, idx, arr){
