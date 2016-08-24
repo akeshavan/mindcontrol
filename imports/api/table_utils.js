@@ -59,7 +59,7 @@ get_filter_list_field = function(entry_type, field_name, title){
                       render: function(val, type, doc){
                                 var html = ""
                                 if (val != null){
-                                    console.log("val is", val)
+                                    //console.log("val is", val)
                                 if(typeof val == "string"){
                                     val = [val]
                                 }

@@ -41,7 +41,10 @@ if (Meteor.isServer) {
         return Subjects.find({"msid": msid})
   })
 
-  Meteor.publish("mse_info", function(mse, entry_type){
-        return Subjects.find({"subject_id":mse, "entry_type": entry_type})
+  Meteor.publish("mse_info", function(mse, entry_type, metric){
+        var filter = {"subject_id":mse, "entry_type": entry_type}
+        var only = {}
+        only["metrics."+metric] = 1
+        return Subjects.find(filter)
   })
 }

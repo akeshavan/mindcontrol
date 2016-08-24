@@ -59,8 +59,12 @@
           <div class="chart-title">
             {{type}}
           </div>
-          <div class="chart-stage" id="{{id}}">
-            <img data-src="holder.js/100%x210/white" alt="100%x120" style="height: 210px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzkiIGhlaWdodD0iMjQwIj48cmVjdCB3aWR0aD0iNDM5IiBoZWlnaHQ9IjI0MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxOS41IiB5PSIxMjAiIHN0eWxlPSJmaWxsOiNhN2E3YTc7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MjdweDtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj40Mzl4MjQwPC90ZXh0Pjwvc3ZnPg==">
+          <div class="chart-stage" id="chart_{{type}}">
+              {{plot(data)}}
+              <svg height="210px" width="100%">
+
+              </svg>
+            <!--<img data-src="holder.js/100%x210/white" alt="100%x120" style="height: 210px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzkiIGhlaWdodD0iMjQwIj48cmVjdCB3aWR0aD0iNDM5IiBoZWlnaHQ9IjI0MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxOS41IiB5PSIxMjAiIHN0eWxlPSJmaWxsOiNhN2E3YTc7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MjdweDtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj40Mzl4MjQwPC90ZXh0Pjwvc3ZnPg==">-->
           </div>
           <div class="chart-notes">
             {{metric}}
