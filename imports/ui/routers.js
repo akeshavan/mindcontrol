@@ -43,6 +43,7 @@ FlowRouter.route('/:username', {
 FlowRouter.route('/reduce/msid/:msid', {
   action: function(params) {
     console.log(params)
+     Session.set("currentMSID", params.msid)
     BlazeLayout.render("subject");
     if (contextHotkeys){contextHotkeys.unload()}
     

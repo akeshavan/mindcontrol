@@ -116,7 +116,7 @@
         "0":{"name":"Grayscale",
              "alpha": 1,
              "min": 0,
-             "max": 1500},
+             "max": 2500},
         "1": {
           "name": "Spectrum",
           "alpha": 0.15,

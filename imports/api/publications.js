@@ -36,5 +36,12 @@ if (Meteor.isServer) {
   Meteor.publish('userList', function (){ 
   return Meteor.users.find({});
 });
-  
+
+  Meteor.publish("msid_info", function(msid){
+        return Subjects.find({"msid": msid})
+  })
+
+  Meteor.publish("mse_info", function(mse, entry_type){
+        return Subjects.find({"subject_id":mse, "entry_type": entry_type})
+  })
 }

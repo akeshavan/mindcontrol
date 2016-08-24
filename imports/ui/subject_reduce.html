@@ -1,20 +1,21 @@
 <template name="subject">
-<div class="container-fluid">
+    {{> navbar}}
+    <div class="container-fluid">
 <div class="row">
       
       
       
 <!-- end of three -->
-{{>minidiv}}
-{{>minidiv}}
-{{>minidiv}}
-{{>minidiv}}
-{{>minidiv}}
-{{>minidiv}}
+    {{#each top_row}}
+
+    {{>minidiv name=name value=value date=date}}
+
+    {{/each}}
+
             
             </div>
       <div class="row">
-          {{>sidebardiv}}
+          {{>sidebardiv side_data=side_data}}
           {{>mainviewer}}  
       
     </div>
@@ -25,13 +26,14 @@
 <div class="col-sm-1 col-md-2">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            {{name}}
           </div>
           <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white" alt="100%x120" style="height: 120px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzUiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iNDM1IiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxNy41IiB5PSI2MCIgc3R5bGU9ImZpbGw6I2E3YTdhNztmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToyN3B4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjQzNXgxMjA8L3RleHQ+PC9zdmc+">
+            <!--<img data-src="holder.js/100%x120/white" alt="100%x120" style="height: 120px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzUiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iNDM1IiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxNy41IiB5PSI2MCIgc3R5bGU9ImZpbGw6I2E3YTdhNztmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToyN3B4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjQzNXgxMjA8L3RleHQ+PC9zdmc+">-->
+            <h1>{{value}}</h1>
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            As of {{date}}
           </div>
         </div>
       </div>
@@ -41,9 +43,10 @@
 <template name="sidebardiv">
 
 <div class="col-sm-4">
-{{>sidebardiv_content}}
-{{>sidebardiv_content}}
-{{>sidebardiv_content}}
+
+    {{#each side_data}}
+        {{>sidebardiv_content type=type metric=metric data=data}}
+    {{/each}}
 </div>
 </template>
 
@@ -54,13 +57,13 @@
     <div class="col-sm-12">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            {{type}}
           </div>
-          <div class="chart-stage">
+          <div class="chart-stage" id="{{id}}">
             <img data-src="holder.js/100%x210/white" alt="100%x120" style="height: 210px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzkiIGhlaWdodD0iMjQwIj48cmVjdCB3aWR0aD0iNDM5IiBoZWlnaHQ9IjI0MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxOS41IiB5PSIxMjAiIHN0eWxlPSJmaWxsOiNhN2E3YTc7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MjdweDtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj40Mzl4MjQwPC90ZXh0Pjwvc3ZnPg==">
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            {{metric}}
           </div>
         </div>
     </div>
