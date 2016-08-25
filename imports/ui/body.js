@@ -38,7 +38,7 @@ var run_recursive_update = function(gSelector){
     update_subjects(filter, all_keys)
 }
 
-Template.body.events({
+Template.main_body.events({
     "click .reset": function(){
         Session.set("globalSelector", {})
         Session.set("subjectSelector", {"subject_id": {$in: []}})
