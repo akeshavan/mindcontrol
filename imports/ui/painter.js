@@ -108,10 +108,9 @@ fill_all_loggedPoints = function(lp){
 }
 
 fill_all = function(template){
-    var contours = template.contours.get()
-    var lp = template.loggedPoints.get()
-
-    contours.forEach(function(val, idx, arr){
+    if (template.contours != null){
+     var contours = template.contours.get()
+     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
         if (val.visible==true || val.visible==null){
           val.contours.forEach(function(val, idx, arr){
@@ -119,7 +118,15 @@ fill_all = function(template){
               })
         }
         })
+    }
+
+   if (template.loggedPoints != null){
+       var lp = template.loggedPoints.get()
+
+
     fill_all_loggedPoints(lp)
+   }
+
 }
 
 setValue = function(x,y,z, val){

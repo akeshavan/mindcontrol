@@ -4,7 +4,7 @@
   {"name": "Exams",
     "entry_type": "demographic",
   "fields": [
-    {"function_name": "get_filter_field",
+    {"function_name": "get_reduce_view",
       "id": "msid",
       "name": "msid"
     },
@@ -66,8 +66,7 @@
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
-            "min": 0,
-            "max": 255
+            "min": 0
         },
         "1": {
           "name": "custom.Freesurfer",

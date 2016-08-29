@@ -43,8 +43,9 @@ if (Meteor.isServer) {
 
   Meteor.publish("mse_info", function(mse, entry_type, metric){
         var filter = {"subject_id":mse, "entry_type": entry_type}
-        var only = {}
+        var only = {"subject_id":1, "entry_type": 1, "name":1, "check_masks": 1}
         only["metrics."+metric] = 1
-        return Subjects.find(filter)
+        //console.log("only is", only)
+        return Subjects.find(filter, {fields: only})
   })
 }

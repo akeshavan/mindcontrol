@@ -52,6 +52,16 @@ get_filter_field = function(entry_type, field_name, title){
     
 }
 
+get_reduce_view = function(entry_type, field_name, title){
+    var returnfunc = {data: field_name, title: title, render: function(val, type, doc){
+    html = '<a href="/reduce/'+field_name+'/'+val+'">'+val+'</a>'
+    //console.log(html)
+    return Spacebars.SafeString(html)
+    }}
+    return returnfunc
+
+}
+
 get_filter_list_field = function(entry_type, field_name, title){
     
     var returnfunc = {data:field_name, 

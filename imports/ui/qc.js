@@ -64,7 +64,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-var addPapaya = function(data, entry_type, template_instance, callback){
+addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
 
         var params = {}
@@ -157,7 +157,7 @@ var class_mapper = {"-1": "warning", "0": "danger",
 
 
 
-var load_hotkeys = function(template_instance){
+load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "d d",
                     callback : function(){
