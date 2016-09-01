@@ -49,3 +49,13 @@ FlowRouter.route('/reduce/msid/:msid', {
     
   }
 });
+
+FlowRouter.route('/reduce/study_tag/:study_tag', {
+  action: function(params) {
+    console.log(params)
+     Session.set("currentStudyTag", params.study_tag)
+    BlazeLayout.render("study");
+    if (contextHotkeys){contextHotkeys.unload()}
+
+  }
+});

@@ -121,6 +121,19 @@ Meteor.methods({
         console.log("output is", output)
         return output
         }}
+    },
+
+    getMsidGroups: function(study_tag){
+        var stage1 = {"$match": {"entry_type": "demographic", "Study Tag": study_tag}}
+        var stage2 = {"$group": {_id: "$msid"}}
+        if (Meteor.isServer){
+            var output = []
+            var cursor = Subjects.aggregate([stage1, stage2])
+            cursor.forEach(function(item, item_idx, arr){
+                output.push(item._id)
+            })
+            return output
+        }
     }
     
   });

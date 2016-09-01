@@ -34,6 +34,127 @@
 </div>
 </template>
 
+<template name="study">
+
+    {{>navbar}}
+
+    <div class="container-fluid">
+
+    <div class="row">
+    {{> select_XY_project}}
+    {{> subject_info}}
+    </div>
+
+    <div class="row">
+    {{>plot_project}}
+    {{>show_image}}
+
+    </div>
+
+
+    </div>
+
+</template>
+
+<template name="select_XY_project">
+
+          <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+              <table class="table table-hover">
+                  <tr>
+                      <th>Axis</th>
+                      <th>Entry Type</th>
+                      <th>Metric</th>
+
+                  </tr>
+                  <tr>
+                      <td>X</td>
+                      <td>Multiselect</td>
+                      <td>Multiselect</td>
+                  </tr>
+                  <tr>
+                      <td>Y</td>
+                      <td>Multiselect</td>
+                      <td>Multiselect</td>
+                  </tr>
+
+              </table>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="subject_info">
+
+    <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Subject Information
+          </div>
+          <div class="chart-stage">
+              Click on a line in the plot to display here
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="plot_project">
+
+      <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            plot stuff here
+          </div>
+          <div class="chart-stage" id="plot_project">
+              {{#if plotReady}}
+
+                {{plot}}
+
+              {{else}}
+                {{prep_data}}
+                {{>spinner}}
+
+              {{/if}}
+
+
+              <svg height="1000px" width="100%"></svg>
+          </div>
+          <div class="chart-notes">
+            Loading Status: {{plotStatus}}
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="show_image">
+          <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage" id="viewer">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+</template>
+
 <template name="minidiv">
 <div class="col-sm-1 col-md-2">
         <div class="chart-wrapper">
