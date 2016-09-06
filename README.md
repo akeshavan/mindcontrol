@@ -24,6 +24,10 @@ meteor
 
 In a browser navigate to localhost:3000
 
+## Configure
+
+To see an example schema, see this file: https://dl.dropboxusercontent.com/u/9020198/data/data_rf.json
+
 ## Demo
 
 Check out the [demo](http://mindcontrol.herokuapp.com/). [This data is from the 1000 Functional Connectomes Project](http://fcon_1000.projects.nitrc.org/fcpClassic/FcpTable.html)
