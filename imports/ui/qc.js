@@ -10,7 +10,7 @@ import "./painter.js"
 
 
 
-var staticURL = "http://127.0.0.1:3002/"
+staticURL = "http://127.0.0.1:3002/"
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
 use_peerJS = false
 
@@ -64,7 +64,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-addPapaya = function(data, entry_type, template_instance, callback){
+addPapaya = function(data, entry_type, template_instance, force){
     //if (papayaContainers.length == 0){
 
         var params = {}
@@ -86,7 +86,7 @@ addPapaya = function(data, entry_type, template_instance, callback){
         if (papayaContainers.length != 0){
             var prev_volumes = papayaContainers[0].params.images
             var isSame = arraysEqual(prev_volumes, params["images"])
-            if (isSame){
+            if (isSame && !force){
                 return
             }
             console.log("papayacontainers is", papayaContainers.pop())

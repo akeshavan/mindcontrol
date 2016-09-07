@@ -87,6 +87,7 @@ var get_filter = function(mse, entry_type, metric){
 }
 
 var date_int_to_Date = function(d){
+
         var datestr = (d+1).toString()
         //console.log(datestr)
         var year = datestr.substring(0,4)
@@ -393,22 +394,74 @@ Template.mainviewer.helpers({
 
     top_panel_info: function(){
         return Session.get("currentViewerInfo")
+    },
+
+    viewType: function(){
+        return Template.instance().volumeView.get()
+    },
+
+    viewer_source: function(){
+        var info = Session.get("currentViewerInfo")
+        var vtk = staticURL + info["surfaces"][0].vtk
+        var csv = staticURL + info["surfaces"][0].csv
+        var source = "http://localhost:8000/?model="+vtk+"&overlay="+csv
+        console.log("source is", source)
+        return source
     }
 
 })
 
-Template.subject.events({
+
+Template.mainviewer.onCreated(function(){
+    //this.loggedPoints = new ReactiveVar([])
+    //this.contours = new ReactiveVar([])
+    //this.logMode = new ReactiveVar("point")
+    //this.touchscreen = new ReactiveVar(false)
+    //this.loadableImages = new ReactiveVar([])
+    this.volumeView = new ReactiveVar(true)
+    //this.painters = new ReactiveVar([])
+    })
+
+Template.mainviewer.events({
+
+"click #toggleView": function(e, template){
+    template.volumeView.set(!template.volumeView.get())
+}
+
 })
 
 
 Template.view_images.onCreated(function(){
     this.loggedPoints = new ReactiveVar([])
     this.contours = new ReactiveVar([])
-    //this.logMode = new ReactiveVar("point")
-    //this.touchscreen = new ReactiveVar(false)
-    this.loadableImages = new ReactiveVar([])
-    //this.painters = new ReactiveVar([])
+})
+
+Template.mainviewer.rendered = function(){
+
+ if(!this._rendered) {
+      this._rendered = true;
+      //console.log('Template onLoad');
+    }
+    this.autorun(function(){
+        var viewer = Template.instance().volumeView.get()
+        console.log("viewer is", viewer)
+        var output = Session.get("currentViewerInfo")
+
+        /*var arr = Subjects.find({"msid": msid,
+                             "entry_type": "demographic"},
+                            {sort: {"metrics.DCM_StudyDate": 1}}).fetch()
+        var output = Subjects.findOne(initial_view)
+        Session.set("currentViewerInfo", output)*/
+        if (output){
+            if (viewer){
+            console.log("output is", output)
+            addPapaya(output, output.entry_type, Template.instance(), true)
+            load_hotkeys(Template.instance())}
+        }
+
+
     })
+}
 
 Template.subject.rendered = function(){
 
@@ -418,6 +471,7 @@ Template.subject.rendered = function(){
     }
     this.autorun(function(){
         var msid = Session.get("currentMSID")
+
         console.log("currentMSID is", msid)
         Meteor.subscribe("msid_info", msid)
         var arr = Subjects.find({"msid": msid,
@@ -425,11 +479,7 @@ Template.subject.rendered = function(){
                                 {sort: {"metrics.DCM_StudyDate": 1}}).fetch()
         var output = Subjects.findOne(initial_view)
         Session.set("currentViewerInfo", output)
-        if (output){
-            console.log("output is", output)
-            addPapaya(output, output.entry_type, Template.instance())
-            load_hotkeys(Template.instance())
-        }
+
         //console.log(arr)
     })
 
@@ -450,7 +500,7 @@ if(!this._rendered) {
     })
 }
 
-doBigPlot = function(myData, svg_element){
+doBigPlot = function(myData, svg_element, formatter){
         _.defer(function () {
                 //data.forEach(function(val, idx,arr){
                 nv.addGraph(function() {
@@ -472,7 +522,20 @@ doBigPlot = function(myData, svg_element){
                     chart.xAxis     //Chart x-axis settings
                       .axisLabel('Timepoint')
                       //.tickFormat(d3.format(',r'));
-                      .tickFormat(function(d){return d3.time.format("%x")(new Date(d))})
+                      .tickFormat(function(d){
+
+                        if (formatter == "time"){
+                            return d3.time.format("%x")(new Date(d))
+                        }
+                        else{
+                            //console.log("nontime format")
+                            return d3.format('.02f')(d)
+                        }
+
+
+                        })
+
+
 
 
                     chart.yAxis     //Chart y-axis settings
@@ -497,17 +560,27 @@ doBigPlot = function(myData, svg_element){
                         Session.set("currentViewerInfo", d.info)
                     })*/
 
-                    d3.select("svg").selectAll(".nv-group .nv-line").on("mouseover", function(d){
+                    var path = d3.select(svg_element).selectAll(".nv-group .nv-line")
+                    var pathEl =
+
+                    d3.select(svg_element).selectAll(".nv-group .nv-line").on("mousemove", function(d){
                         //console.log(d)
                         d3.select(this).style("stroke-width", 10)
                         //this.attr("stroke-width", 5)
                     })
-                    d3.select("svg").selectAll(".nv-group .nv-line").on("mouseout", function(d){
+                    d3.select(svg_element).selectAll(".nv-group .nv-line").on("mouseout", function(d){
                         //console.log(d)
                         d3.select(this).style("stroke-width", 2)
                         //this.attr("stroke-width", 5)
                     })
 
+                    d3.select(svg_element).selectAll(".nv-group .nv-line").on("click", function(d, i){
+                        console.log("succesfully clicked a line. yay.", d, i)
+                        var myData = Session.get("myData")
+                        var data = myData[i]
+                        console.log(data)
+                        doBigPlot([data], "#subject_chart svg")
+                    })
 
 
                 }); //end addGraph
@@ -535,7 +608,7 @@ Template.plot_project.helpers({
                                      "mindboggle", "Left-Lateral-Ventricle_volume",
                                      function(){
                                         //console.log("done w/ sub", mse_order, msid)
-                                        var data = get_data_xy("demographic", "DCM_StudyDate",
+                                        var data = get_data_xy("demographic", "MSSS",
                                        "mindboggle", "Left-Lateral-Ventricle_volume", mse_order, false)
                                         myData.push({values: data, key:msid})
                                         Session.set("myData", myData)

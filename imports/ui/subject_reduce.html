@@ -99,8 +99,8 @@
           <div class="chart-title">
             Subject Information
           </div>
-          <div class="chart-stage">
-              Click on a line in the plot to display here
+          <div class="chart-stage" id="subject_chart">
+              <svg height="210px"></svg>
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -222,13 +222,24 @@
             {{#with top_panel_info}}
               {{entry_type}} - {{name}}
               <a href="/{{entry_type}}/{{name}}"><span class="glyphicon glyphicon-pencil"></span></a>
+              <button class="btn btn-default" id="toggleView">toggle view</button>
               {{/with}}
           </div>
           <div class="chart-stage">
+              {{#if viewType}}
             <div id="viewer">
-              <iframe src="{{viewer_source}}" style="height: 800px; width: 100%; display: block;">
+              <!--<iframe src="" style="height: 800px; width: 100%; display: block;">
+              </iframe>-->
+            </div>
+            {{else}}
+            <div id="surface">
+              <iframe src="{{viewer_source}}" frameBorder="0" scrolling="no"
+                      style="height: 800px; width: 100%; display: block;">
               </iframe>
             </div>
+              {{/if}}
+
+
           </div>
           <div class="chart-notes">
             {{#with top_panel_info}}
