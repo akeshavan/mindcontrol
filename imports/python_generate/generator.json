@@ -1,5 +1,6 @@
 {"start_tag":"{{",
   "end_tag":"}}",
+  "startup_json":"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0",
   "modules": [
   {"name": "Exams",
     "entry_type": "demographic",
