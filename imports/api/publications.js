@@ -21,5 +21,21 @@ if (Meteor.isServer) {
   Meteor.publish('userList', function (){ 
   return Meteor.users.find({});
 });
-  
+
+  Meteor.publish("msid_info", function(msid){
+        return Subjects.find({"msid": msid})
+  })
+
+  Meteor.publish("mse_info", function(mse, entry_type, metrics){
+        var filter = {"subject_id":{"$in": mse}, "entry_type": entry_type}
+        var only = {"subject_id":1, "entry_type": 1, "name":1, "check_masks": 1, "quality_check.QC": 1, "surfaces": 1}
+        only["metrics"] = 1
+        /*metrics.forEach(function(metric, idx, foo){
+            only["metrics."+metric] = 1
+        })*/
+        //console.log("only is", only)
+        var output = Subjects.find(filter, {fields: only})
+
+        return output
+  })
 }
