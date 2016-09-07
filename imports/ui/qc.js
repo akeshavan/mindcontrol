@@ -66,13 +66,14 @@ function arraysEqual(a, b) {
 
 var addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
-
+    Meteor.call("get_generator", entry_type, function(err, res){
         var params = {}
         params["images"] = []
         var loadableImages = []
         Session.set("loadableImages", loadableImages)
         for (i=0;i<data.check_masks.length;i++){ //never load more than 2 images
-            var url = staticURL+data["check_masks"][i]+"?dl=0"
+            var url = res["staticURL"]+data["check_masks"][i]+"?dl=0"
+            console.log("url is", url)
             if (i>=2){
                 loadableImages.push(url)
 
@@ -92,7 +93,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
             console.log("papayacontainers is", papayaContainers.pop())
         }
 
-        Meteor.call("get_generator", entry_type, function(err, res){
+        
 
             var cmap = res.colormaps
             if (cmap){
