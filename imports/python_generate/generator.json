@@ -1,48 +1,36 @@
 {"start_tag":"{{",
   "end_tag":"}}",
-  "startup_json":"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0",
+  "startup_json":"https://rawgit.com/akeshavan/mindcontrol_configs/master/corr/initializer.json",
   "modules": [
   {"name": "Exams",
-    "entry_type": "demographic",
+    "entry_type": "longitudinal_quality_metrics",
   "fields": [
+    {"function_name": "get_qc_viewer",
+      "id": "name",
+      "name": "Name"
+    },
+
     {"function_name": "get_filter_field",
       "id": "msid",
-      "name": "msid"
+      "name": "Subject ID"
     },
+
     {"function_name": "get_filter_field",
       "id": "subject_id",
       "name": "Exam ID"
     },
+
     {"function_name": "get_filter_field",
-      "id": "Study Tag",
-      "name": "Study Tag"
-    },
-    {"function_name": "get_filter_field",
-      "id": "DCM_InstitutionName",
+      "id": "site",
       "name": "Site"
     },
+
     {"function_name": "get_filter_field",
-      "id": "metrics.DCM_InstitutionName",
-      "name": "Date"
-    }
-  ],
-  "graph_type":"datehist",
-  "showgraph": true},
+      "id": "session",
+      "name": "Session"
+    },
+
     {
-      "name": "Freesurfer",
-      "entry_type": "freesurfer",
-      "fields": [
-        {
-          "function_name": "get_filter_field",
-          "id": "subject_id",
-          "name": "Exam ID"
-        },
-        {
-          "function_name": "get_qc_viewer",
-          "id": "name",
-          "name": "Freesurfer ID"
-        },
-        {
           "function_name": "get_qc_filter_field",
           "id": "quality_check.QC",
           "name": "QC"
@@ -62,20 +50,9 @@
           "id": "quality_check.notes_QC",
           "name": "Notes"
         }
-      ],
-      "graph_type": "histogram",
-      "colormaps": {
-        "0":{"name": "Grayscale",
-            "alpha": 1,
-            "min": 0,
-            "max": 255
-        },
-        "1": {
-          "name": "custom.Freesurfer",
-          "alpha": 0.5
-        }
-      },
-      "staticURL": "https://dl.dropboxusercontent.com/u/9020198/data/",
-      "usePeerJS": true
-    }
+
+  ],
+  "graph_type":"histogram",
+  "staticURL": "https://s3.amazonaws.com/fcp-indi/data/Projects/CORR/RawData/",
+      "usePeerJS": true}
 ]}
