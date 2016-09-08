@@ -1,6 +1,6 @@
 {"start_tag":"{{",
   "end_tag":"}}",
-  "startup_json":"https://dl.dropboxusercontent.com/s/ho3zc47zd8eh3vr/abide_mindcontrol_entries.json?dl=0",
+  "startup_json":"https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/abide_initial_data.json",
   "modules": [
       {
       "name": "Quality Assurance",
