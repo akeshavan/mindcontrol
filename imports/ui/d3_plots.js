@@ -178,7 +178,7 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
               })
         .attr("fill", "black")
         .attr("text-anchor", "middle")
-        .text(function(d) { return formatCount(d.count); });
+        .text(function(d) { return d3.format(",d")(d.count); });
 
         text_selector.enter().append("text")
         .attr("dy", "1em")
@@ -331,8 +331,8 @@ do_d3_histogram = function (values, minval, maxval, metric, dom_id, entry_type) 
 
         window.d3vis.y.domain([0, d3.max(values, function(d) { return d.count; })]);
 
-
-        var formatCount = d3.format(",.0f");
+        
+        var formatCount = d3.format(".2e");
         d3barplot(window,values, formatCount, metric, entry_type)
 
     });

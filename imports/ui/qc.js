@@ -100,6 +100,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
                 var idxs = Object.keys(cmap)
                 for (i=0;i<idxs.length;i++){
                     var idx = idxs[i]
+                    console.log("params is", params)
                     console.log("index is", idx)
                     var opts = cmap[idx]
                     console.log("options are", opts)

@@ -1,36 +1,10 @@
 {"start_tag":"{{",
   "end_tag":"}}",
-  "startup_json":"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0",
+  "startup_json":"https://dl.dropboxusercontent.com/s/ho3zc47zd8eh3vr/abide_mindcontrol_entries.json?dl=0",
   "modules": [
-  {"name": "Exams",
-    "entry_type": "demographic",
-  "fields": [
-    {"function_name": "get_filter_field",
-      "id": "msid",
-      "name": "msid"
-    },
-    {"function_name": "get_filter_field",
-      "id": "subject_id",
-      "name": "Exam ID"
-    },
-    {"function_name": "get_filter_field",
-      "id": "Study Tag",
-      "name": "Study Tag"
-    },
-    {"function_name": "get_filter_field",
-      "id": "DCM_InstitutionName",
-      "name": "Site"
-    },
-    {"function_name": "get_filter_field",
-      "id": "metrics.DCM_InstitutionName",
-      "name": "Date"
-    }
-  ],
-  "graph_type":"datehist",
-  "showgraph": true},
-    {
-      "name": "Freesurfer",
-      "entry_type": "freesurfer",
+      {
+      "name": "Quality Assurance",
+      "entry_type": "qa",
       "fields": [
         {
           "function_name": "get_filter_field",
@@ -61,21 +35,51 @@
           "function_name": null,
           "id": "quality_check.notes_QC",
           "name": "Notes"
+        }],
+        "graph_type": "histogram",
+        "staticURL": "https://s3.amazonaws.com/"},
+    {
+      "name": "Resting State fMRI",
+      "entry_type": "rsfmri_decisions",
+      "fields": [
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "Filename"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "strategy",
+          "name": "Strategy"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "site",
+          "name": "Site"
+            
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "pipeline",
+          "name": "Pipeline"
         }
-      ],
-      "graph_type": "histogram",
+        ],
+
+      "graph_type": null,
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
             "min": 0,
             "max": 255
-        },
-        "1": {
-          "name": "custom.Freesurfer",
-          "alpha": 0.5
         }
       },
-      "staticURL": "https://dl.dropboxusercontent.com/u/9020198/data/",
+      "graph_type": "histogram",
+      "staticURL": "https://s3.amazonaws.com/",
       "usePeerJS": true
     }
 ]}

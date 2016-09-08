@@ -16,9 +16,11 @@ if (Meteor.isServer) {
         var source_json = myjson["startup_json"] //"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0"
         //console.log(HTTP.get(source_json).content)
         myobject = JSON.parse(HTTP.get(source_json).content)
+        //console.log(myobject)
         //console.log("my object is", myobject.length)
         myobject.forEach(function(val,idx,array){
             Subjects.insert(val)
+            console.log("inserted")
         })
         
     }
