@@ -11,6 +11,8 @@ import '../api/methods.js';
 import './body.html';
 import "./qc.js";
 import "./qc.html";
+import "./subject_reduce.html"
+import "./subject_reduce.js"
 
 var update_subjects = function(filter, list_of_remaining){
         console.log("list of remaining is", list_of_remaining)
@@ -40,6 +42,7 @@ var run_recursive_update = function(gSelector){
 
 Template.main_body.events({
     "click .reset": function(){
+        console.log("click reset")
         Session.set("globalSelector", {})
         Session.set("subjectSelector", {"subject_id": {$in: []}})
     },

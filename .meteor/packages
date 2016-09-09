@@ -25,7 +25,6 @@ aldeed:tabular
 session
 http
 meteorhacks:aggregate
-d3
 underscore
 natestrauser:x-editable-bootstrap
 workman:x-editable-reactive-template
@@ -37,3 +36,7 @@ chriswessels:hammer
 tmeasday:presence
 check
 fortawesome:fontawesome
+nvd3:nvd3@=1.7.1
+d3js:d3@3.5.3
+brucejo:bootstrap-multiselect
+sacha:spin

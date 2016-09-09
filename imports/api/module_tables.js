@@ -23,7 +23,7 @@ name:"longitudinal_quality_metrics",
       
     
       
-        get_filter_field("longitudinal_quality_metrics", "msid", "Subject ID"),
+        get_reduce_view("longitudinal_quality_metrics", "msid", "Subject ID"),
       
     
       

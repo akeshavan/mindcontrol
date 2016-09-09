@@ -10,7 +10,7 @@
       "name": "Name"
     },
 
-    {"function_name": "get_filter_field",
+    {"function_name": "get_reduce_view",
       "id": "msid",
       "name": "Subject ID"
     },
