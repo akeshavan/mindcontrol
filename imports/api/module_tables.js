@@ -46,6 +46,40 @@ name:"qa",
     })
 
 
+TabularTables.freesurfer =  new Tabular.Table({
+name:"freesurfer",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("freesurfer", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("freesurfer", "name", "Freesurfer ID"),
+      
+    
+      
+        get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("freesurfer", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_field("freesurfer", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
 TabularTables.rsfmri_decisions =  new Tabular.Table({
 name:"rsfmri_decisions",
     autoWidth: false,

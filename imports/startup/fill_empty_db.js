@@ -14,8 +14,8 @@ if (Meteor.isServer) {
         myjson = JSON.parse(Assets.getText("generator.json"));
         console.log("myjson", myjson["startup_json"])
         var source_json = myjson["startup_json"] //"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0"
-        //console.log(HTTP.get(source_json).content)
-        myobject = JSON.parse(HTTP.get(source_json).content)
+        console.log(source_json+"?"+Math.random().toString())
+        myobject = JSON.parse(HTTP.get(source_json+"?"+Math.random().toString()).content)
         //console.log(myobject)
         //console.log("my object is", myobject.length)
         myobject.forEach(function(val,idx,array){

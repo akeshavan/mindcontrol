@@ -29,14 +29,14 @@ Meteor.methods({
               no_null[metric_name] = {$ne: null}
           }
           
-          console.log("in the server, the filter is", no_null)
+          //console.log("in the server, the filter is", no_null)
           
           var minval = Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric]
-          console.log(Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch())
+          //console.log(Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch())
           var maxval = Subjects.find(no_null, {sort: [[metric_name, "descending"]], limit: 1}).fetch()[0]["metrics"][metric]
                     //var minval = Subjects.findOne({"entry_type": entry_type, no_null}, {sort: minsorter})//.sort(maxsorter).limit(1)
           
-          console.log(metric, minval, maxval)
+          //console.log(metric, minval, maxval)
           var bin_size = (maxval -minval)/(bins+1)
           console.log("the bin size is", bin_size)
           
