@@ -17,10 +17,10 @@ if (Meteor.isServer) {
         console.log(source_json+"?"+Math.random().toString())
         myobject = JSON.parse(HTTP.get(source_json+"?"+Math.random().toString()).content)
         //console.log(myobject)
-        //console.log("my object is", myobject.length)
+        console.log("my object is", myobject.length, "entries long")
         myobject.forEach(function(val,idx,array){
             Subjects.insert(val)
-            console.log("inserted")
+            //console.log("inserted")
         })
         
     }
