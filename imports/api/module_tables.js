@@ -35,7 +35,7 @@ name:"longitudinal_quality_metrics",
       
     
       
-        get_filter_field("longitudinal_quality_metrics", "session", "Session"),
+        get_filter_field("longitudinal_quality_metrics", "metrics.session", "Session"),
       
     
       

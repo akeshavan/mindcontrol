@@ -2,7 +2,8 @@ import "./subject_reduce.html"
 import {Subjects} from "../api/module_tables.js"
 import "./qc.js"
 
- var top_row_metrics = ["AgeOfOnset", "CurrentAge", "DiseaseCourse", "EDSS", "Sex", "MSSS"]
+// var top_row_metrics = ["AgeOfOnset", "CurrentAge", "DiseaseCourse", "EDSS", "Sex", "MSSS"]
+ var top_row_metrics = 0
 // var top_row_metrics = 
 // var side_data_config = [{"entry_type":"mindboggle", "metric": ["Right-Lateral-Ventricle_volume",
 //                                                               "Left-Lateral-Ventricle_volume"]},
@@ -118,7 +119,7 @@ get_data_xy = function(Xtype, Xmetric, Ytype, Ymetric, mse_order, normalize){
         yFields[Yname] = 1
         var arrX = Subjects.find(get_filter(mse, Xtype, Xmetric)).fetch()
         var arrY = Subjects.find(get_filter(mse, Ytype, Ymetric)).fetch()
-        // console.log(arrX)
+        //console.log(arrX)
         if (arrX.length && arrY.length){
             arrX.forEach(function(x, xidx, xarr){
                 arrY.forEach(function(y, yidx, yarr){
@@ -256,7 +257,7 @@ var doPlot = function(metric, type, data, template_instance){
                     chart.xAxis     //Chart x-axis settings
                       .axisLabel('Timepoint')
                       //.tickFormat(d3.format(',r'));
-                      .tickFormat(function(d){return d3.time.format("%x")(new Date(d))})
+                      //.tickFormat(function(d){return d3.time.format("%x")(new Date(d))})
                       /*.tickFormat(function(d){
                         var datestr = (d+1).toString()
                         //console.log(datestr)
@@ -585,7 +586,7 @@ doBigPlot = function(myData, svg_element, formatter){
                         var myData = Session.get("myData")
                         var data = myData[i]
                         console.log(data)
-                        doBigPlot([data], "#subject_chart svg")
+                        doBigPlot([data], "#subject_chart svg", "numeric")
                     })
 
 
