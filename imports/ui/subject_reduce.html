@@ -178,8 +178,10 @@
 <div class="col-sm-4">
 
     {{#each side_data}}
-        {{>sidebardiv_content type=type metric=metric data=data}}
+        {{>sidebardiv_content type=type metric=metric xaxis_metric=xaxis_metric data=data chart_type=chart_type normalize=normalize}}
     {{/each}}
+
+
 </div>
 </template>
 
@@ -192,7 +194,7 @@
           <div class="chart-title">
             {{type}}
           </div>
-          <div class="chart-stage" id="chart_{{type}}">
+          <div class="chart-stage" id="chart_{{type}}_{{chart_type}}">
               {{plot(data)}}
               <svg height="210px" width="100%">
 
@@ -200,9 +202,14 @@
             <!--<img data-src="holder.js/100%x210/white" alt="100%x120" style="height: 210px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzkiIGhlaWdodD0iMjQwIj48cmVjdCB3aWR0aD0iNDM5IiBoZWlnaHQ9IjI0MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxOS41IiB5PSIxMjAiIHN0eWxlPSJmaWxsOiNhN2E3YTc7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MjdweDtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj40Mzl4MjQwPC90ZXh0Pjwvc3ZnPg==">-->
           </div>
           <div class="chart-notes">
-  {{#Multiselect name='example-multiple-selected' menuItems=metric_names
-              selectedList=selectedMetrics
-              configOptions=configOptions}}
+  {{#Multiselect name='example-multiple-selected' menuItems=Ymetric_names
+              selectedList=selectedMetricsY
+              configOptions=configOptionsY}}
+    <option value={{value}} {{selectedAttr}}>{{caption}}</option>
+  {{/Multiselect}}
+  {{#Multiselect name='example-multiple-selected' menuItems=Xmetric_names
+              selectedList=selectedMetricsX
+              configOptions=configOptionsX}}
     <option value={{value}} {{selectedAttr}}>{{caption}}</option>
   {{/Multiselect}}
              <!--{{metric}}-->

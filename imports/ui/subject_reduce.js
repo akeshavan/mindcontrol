@@ -10,16 +10,20 @@ import "./qc.js"
 //                {"entry_type":"freesurfer", "metric": ["TotalGrayVol", "CorticalWhiteMatterVol",
 //                "Left-Lateral-Ventricle", "Right-Lateral-Ventricle"]},
 //                {"entry_type": "antsCT", "metric": ["GM", "WM", "CSF"]}]
-var side_data_config = [{"entry_type":"longitudinal_quality_metrics", "metric": ["anat_cnr", "anat_efc", "anat_fber", "anat_fwhm", "anat_qi1", "anat_snr"]}]
+var side_data_config = [{"entry_type":"longitudinal_quality_metrics", 
+                        "metric": ["anat_cnr"],"xaxis_metric":["session"],"chart_type":1, "normalize":1},
+                        {"entry_type":"longitudinal_quality_metrics", 
+                        "metric": ["anat_cnr"],"xaxis_metric":["session"],"chart_type":0, "normalize":0}]
 // var initial_view = {"entry_type": "mindboggle"}
 var initial_view = {"entry_type": "longitudinal_quality_metrics"}
-var sort_by_variable = "metrics.session"
 var sort_by_variable_metric = "session"
+var sort_by_variable = "metrics."+sort_by_variable_metric
 var filter_entry_type = "longitudinal_quality_metrics"
 
 
 side_data_config.forEach(function(val, idx, arr){
-    Session.set(val.entry_type+"_selected", val.metric)
+    Session.set(val.entry_type+"_Yselected", val.metric)
+    Session.set(val.entry_type+"_Xselected", val.xaxis_metric)
 })
 
 function standardDeviation(values){
@@ -219,14 +223,17 @@ side_data: function(){
         //console.log(Session.get(val.entry_type+"_selected"), "changed")
         var tmp = {}
         tmp["type"] = val.entry_type
-        tmp["metric"] = Session.get(val.entry_type+"_selected")//val.metric
+        tmp["metric"] = Session.get(val.entry_type+"_Yselected")//val.metric
+        tmp["chart_type"] = val.chart_type
+        tmp["normalize"] = val.normalize
+        tmp["xaxis_metric"] = Session.get(val.entry_type+"_Xselected")
         // tmp["data"] = get_data(val.entry_type, val.metric, mse_order)
         var data = []
         Meteor.subscribe("mse_info", mse_order, val.entry_type, val.metric)
         tmp.metric.forEach(function(metric_name, metric_idx, metric_arr){
             //console.log("val.metric.forEach", metric_name)
             //data.push(get_data(val.entry_type, metric_name, mse_order))
-            data.push(get_data_xy(filter_entry_type, sort_by_variable_metric, val.entry_type, metric_name, mse_order))
+            data.push(get_data_xy(filter_entry_type, tmp["xaxis_metric"][0], val.entry_type, metric_name, mse_order))
         })
         tmp["data"] = data
 
@@ -240,22 +247,31 @@ side_data: function(){
 
 })
 
-var doPlot = function(metric, type, data, template_instance){
+var doPlot = function(metric, xaxis_metric, type, data, template_instance, chart_type, normalize){
     //console.log("running doPlot", data)
     _.defer(function () {
                 //data.forEach(function(val, idx,arr){
+                console.log(metric, type, data, template_instance)
                 nv.addGraph(function() {
-                    var chart = nv.models.lineChart()
+                    if(chart_type){
+                        var chart = nv.models.lineChart()
+                    }
+                    else{
+                        var chart = nv.models.scatterChart()
+                    }
+                    //var chart = nv.models.lineChart()
+                    //var chart = nv.models.scatterChart()
                     //console.log("chart is", chart)
                     chart.margin({left: 75, right:50})  //Adjust chart margins to give the x-axis some breathing room.
-                    chart.useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                    //chart.useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
                     chart.duration(350)  //how fast do you want the lines to transition?
                     chart.showLegend(true)       //Show the legend, allowing users to turn on/off line series.
                     chart.showYAxis(true)        //Show the y-axis
                     chart.showXAxis(true)        //Show the x-axis
                     ;
                     chart.xAxis     //Chart x-axis settings
-                      .axisLabel('Timepoint')
+                      .axisLabel(xaxis_metric)
+                      //.axisLabel('Timepoint')
                       //.tickFormat(d3.format(',r'));
                       //.tickFormat(function(d){return d3.time.format("%x")(new Date(d))})
                       /*.tickFormat(function(d){
@@ -274,10 +290,15 @@ var doPlot = function(metric, type, data, template_instance){
                         console.log(date_nice)
                         return d3.time.format("%x")(new Date(date_nice))
                       })*/
-
-                    chart.yAxis     //Chart y-axis settings
-                      .axisLabel("% change")
-                      .tickFormat(d3.format('.02f'));
+                    if(normalize){
+                        chart.yAxis     //Chart y-axis settings
+                        .axisLabel("% change")
+                        .tickFormat(d3.format('.02f'));
+                    }
+                    else{
+                        chart.yAxis     //Chart y-axis settings
+                        .tickFormat(d3.format('.02f'));
+                    }
 
                     /* Done setting the chart up? Time to render it!*/
                     //var myData = sinAndCos();   //You need data...
@@ -287,13 +308,13 @@ var doPlot = function(metric, type, data, template_instance){
                      metric.forEach(function(metric_name, metric_idx, metric_arr){
                         myData.push({values: data[metric_idx], key: metric_name})
                      })
-                     //console.log("myData is", myData)
+                     console.log("myData is", myData)
                      //console.log("myData is", myData)
                      //console.log("d3 stuff", d3.select('#chart_'+type+" svg"))
-                     d3.select('#chart_'+type+" svg")    //Select the <svg> element you want to render the chart in.
+                     d3.select('#chart_'+type+"_"+chart_type+" svg")    //Select the <svg> element you want to render the chart in.
                       .datum(myData)         //Populate the <svg> element with chart data...
                       .call(chart);          //Finally, render the chart!
-                     //console.log("d3 stuff 2", d3.select('#chart_'+type+" svg"))
+                     console.log("d3 stuff 2", d3.select('#chart_'+type+" svg"))
                   //Update the chart when window resizes.
                   nv.utils.windowResize(function() { chart.update() });
                   //console.log("chart is", chart)
@@ -313,15 +334,21 @@ var doPlot = function(metric, type, data, template_instance){
 
 }
 
-get_multiselect_arr = function(entry_type){
+get_multiselect_arr = function(entry_type, axis){
 
         var metrics = get_metrics(entry_type)
+        //var metrics = metric_list
         //console.log("metrics is", metrics)
         var out_arr = []
         if (metrics != null){
             metrics.forEach(function(val, idx, arr){
                 var obj = {value: val, caption: val, selected: false}
-                var s = Session.get(entry_type+"_selected")
+                if(axis == 'Y'){
+                    var s = Session.get(entry_type+"_Yselected")
+                }
+                if(axis == 'X'){
+                    var s = Session.get(entry_type+"_Xselected")
+                }
                 if (s.indexOf(val) >=0){
                     s["selected"] = true
                 }
@@ -337,25 +364,40 @@ Template.sidebardiv_content.helpers({
     plot: function(data){
         var metric = this.metric
         var type=this.type
+        var chart_type = this.chart_type
+        var normalize = this.normalize
+        var xaxis_metric = this.xaxis_metric[0]
         if (data.length){
-            //console.log("this is", this, "data is", data, "nv", nv.models.lineChart)
-            doPlot(metric, type, data, Template.instance())
+            console.log("this is", this, "data is", data, "nv", nv.models.lineChart)
+            doPlot(metric, xaxis_metric, type, data, Template.instance(), chart_type, normalize)
         }//end if
     },
 
-    metric_names: function(){
-        var arr= get_multiselect_arr(this.type)
+    Ymetric_names: function(){
+        var arr= get_multiselect_arr(this.type, 'Y')
         //console.log("multiselect is", arr)
         return arr
     },
 
-    selectedMetrics: function(){
+    Xmetric_names: function(){
+        var arr= get_multiselect_arr(this.type, 'X')
+        //console.log("multiselect is", arr)
+        return arr
+    },
 
-        return Session.get(this.type+"_selected")
+    selectedMetricsX: function(){
+
+        return Session.get(this.type+"_Xselected")
 
     },
 
-    configOptions: function(){
+    selectedMetricsY: function(){
+
+        return Session.get(this.type+"_Yselected")
+
+    },
+
+    configOptionsY: function(){
     var entry_type = this.type
     var opts = {
       'nonSelectedText': 'Select Metrics',
@@ -364,7 +406,7 @@ Template.sidebardiv_content.helpers({
       'onChange': function onChange(option, checked) {
         var index = $(option).val();
         //console.log('Changed option ' + index + '. checked: ' + checked);
-        var s = Session.get(entry_type+"_selected")
+        var s = Session.get(entry_type+"_Yselected")
         //console.log("s is", s)
         var idx = s.indexOf(index)
         //console.log("idx is", idx, index)
@@ -374,12 +416,37 @@ Template.sidebardiv_content.helpers({
         else if (!checked && idx>=0){
            s.splice(idx, 1)
         }
-        Session.set(entry_type+"_selected", s)
+        Session.set(entry_type+"_Yselected", s)
         //console.log("now s is", Session.get(entry_type+"_selected"))
         //arr.indexOf(index).selected = checked;
       }}
      return opts
+    },
 
+    configOptionsX: function(){
+    var entry_type = this.type
+    var opts = {
+      'nonSelectedText': 'Select Metrics',
+      'buttonClass': 'btn btn-default btn-sm',
+      'enableFiltering': true,
+      'onChange': function onChange(option, checked) {
+        var index = $(option).val();
+        //console.log('Changed option ' + index + '. checked: ' + checked);
+        var s = Session.get(entry_type+"_Xselected")
+        //console.log("s is", s)
+        var idx = s.indexOf(index)
+        //console.log("idx is", idx, index)
+        if (checked && idx<0){
+                s.push(index)
+            }
+        else if (!checked && idx>=0){
+           s.splice(idx, 1)
+        }
+        Session.set(entry_type+"_Xselected", s)
+        //console.log("now s is", Session.get(entry_type+"_selected"))
+        //arr.indexOf(index).selected = checked;
+      }}
+     return opts
     }
 })
 
