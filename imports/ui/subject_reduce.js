@@ -255,6 +255,7 @@ var doPlot = function(metric, xaxis_metric, type, data, template_instance, chart
                 nv.addGraph(function() {
                     if(chart_type){
                         var chart = nv.models.lineChart()
+                        chart.useInteractiveGuideline(true) 
                     }
                     else{
                         var chart = nv.models.scatterChart()
@@ -263,7 +264,7 @@ var doPlot = function(metric, xaxis_metric, type, data, template_instance, chart
                     //var chart = nv.models.scatterChart()
                     //console.log("chart is", chart)
                     chart.margin({left: 75, right:50})  //Adjust chart margins to give the x-axis some breathing room.
-                    //chart.useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                     //We want nice looking tooltips and a guideline!
                     chart.duration(350)  //how fast do you want the lines to transition?
                     chart.showLegend(true)       //Show the legend, allowing users to turn on/off line series.
                     chart.showYAxis(true)        //Show the y-axis
