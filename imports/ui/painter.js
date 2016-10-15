@@ -50,7 +50,7 @@ var snapToGrid = function(coords){
     if (idx==0){
         //console.log(val)
         }
-    var new_val = new papaya.core.Coordinate(Math.round(val.x), Math.round(val.y), Math.round(val.z))
+    var new_val = new papaya.core.Coordinate(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z))
     
     out_coords.push(new_val)
 
@@ -108,10 +108,9 @@ fill_all_loggedPoints = function(lp){
 }
 
 fill_all = function(template){
-    var contours = template.contours.get()
-    var lp = template.loggedPoints.get()
-
-    contours.forEach(function(val, idx, arr){
+    if (template.contours != null){
+     var contours = template.contours.get()
+     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
         if (val.visible==true || val.visible==null){
           val.contours.forEach(function(val, idx, arr){
@@ -119,7 +118,15 @@ fill_all = function(template){
               })
         }
         })
+    }
+
+   if (template.loggedPoints != null){
+       var lp = template.loggedPoints.get()
+
+
     fill_all_loggedPoints(lp)
+   }
+
 }
 
 setValue = function(x,y,z, val){
@@ -377,10 +384,17 @@ var end_paint = function(template, originalCoord, screenCoor){
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     //console.log(currentPaint.matrix_coor)
     currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
+    currentPaint.offset = []
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var world = new papaya.core.Coordinate();
-        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+        papayaContainers[0].viewer.getWorldCoordinateAtIndex(val.x, val.y, val.z, world);
         currentPaint.world_coor.push(world)
+        /*var viewer = papayaContainers[0].viewer
+        var N = viewer.screenVolumes.length
+        var vol = viewer.screenVolumes[N-1].volume
+        var ori = vol.header.orientation
+        var offset = ori.convertIndexToOffset(val.x,val.y,val.z)
+        currentPaint.offset.push(offset)*/
     })
     //currentPaint.original_vals = []
     /*currentPaint.matrix_coor.forEach(function(val, idx, arr){
@@ -404,7 +418,7 @@ restore_vals = function(currPaint){
     if (currPaint){
         currPaint.matrix_coor.reverse()
         currPaint.matrix_coor.forEach(function(val, idx, arr){
-            setValue(papayaRoundFast(val.x), papayaRoundFast(val.y), papayaRoundFast(val.z), val.old_val)
+            setValue(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z), val.old_val)
             //console.log( currPaint.original_vals[idx])        
         })
         var viewer = papayaContainers[0].viewer

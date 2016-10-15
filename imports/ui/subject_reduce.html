@@ -1,0 +1,251 @@
+<template name="subject">
+    {{> navbar}}
+    <div class="container-fluid">
+<div class="row">
+      
+      
+      
+<!-- end of three -->
+    {{#each top_row}}
+
+    {{>minidiv name=name value=value date=date}}
+
+    {{/each}}
+
+            
+            </div>
+      <div class="row">
+          {{>sidebardiv side_data=side_data}}
+          {{>mainviewer}}  
+      
+    </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="chart-wrapper">
+                    <div class="chart-title">Tables</div>
+                         <div class="chart-stage">
+                            {{> demographic}}
+                         </div>
+                    <div class="chart-notes"></div>
+                </div>
+            </div>
+        </div>
+</div>
+</template>
+
+<template name="study">
+
+    {{>navbar}}
+
+    <div class="container-fluid">
+
+    <div class="row">
+    {{> select_XY_project}}
+    {{> subject_info}}
+    </div>
+
+    <div class="row">
+    {{>plot_project}}
+    {{>show_image}}
+
+    </div>
+
+
+    </div>
+
+</template>
+
+<template name="select_XY_project">
+
+          <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+              <table class="table table-hover">
+                  <tr>
+                      <th>Axis</th>
+                      <th>Entry Type</th>
+                      <th>Metric</th>
+
+                  </tr>
+                  <tr>
+                      <td>X</td>
+                      <td>Multiselect</td>
+                      <td>Multiselect</td>
+                  </tr>
+                  <tr>
+                      <td>Y</td>
+                      <td>Multiselect</td>
+                      <td>Multiselect</td>
+                  </tr>
+
+              </table>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="subject_info">
+
+    <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Subject Information
+          </div>
+          <div class="chart-stage" id="subject_chart">
+              <svg height="210px"></svg>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="plot_project">
+
+      <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            plot stuff here
+          </div>
+          <div class="chart-stage" id="plot_project">
+              {{#if plotReady}}
+
+                {{plot}}
+
+              {{else}}
+                {{prep_data}}
+                {{>spinner}}
+
+              {{/if}}
+
+
+              <svg height="1000px" width="100%"></svg>
+          </div>
+          <div class="chart-notes">
+            Loading Status: {{plotStatus}}
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="show_image">
+          <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage" id="viewer">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+</template>
+
+<template name="minidiv">
+<div class="col-sm-1 col-md-2">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            {{name}}
+          </div>
+          <div class="chart-stage">
+            <!--<img data-src="holder.js/100%x120/white" alt="100%x120" style="height: 120px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzUiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iNDM1IiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxNy41IiB5PSI2MCIgc3R5bGU9ImZpbGw6I2E3YTdhNztmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToyN3B4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjQzNXgxMjA8L3RleHQ+PC9zdmc+">-->
+            <h1>{{value}}</h1>
+          </div>
+          <div class="chart-notes">
+            As of {{date}}
+          </div>
+        </div>
+      </div>
+
+</template>
+
+<template name="sidebardiv">
+
+<div class="col-sm-4">
+
+    {{#each side_data}}
+        {{>sidebardiv_content type=type metric=metric data=data}}
+    {{/each}}
+</div>
+</template>
+
+
+<template name="sidebardiv_content">
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            {{type}}
+          </div>
+          <div class="chart-stage" id="chart_{{type}}">
+              {{plot(data)}}
+              <svg height="210px" width="100%">
+
+              </svg>
+            <!--<img data-src="holder.js/100%x210/white" alt="100%x120" style="height: 210px; width: 100%; display: block;" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MzkiIGhlaWdodD0iMjQwIj48cmVjdCB3aWR0aD0iNDM5IiBoZWlnaHQ9IjI0MCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjIxOS41IiB5PSIxMjAiIHN0eWxlPSJmaWxsOiNhN2E3YTc7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LXNpemU6MjdweDtmb250LWZhbWlseTpBcmlhbCxIZWx2ZXRpY2Esc2Fucy1zZXJpZjtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj40Mzl4MjQwPC90ZXh0Pjwvc3ZnPg==">-->
+          </div>
+          <div class="chart-notes">
+  {{#Multiselect name='example-multiple-selected' menuItems=metric_names
+              selectedList=selectedMetrics
+              configOptions=configOptions}}
+    <option value={{value}} {{selectedAttr}}>{{caption}}</option>
+  {{/Multiselect}}
+             <!--{{metric}}-->
+          </div>
+        </div>
+    </div>
+</div>
+
+</template>
+
+<template name="mainviewer">
+
+
+<div class="col-sm-8">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            {{#with top_panel_info}}
+              {{entry_type}} - {{name}}
+              <a href="/{{entry_type}}/{{name}}"><span class="glyphicon glyphicon-pencil"></span></a>
+              <button class="btn btn-default" id="toggleView">toggle view</button>
+              {{/with}}
+          </div>
+          <div class="chart-stage">
+              {{#if viewType}}
+            <div id="viewer">
+              <!--<iframe src="" style="height: 800px; width: 100%; display: block;">
+              </iframe>-->
+            </div>
+            {{else}}
+            <div id="surface">
+              <iframe src="{{viewer_source}}" frameBorder="0" scrolling="no"
+                      style="height: 800px; width: 100%; display: block;">
+              </iframe>
+            </div>
+              {{/if}}
+
+
+          </div>
+          <div class="chart-notes">
+            {{#with top_panel_info}}
+              {{subject_id}}
+              {{/with}}
+          </div>
+        </div>
+      </div>
+</template>

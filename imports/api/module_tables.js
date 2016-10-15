@@ -19,7 +19,7 @@ name:"demographic",
     columns:[
     
       
-        get_filter_field("demographic", "msid", "msid"),
+        get_reduce_view("demographic", "msid", "msid"),
       
     
       

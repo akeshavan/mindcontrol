@@ -17,6 +17,23 @@ papaya.volume.Orientation.prototype.convertCoordinate = function (coord, coordCo
     return coordConverted;
 };
 
+papaya.volume.Transform.hasRotations = function (mat) {
+    var decomp, epsilon, rotX, rotY, rotZ;
+
+    if (mat !== null) {
+        decomp = papaya.volume.Transform.decompose(mat);
+        epsilon = 1;
+
+        rotX = (Math.abs(1 - (Math.abs(decomp[3]) / 90.0)) % 1);
+        rotY = (Math.abs(1 - (Math.abs(decomp[4]) / 90.0)) % 1);
+        rotZ = (Math.abs(1 - (Math.abs(decomp[5]) / 90.0)) % 1);
+        console.log("rotX, rotY, rotZ", rotX, rotY, rotZ)
+        return ((rotX > epsilon) || (rotY > epsilon) || (rotZ > epsilon));
+    }
+
+    return false;
+};
+
 papaya.volume.nifti.HeaderNIFTI.prototype.getOrigin = function (forceQ, forceS) {
     var origin = new papaya.core.Coordinate(0, 0, 0),
         qFormMatParams,
@@ -31,10 +48,12 @@ papaya.volume.nifti.HeaderNIFTI.prototype.getOrigin = function (forceQ, forceS) 
 
     if ((this.nifti.qform_code > 0) && !forceS) {
         if (this.qFormHasRotations()) {
+            console.log("qform code and not force Sform, qform has rotations")
             affineQform = this.nifti.getQformMat();
             affineQformInverse = numeric.inv(affineQform);
             origin.setCoordinate(affineQformInverse[0][3], affineQformInverse[1][3], affineQformInverse[2][3]);
         } else {
+            console.log("qform >0, not force Sform, qform does not HasRotations")
             qFormMatParams = this.nifti.convertNiftiQFormToNiftiSForm(this.nifti.quatern_b, this.nifti.quatern_c,
                 this.nifti.quatern_d, this.nifti.qoffset_x, this.nifti.qoffset_y, this.nifti.qoffset_z,
                 this.nifti.pixDims[1], this.nifti.pixDims[2], this.nifti.pixDims[3], this.nifti.pixDims[0]);
@@ -64,9 +83,11 @@ papaya.volume.nifti.HeaderNIFTI.prototype.getOrigin = function (forceQ, forceS) 
         }
     } else if ((this.nifti.sform_code > 0) && !forceQ) {
         if (this.sFormHasRotations()) {
+            console.log("sform code HasRotations, sform_code >0 and not forceq")
             affineSformInverse = numeric.inv(this.nifti.affine);
             origin.setCoordinate(affineSformInverse[0][3], affineSformInverse[1][3], affineSformInverse[2][3]);
         } else {
+            console.log("sform code does not HasRotations, sform code >0 and not forceq")
             orientation = this.nifti.convertNiftiSFormToNEMA(this.nifti.affine);
 
             if (!papaya.volume.Orientation.isValidOrientationString(orientation)) {

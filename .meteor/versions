@@ -13,12 +13,13 @@ blaze@2.1.8
 blaze-html-templates@1.0.4
 blaze-tools@1.0.9
 boilerplate-generator@1.0.9
+brucejo:bootstrap-multiselect@0.1.0
 caching-compiler@1.0.5
 caching-html-compiler@1.0.6
 callback-hook@1.0.9
 check@1.2.3
 chriswessels:hammer@4.0.2
-d3@1.0.0
+d3js:d3@3.5.8
 ddp@1.2.5
 ddp-client@1.2.8
 ddp-common@1.2.6
@@ -68,6 +69,7 @@ mousetrap:mousetrap@1.4.6_1
 natestrauser:x-editable-bootstrap@1.5.2_4
 npm-bcrypt@0.8.7
 npm-mongo@1.4.44
+nvd3:nvd3@1.7.1
 observe-sequence@1.0.12
 ordered-dict@1.0.8
 promise@0.7.2
@@ -78,6 +80,7 @@ reactive-var@1.0.10
 reload@1.1.9
 retry@1.0.8
 routepolicy@1.0.11
+sacha:spin@2.3.1
 service-configuration@1.0.10
 session@1.1.6
 sha@1.0.8
