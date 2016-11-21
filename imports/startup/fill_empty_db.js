@@ -3,10 +3,10 @@ import {Subjects} from "../api/module_tables.js"
 if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish tasks that are public or belong to the current user
-  
-  
+
+
  Meteor.startup(function () {
-    //Subjects.remove({})
+    Subjects.remove({})
     //console.log("in metero startup function")
     if (Subjects.find().count() === 0) {
         //load the json from here: https://www.dropbox.com/s/enb5zemvmu2oqgw/data.json?dl=0
@@ -20,8 +20,8 @@ if (Meteor.isServer) {
         myobject.forEach(function(val,idx,array){
             Subjects.insert(val)
         })
-        
+
     }
   });
-  
+
   }
