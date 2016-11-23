@@ -2,6 +2,10 @@ body {
   padding-top: 50px;
 }
 
+canvas {
+  position: absolute;
+}
+
 .container {
     margin-left: 300px
 }
@@ -368,5 +372,3 @@ h4 td, th{
     color: #333;
     white-space: nowrap;
     }
-
-
