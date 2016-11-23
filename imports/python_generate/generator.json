@@ -1,9 +1,28 @@
 {"start_tag":"{{",
   "end_tag":"}}",
-  "startup_json":"https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/initializer.json",
+  "startup_json":["https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_qc.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants00.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants01.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants02.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants03.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants04.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants05.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_ants06.json",
+                  "https://rawgit.com/akeshavan/mindcontrol_configs/master/abide/ak_abide_demo.json"],
   "modules": [
-      {
-      "name": "Quality Assurance",
+      {"name": "Demographics",
+       "entry_type": "demographic",
+       "fields": [
+         {"function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"},
+          {"function_name": "get_filter_field",
+           "id": "DCM_InstitutionName",
+           "name": "Site"}
+         ],
+       "graph_type": "histogram"
+      },
+      {"name": "Quality Assurance",
       "entry_type": "qa",
       "fields": [
         {
@@ -37,11 +56,10 @@
           "name": "Notes"
         }],
         "graph_type": "histogram",
-        "staticURL": "http://s3.amazonaws.com/fcp-indi/data/Projects/ABIDE_Initiative/RawData/"},
-        {
-      "name": "Freesurfer",
-      "entry_type": "freesurfer",
-      "fields": [
+        "staticURL": "http://s3.amazonaws.com/fcp-indi/data/Projects/ABIDE_Initiative/"},
+        {"name": "ANTS",
+         "entry_type": "ants",
+         "fields": [
         {
           "function_name": "get_filter_field",
           "id": "subject_id",
@@ -50,7 +68,7 @@
         {
           "function_name": "get_qc_viewer",
           "id": "name",
-          "name": "Freesurfer ID"
+          "name": "ANTS ID"
         },
         {
           "function_name": "get_qc_filter_field",
@@ -74,60 +92,13 @@
         }
       ],
       "graph_type": "histogram",
+      "staticURL": "http://s3.amazonaws.com/fcp-indi/data/Projects/ABIDE_Initiative/",
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
             "min": 0,
             "max": 255
-        },
-        "1": {
-          "name": "custom.Freesurfer",
-          "alpha": 0.5
         }
       }
-    },
-    {
-      "name": "Resting State fMRI",
-      "entry_type": "rsfmri_decisions",
-      "fields": [
-        {
-          "function_name": "get_filter_field",
-          "id": "subject_id",
-          "name": "Exam ID"
-        },
-        {
-          "function_name": "get_qc_viewer",
-          "id": "name",
-          "name": "Filename"
-        },
-        {
-          "function_name": "get_filter_field",
-          "id": "strategy",
-          "name": "Strategy"
-        },
-        {
-          "function_name": "get_filter_field",
-          "id": "site",
-          "name": "Site"
-
-        },
-        {
-          "function_name": "get_filter_field",
-          "id": "pipeline",
-          "name": "Pipeline"
-        }
-        ],
-
-      "graph_type": null,
-      "colormaps": {
-        "0":{"name": "Grayscale",
-            "alpha": 1,
-            "min": 0,
-            "max": 255
-        }
-      },
-      "graph_type": "histogram",
-      "staticURL": "https://s3.amazonaws.com/",
-      "usePeerJS": true
     }
 ]}

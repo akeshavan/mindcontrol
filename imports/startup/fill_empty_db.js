@@ -15,11 +15,38 @@ if (Meteor.isServer) {
         console.log("myjson", myjson["startup_json"])
         var source_json = myjson["startup_json"] //"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0"
         //console.log(HTTP.get(source_json).content)
-        myobject = JSON.parse(HTTP.get(source_json).content)
-        //console.log("my object is", myobject.length)
-        myobject.forEach(function(val,idx,array){
-            Subjects.insert(val)
+        if (! Array.isArray(source_json)){
+            source_json = [source_json]
+        }
+        source_json.forEach(function(val, idx, arr){
+          HTTP.call( 'GET', val, {}, function( error, response ) {
+            if ( error ) {
+              console.log( error );
+            } else {
+              //console.log( response );
+              myobject = JSON.parse(response.content)
+              //console.log(myobject)
+              myobject.forEach(function(val,idx,array){
+                  Subjects.insert(val)
+                  console.log("inserting", val.entry_type, val.subject_id)
+              })
+              /*
+               This will return the HTTP response object that looks something like this:
+               {
+                 content: "String of content...",
+                 data: Array[100], <-- Our actual data lives here.
+                 headers: {  Object containing HTTP response headers }
+                 statusCode: 200
+               }
+              */
+            }
+          });
+
         })
+
+
+        //myobject = JSON.parse(HTTP.get(source_json).content)
+        //console.log("my object is", myobject.length)
 
     }
   });

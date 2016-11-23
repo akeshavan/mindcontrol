@@ -77,6 +77,28 @@ render_histogram = function(entry_type){
 
 
 
+Template.demographic.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("demographic")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
 Template.qa.rendered = function() {
 
       if (!this.rendered){
@@ -99,7 +121,7 @@ Template.qa.rendered = function() {
 
 
 
-Template.freesurfer.rendered = function() {
+Template.ants.rendered = function() {
 
       if (!this.rendered){
         this.rendered = true
@@ -109,7 +131,7 @@ Template.freesurfer.rendered = function() {
     
 
        this.autorun(function() {
-                render_histogram("freesurfer")
+                render_histogram("ants")
 
        }); //end autorun
 
@@ -121,27 +143,24 @@ Template.freesurfer.rendered = function() {
 
 
 
-Template.rsfmri_decisions.rendered = function() {
-
-      if (!this.rendered){
-        this.rendered = true
-         }
 
 
-    
+Template.demographic.helpers({
 
-       this.autorun(function() {
-                render_histogram("rsfmri_decisions")
-
-       }); //end autorun
-
-     
-
-  }
+selector: function(){return get_filter("demographic")},
 
 
 
+metric: function(){
+        return get_metrics("demographic")
+    },
+currentMetric: function(){
+        return Session.get("current_demographic")
+    }
 
+
+
+})
 
 
 
@@ -164,17 +183,17 @@ currentMetric: function(){
 
 
 
-Template.freesurfer.helpers({
+Template.ants.helpers({
 
-selector: function(){return get_filter("freesurfer")},
+selector: function(){return get_filter("ants")},
 
 
 
 metric: function(){
-        return get_metrics("freesurfer")
+        return get_metrics("ants")
     },
 currentMetric: function(){
-        return Session.get("current_freesurfer")
+        return Session.get("current_ants")
     }
 
 
@@ -183,25 +202,16 @@ currentMetric: function(){
 
 
 
-Template.rsfmri_decisions.helpers({
 
-selector: function(){return get_filter("rsfmri_decisions")},
-
-
-
-metric: function(){
-        return get_metrics("rsfmri_decisions")
-    },
-currentMetric: function(){
-        return Session.get("current_rsfmri_decisions")
+  
+   Template.demographic.events({
+    "change #metric-select-demographic": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_demographic", metric)
     }
-
-
-
-})
-
-
-
+   })
+  
 
   
    Template.qa.events({
@@ -214,21 +224,11 @@ currentMetric: function(){
   
 
   
-   Template.freesurfer.events({
-    "change #metric-select-freesurfer": function(event, template){
+   Template.ants.events({
+    "change #metric-select-ants": function(event, template){
         var metric = $(event.currentTarget).val()
         console.log("metric: ", metric)
-        Session.set("current_freesurfer", metric)
-    }
-   })
-  
-
-  
-   Template.rsfmri_decisions.events({
-    "change #metric-select-rsfmri_decisions": function(event, template){
-        var metric = $(event.currentTarget).val()
-        console.log("metric: ", metric)
-        Session.set("current_rsfmri_decisions", metric)
+        Session.set("current_ants", metric)
     }
    })
   

@@ -12,6 +12,24 @@ TabularTables = {}
 
 
 
+TabularTables.demographic =  new Tabular.Table({
+name:"demographic",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("demographic", "subject_id", "Exam ID"),
+      
+    
+      
+        get_filter_field("demographic", "DCM_InstitutionName", "Site"),
+      
+    
+    ]
+    })
+
+
 TabularTables.qa =  new Tabular.Table({
 name:"qa",
     autoWidth: false,
@@ -46,64 +64,34 @@ name:"qa",
     })
 
 
-TabularTables.freesurfer =  new Tabular.Table({
-name:"freesurfer",
+TabularTables.ants =  new Tabular.Table({
+name:"ants",
     autoWidth: false,
     collection: Subjects,
     columns:[
     
       
-        get_filter_field("freesurfer", "subject_id", "Exam ID"),
+        get_filter_field("ants", "subject_id", "Exam ID"),
       
     
       
-        get_qc_viewer("freesurfer", "name", "Freesurfer ID"),
+        get_qc_viewer("ants", "name", "ANTS ID"),
       
     
       
-        get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),
+        get_qc_filter_field("ants", "quality_check.QC", "QC"),
       
     
       
-        get_filter_field("freesurfer", "checkedBy", "checked by"),
+        get_filter_field("ants", "checkedBy", "checked by"),
       
     
       
-        get_filter_field("freesurfer", "quality_check.user_assign", "Assigned To"),
+        get_filter_field("ants", "quality_check.user_assign", "Assigned To"),
       
     
       
         {data: "quality_check.notes_QC", title: "Notes" }
-      
-    
-    ]
-    })
-
-
-TabularTables.rsfmri_decisions =  new Tabular.Table({
-name:"rsfmri_decisions",
-    autoWidth: false,
-    collection: Subjects,
-    columns:[
-    
-      
-        get_filter_field("rsfmri_decisions", "subject_id", "Exam ID"),
-      
-    
-      
-        get_qc_viewer("rsfmri_decisions", "name", "Filename"),
-      
-    
-      
-        get_filter_field("rsfmri_decisions", "strategy", "Strategy"),
-      
-    
-      
-        get_filter_field("rsfmri_decisions", "site", "Site"),
-      
-    
-      
-        get_filter_field("rsfmri_decisions", "pipeline", "Pipeline"),
       
     
     ]
