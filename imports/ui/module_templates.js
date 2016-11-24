@@ -101,16 +101,16 @@ render_histogram = function(entry_type){
 }
 
 render_parcoor = function(entry_type){
-  var metric = Session.get("current_"+entry_type)//"Amygdala"
-  if (metric == null){
+  //var metric = Session.get("current_"+entry_type)//"Amygdala"
+  //if (metric == null){
       //var all_metrics = Session.get(entry_type+"_metrics")
-      get_metrics(entry_type)
+  var all_metrics = get_metrics(entry_type)
       /*if (all_metrics != null){
           Session.set("current_"+entry_type, all_metrics)
       }*/
-  }
+  //}
 
-  var metrics = Session.get(entry_type+"_metrics")
+  var metrics = all_metrics //Session.get(entry_type+"_metrics")
 
   if (metrics != null){
       var filter = get_filter(entry_type)
@@ -187,6 +187,10 @@ render_parcoor = function(entry_type){
               var dims = pcz.dimensions()
               dims.push(to_add)
               pcz.dimensions(dims)
+              pcz.svg.selectAll(".dimension")
+                      .on("click", change_color)
+                      .selectAll(".label")
+                      .style("font-size", "14px");
             }
 
           });
