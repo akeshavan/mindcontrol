@@ -118,10 +118,11 @@ render_parcoor = function(entry_type){
       Meteor.call("getAllData", entry_type, metrics, 20, filter, function(error, result){
       //console.log("result is", result)
       var data = result["data"]
+      var headers = Object.keys(data[0])
       if (data.length){
         //$(".parcoords_"+entry_type).height("200px");
           window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
-          var pcz = window.pcz[entry_type]
+          var pcz =  window.pcz[entry_type]
           pcz.data(data)
                   .bundlingStrength(1) // set bundling strength
                   .smoothness(0)
@@ -175,17 +176,25 @@ render_parcoor = function(entry_type){
 
             })
 
-          })
+          }); //end pcz.on brushend
           var foo = $("#search_metric_"+entry_type)
-          console.log(foo)
+          console.log("found select field", foo)
           foo.select2({data: metrics, theme:"bootstrap"});
           foo.val(metrics).trigger("change")
           foo.on("select2:select", function (e) {
-            console.log(e.params.data.id)
-            me.addData(e.params.data.id)
+            var to_add = e.params.data.id
+            if (headers.indexOf(to_add) >=0){
+              var dims = pcz.dimensions()
+              dims.push(to_add)
+              pcz.dimensions(dims)
+            }
+
           });
           foo.on("select2:unselect", function (e) {
-            me.removeData(e.params.data.id)
+            var dims = pcz.dimensions()
+            dims = _.without(dims, e.params.data.id)
+            console.log("removing", e.params.data.id)
+            pcz.dimensions(dims)
           });
 
       }
