@@ -104,25 +104,41 @@ render_parcoor = function(entry_type){
   //var metric = Session.get("current_"+entry_type)//"Amygdala"
   //if (metric == null){
       //var all_metrics = Session.get(entry_type+"_metrics")
+
   var all_metrics = get_metrics(entry_type)
+
       /*if (all_metrics != null){
           Session.set("current_"+entry_type, all_metrics)
       }*/
   //}
 
-  var metrics = all_metrics //Session.get(entry_type+"_metrics")
+  var metrics = Session.get(entry_type+"_selected_metrics") || all_metrics
 
   if (metrics != null){
+      console.log("Rendering parallel coordinates")
       var filter = get_filter(entry_type)
       //console.log("filter is", filter)
+
+      window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
+      var pcz =  window.pcz[entry_type]
+
+      var change_color = function(dimension) {
+            pcz.svg.selectAll(".dimension")
+              .style("font-weight", "normal")
+              .filter(function(d) { return d == dimension; })
+              .style("font-weight", "bold")
+            console.log("dimension", dimension)
+            pcz.color(zcolor(pcz.data(),dimension)).render()
+          }
+
+
       Meteor.call("getAllData", entry_type, metrics, 20, filter, function(error, result){
       //console.log("result is", result)
       var data = result["data"]
       var headers = Object.keys(data[0])
       if (data.length){
         //$(".parcoords_"+entry_type).height("200px");
-          window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
-          var pcz =  window.pcz[entry_type]
+
           pcz.data(data)
                   .bundlingStrength(1) // set bundling strength
                   .smoothness(0)
@@ -135,14 +151,6 @@ render_parcoor = function(entry_type){
                   .reorderable()
                   .interactive();
           pcz.brushReset()
-          var change_color = function(dimension) {
-                pcz.svg.selectAll(".dimension")
-                  .style("font-weight", "normal")
-                  .filter(function(d) { return d == dimension; })
-                  .style("font-weight", "bold")
-                console.log("dimension", dimension)
-                pcz.color(zcolor(pcz.data(),dimension)).render()
-              }
 
           //change_color(metrics[0]);
           pcz.svg.selectAll(".dimension")
@@ -177,7 +185,7 @@ render_parcoor = function(entry_type){
             })
 
           }); //end pcz.on brushend
-          var foo = $("#search_metric_"+entry_type)
+          /*var foo = $("#search_metric_"+entry_type)
           console.log("found select field", foo)
           foo.select2({data: metrics, theme:"bootstrap"});
           foo.val(metrics).trigger("change")
@@ -200,7 +208,7 @@ render_parcoor = function(entry_type){
             console.log("removing", e.params.data.id)
             pcz.dimensions(dims)
           });
-
+          */
       }
       else{
           console.log("empty parcoords data")
