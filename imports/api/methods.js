@@ -83,7 +83,11 @@ Meteor.methods({
         })
 
         console.log("in getAllData", no_null)
-        var data = Subjects.find(no_null).fetch()
+        var the_fields = {}
+        metrics.forEach(function(val, idx, arr){
+          the_fields["metrics."+val] = 1
+        })
+        var data = Subjects.find(no_null, {fields: the_fields}).fetch()
         var output = _.map(data, function(d){return d.metrics})
         return {data: output}
       }

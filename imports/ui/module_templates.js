@@ -103,8 +103,8 @@ render_histogram = function(entry_type){
 render_parcoor = function(entry_type){
   var metric = Session.get("current_"+entry_type)//"Amygdala"
   if (metric == null){
-      var all_metrics = Session.get(entry_type+"_metrics")
-
+      //var all_metrics = Session.get(entry_type+"_metrics")
+      get_metrics(entry_type)
       /*if (all_metrics != null){
           Session.set("current_"+entry_type, all_metrics)
       }*/
@@ -112,14 +112,12 @@ render_parcoor = function(entry_type){
 
   var metrics = Session.get(entry_type+"_metrics")
 
-
   if (metrics != null){
       var filter = get_filter(entry_type)
       //console.log("filter is", filter)
       Meteor.call("getAllData", entry_type, metrics, 20, filter, function(error, result){
       //console.log("result is", result)
       var data = result["data"]
-
       if (data.length){
         //$(".parcoords_"+entry_type).height("200px");
           window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
@@ -177,32 +175,18 @@ render_parcoor = function(entry_type){
 
             })
 
-            /*var newkey = "metrics."+metric
-
-
-            var gSelector = Session.get("globalSelector")
-            if (Object.keys(gSelector).indexOf(entry_type) < 0 ){
-                gSelector[entry_type] = {}
-            }
-            gSelector[entry_type][newkey] = {$gte: extent0[0], $lte: extent0[1]}
-            Session.set("globalSelector", gSelector)
-
-            var filter = get_filter(entry_type)
-            filter[newkey] = {$gte: extent0[0], $lte: extent0[1]}
-
-            Meteor.call("get_subject_ids_from_filter", filter, function(error, result){
-                //console.log("result from get subject ids from filter is", result)
-                var ss = Session.get("subjectSelector")
-                ss["subject_id"]["$in"] = result
-                Session.set("subjectSelector", ss)
-            })*/
-
-
-
-
-
           })
-          //$("#search_metric_"+entry_type).select2({data: metrics, theme:"bootstrap"});
+          var foo = $("#search_metric_"+entry_type)
+          console.log(foo)
+          foo.select2({data: metrics, theme:"bootstrap"});
+          foo.val(metrics).trigger("change")
+          foo.on("select2:select", function (e) {
+            console.log(e.params.data.id)
+            me.addData(e.params.data.id)
+          });
+          foo.on("select2:unselect", function (e) {
+            me.removeData(e.params.data.id)
+          });
 
       }
       else{
@@ -246,7 +230,7 @@ Template.qa.rendered = function() {
 
 
        this.autorun(function() {
-                render_histogram("qa")
+                //render_histogram("qa")
                 render_parcoor("qa")
        }); //end autorun
 
