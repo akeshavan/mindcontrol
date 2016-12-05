@@ -92,7 +92,7 @@
         }
       ],
       "graph_type": "histogram",
-      "staticURL": "http://s3.amazonaws.com/fcp-indi/data/Projects/ABIDE_Initiative/",
+      "staticURL": "",
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
