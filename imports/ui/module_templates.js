@@ -115,11 +115,15 @@ render_parcoor = function(entry_type){
   var metrics = Session.get(entry_type+"_selected_metrics") || all_metrics
 
   if (metrics != null){
-      console.log("Rendering parallel coordinates")
+      //_.defer(function(){
       var filter = get_filter(entry_type)
       //console.log("filter is", filter)
-
-      window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
+      var canvases = $("#parcoords_"+entry_type + " canvas")
+      console.log("canvases are", canvases, canvases.length)
+      if (canvases.length != 4){
+        window.pcz[entry_type] = d3.parcoords()("#parcoords_"+entry_type)
+      }
+      //window.pcz[entry_type] = window.pcz[entry_type] || d3.parcoords()("#parcoords_"+entry_type)
       var pcz =  window.pcz[entry_type]
 
       var change_color = function(dimension) {
@@ -134,7 +138,7 @@ render_parcoor = function(entry_type){
 
       Meteor.call("getAllData", entry_type, metrics, 20, filter, function(error, result){
       //console.log("result is", result)
-      var data = result["data"]
+      data = result["data"]
       var headers = Object.keys(data[0])
       if (data.length){
         //$(".parcoords_"+entry_type).height("200px");
@@ -146,11 +150,14 @@ render_parcoor = function(entry_type){
                   //.bundleDimension("cylinders")
                   .showControlPoints(false)
                   //.hideAxis(me.hideKeys)
+                  .autoscale()
                   .render()
                   .brushMode("1D-axes")
                   .reorderable()
-                  .interactive();
+                  .interactive()
+                  .updateAxes();
           pcz.brushReset()
+          console.log("Rendering parallel coordinates", window.pcz[entry_type])
 
           //change_color(metrics[0]);
           pcz.svg.selectAll(".dimension")
@@ -209,14 +216,16 @@ render_parcoor = function(entry_type){
             pcz.dimensions(dims)
           });
           */
-      }
+      }//end if data.length
       else{
           console.log("empty parcoords data")
       }
 
 
       });
-  }
+
+    //})//end _.defer
+  }//end if metrics aren't null
 }
 
 Template.demographic.rendered = function() {
