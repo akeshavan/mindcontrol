@@ -22,7 +22,7 @@ papaya.volume.Transform.hasRotations = function (mat) {
 
     if (mat !== null) {
         decomp = papaya.volume.Transform.decompose(mat);
-        epsilon = 1;
+        epsilon = .01;
 
         rotX = (Math.abs(1 - (Math.abs(decomp[3]) / 90.0)) % 1);
         rotY = (Math.abs(1 - (Math.abs(decomp[4]) / 90.0)) % 1);
