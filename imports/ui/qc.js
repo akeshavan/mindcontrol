@@ -12,7 +12,7 @@ import "./painter.js"
 
 //var staticURL = "http://127.0.0.1:3002/"
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-use_peerJS = true
+use_peerJS = false
 
 
 
@@ -67,6 +67,7 @@ function arraysEqual(a, b) {
 var addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
     Meteor.call("get_generator", entry_type, function(err, res){
+        console.log("result is", res)
         var params = {}
         params["images"] = []
         var loadableImages = []

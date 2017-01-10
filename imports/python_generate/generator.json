@@ -30,7 +30,7 @@
   "showgraph": true},
     {
       "name": "Freesurfer",
-      "entry_type": "freesurfer",
+      "entry_type": "mintlabs",
       "fields": [
         {
           "function_name": "get_filter_field",
@@ -69,13 +69,9 @@
             "alpha": 1,
             "min": 0,
             "max": 255
-        },
-        "1": {
-          "name": "custom.Freesurfer",
-          "alpha": 0.5
-        }
-      },
-      "staticURL": "https://dl.dropboxusercontent.com/u/9020198/data/",
-      "usePeerJS": true
+        }      
+       },
+      "staticURL": "http://localhost:8000/",
+      "usePeerJS": false
     }
 ]}
