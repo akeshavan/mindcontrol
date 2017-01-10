@@ -6,11 +6,11 @@ import "./d3_plots.js"
 
 
 get_filter = function(entry_type){
- 
+
  var globalSelector = Session.get("globalSelector")
     var myselect = {}
     myselect["entry_type"] = entry_type
-    
+
     if (globalSelector){
         globalKeys = Object.keys(globalSelector)
         //console.log("global keys are", globalKeys, globalKeys.indexOf(entry_type))
@@ -21,20 +21,20 @@ get_filter = function(entry_type){
                 myselect[localKeys[i]] = globalSelector[entry_type][localKeys[i]]
             }//end for
         };//end if
-        
+
         //console.log("selector for", entry_type, "is", myselect)
-        
+
         // In this part, if another filter has filtered subjects, then filter on the rest
         var subselect = Session.get("subjectSelector")
-        
+
         if (subselect["subject_id"]["$in"].length){
             myselect["subject_id"] = subselect["subject_id"]
         }
-        //console.log("myselect is", myselect)    
+        //console.log("myselect is", myselect)
         return myselect
     }
 
-    
+
 }
 
 get_metrics = function(entry_type){
@@ -45,16 +45,16 @@ get_metrics = function(entry_type){
 }
 
 render_histogram = function(entry_type){
-                var metric = Session.get("current_"+entry_type)//"Amygdala" 
+                var metric = Session.get("current_"+entry_type)//"Amygdala"
                 if (metric == null){
                     var all_metrics = Session.get(entry_type+"_metrics")
-                    
+
                     if (all_metrics != null){
                         Session.set("current_"+entry_type, all_metrics[0])
                     }
-                    
+
                 }
-                
+
                 if (metric != null){
                     var filter = get_filter(entry_type)
                     //console.log("filter is", filter)
@@ -69,56 +69,282 @@ render_histogram = function(entry_type){
                     else{
                         console.log("attempt to clear histogram here")
                     }
-                    
-                    
+
+
                     });
                 }
 }
 
-Template.exams.rendered = function() {
-      
+
+
+Template.demographic.rendered = function() {
+
       if (!this.rendered){
         this.rendered = true
          }
+
+
     
-    
-      this.autorun(function() {   
+      this.autorun(function() {
           Meteor.call("getDateHist", function(error, result){
-              do_d3_date_histogram(result, "#d3vis_date")
+              do_d3_date_histogram(result, "#d3vis_date_demographic")
               })
 
       })
+
+     
+
   }
 
-Template.exams.helpers({selector: function(){return get_filter("demographic")}})
 
-Template.freesurferOnly.rendered = function(){
 
-        if (!this.rendered){
-            this.rendered = true
-        }   
-                
-            this.autorun(function() {
+
+
+Template.mindboggle.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("mindboggle")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+Template.dura.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
+Template.align.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
+Template.freesurfer.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
                 render_histogram("freesurfer")
-                
-            }); //end autorun
-        
-        }
 
-Template.freesurferOnly.events({
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+Template.antsCT.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("antsCT")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+Template.nifti.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
+
+
+Template.demographic.helpers({
+
+selector: function(){return get_filter("demographic")},
+
+
+
+})
+
+
+
+Template.mindboggle.helpers({
+
+selector: function(){return get_filter("mindboggle")},
+
+
+
+metric: function(){
+        return get_metrics("mindboggle")
+    },
+currentMetric: function(){
+        return Session.get("current_mindboggle")
+    }
+
+
+
+})
+
+
+
+Template.dura.helpers({
+
+selector: function(){return get_filter("dura")},
+
+
+
+})
+
+
+
+Template.align.helpers({
+
+selector: function(){return get_filter("align")},
+
+
+
+})
+
+
+
+Template.freesurfer.helpers({
+
+selector: function(){return get_filter("freesurfer")},
+
+
+
+metric: function(){
+        return get_metrics("freesurfer")
+    },
+currentMetric: function(){
+        return Session.get("current_freesurfer")
+    }
+
+
+
+})
+
+
+
+Template.antsCT.helpers({
+
+selector: function(){return get_filter("antsCT")},
+
+
+
+metric: function(){
+        return get_metrics("antsCT")
+    },
+currentMetric: function(){
+        return Session.get("current_antsCT")
+    }
+
+
+
+})
+
+
+
+Template.nifti.helpers({
+
+selector: function(){return get_filter("nifti")},
+
+
+
+})
+
+
+
+
+  
+
+  
+   Template.mindboggle.events({
+    "change #metric-select-mindboggle": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_mindboggle", metric)
+    }
+   })
+  
+
+  
+
+  
+
+  
+   Template.freesurfer.events({
     "change #metric-select-freesurfer": function(event, template){
         var metric = $(event.currentTarget).val()
         console.log("metric: ", metric)
         Session.set("current_freesurfer", metric)
     }
-})
+   })
+  
 
-Template.freesurferOnly.helpers({
-    selector: function(){return get_filter("freesurfer")},
-    metric: function(){
-        return get_metrics("freesurfer")
-    },
-    currentMetric: function(){
-        return Session.get("current_freesurfer")
+  
+   Template.antsCT.events({
+    "change #metric-select-antsCT": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_antsCT", metric)
     }
-    })
+   })
+  
+
+  

@@ -43,8 +43,19 @@ FlowRouter.route('/:username', {
 FlowRouter.route('/reduce/msid/:msid', {
   action: function(params) {
     console.log(params)
+     Session.set("currentMSID", params.msid)
     BlazeLayout.render("subject");
     if (contextHotkeys){contextHotkeys.unload()}
     
+  }
+});
+
+FlowRouter.route('/reduce/study_tag/:study_tag', {
+  action: function(params) {
+    console.log(params)
+     Session.set("currentStudyTag", params.study_tag)
+    BlazeLayout.render("study");
+    if (contextHotkeys){contextHotkeys.unload()}
+
   }
 });

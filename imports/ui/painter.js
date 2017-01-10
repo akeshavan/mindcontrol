@@ -108,10 +108,9 @@ fill_all_loggedPoints = function(lp){
 }
 
 fill_all = function(template){
-    var contours = template.contours.get()
-    var lp = template.loggedPoints.get()
-
-    contours.forEach(function(val, idx, arr){
+    if (template.contours != null){
+     var contours = template.contours.get()
+     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
         if (val.visible==true || val.visible==null){
           val.contours.forEach(function(val, idx, arr){
@@ -119,7 +118,15 @@ fill_all = function(template){
               })
         }
         })
+    }
+
+   if (template.loggedPoints != null){
+       var lp = template.loggedPoints.get()
+
+
     fill_all_loggedPoints(lp)
+   }
+
 }
 
 setValue = function(x,y,z, val){
@@ -317,12 +324,13 @@ var continue_paint = function(template, originalCoord, screenCoor){
 }
 
 var line = function(x0, y0, z0, x1, y1, z1, val){
+   var new_arr = []
+   if (z0 == z1){
    var dx = Math.abs(x1-x0);
    var dy = Math.abs(y1-y0);
    var sx = (x0 < x1) ? 1 : -1;
    var sy = (y0 < y1) ? 1 : -1;
    var err = dx-dy;
-   var new_arr = []
    while(true){
      old_value = setValue(x0,y0, z0, val);  // Do what you need to for this
      if (old_value != null){
@@ -332,8 +340,10 @@ var line = function(x0, y0, z0, x1, y1, z1, val){
      var e2 = 2*err;
      if (e2 >-dy){ err -= dy; x0  += sx; }
      if (e2 < dx){ err += dx; y0  += sy; }
+
    }
    //console.log("new arr is", new_arr)
+   }
    return new_arr
 }
 
@@ -374,10 +384,17 @@ var end_paint = function(template, originalCoord, screenCoor){
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     //console.log(currentPaint.matrix_coor)
     currentPaint.matrix_coor = fill_lines(currentPaint, currVal)
+    currentPaint.offset = []
     currentPaint.matrix_coor.forEach(function(val, idx, arr){
         var world = new papaya.core.Coordinate();
-        papayaContainers[0].viewer.getWorldCoordinateAtIndex(originalCoord.x, originalCoord.y, originalCoord.z, world);
+        papayaContainers[0].viewer.getWorldCoordinateAtIndex(val.x, val.y, val.z, world);
         currentPaint.world_coor.push(world)
+        /*var viewer = papayaContainers[0].viewer
+        var N = viewer.screenVolumes.length
+        var vol = viewer.screenVolumes[N-1].volume
+        var ori = vol.header.orientation
+        var offset = ori.convertIndexToOffset(val.x,val.y,val.z)
+        currentPaint.offset.push(offset)*/
     })
     //currentPaint.original_vals = []
     /*currentPaint.matrix_coor.forEach(function(val, idx, arr){

@@ -64,7 +64,7 @@ function arraysEqual(a, b) {
   return true;
 }
 
-var addPapaya = function(data, entry_type, template_instance, callback){
+addPapaya = function(data, entry_type, template_instance, force){
     //if (papayaContainers.length == 0){
     Meteor.call("get_generator", entry_type, function(err, res){
         console.log("result is", res)
@@ -88,7 +88,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
         if (papayaContainers.length != 0){
             var prev_volumes = papayaContainers[0].params.images
             var isSame = arraysEqual(prev_volumes, params["images"])
-            if (isSame){
+            if (isSame && !force){
                 return
             }
             console.log("papayacontainers is", papayaContainers.pop())
@@ -116,7 +116,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
                                                       alpha:opts.alpha}//colormap
                     }
                     else{
-                        params[split_name] = {lut: opts.name, alpha: opts.alpha, min: opts.min, max:opts.max}
+                        params[split_name] = {lut: opts.name, alpha: opts.alpha, min: opts.min, max: opts.max}
                     }
     
     
@@ -124,6 +124,9 @@ var addPapaya = function(data, entry_type, template_instance, callback){
             }
             console.log("params is", params)
             params["showControlBar"] = true
+            //params["orthogonal"] = false
+            params["mainView"] = "coronal"
+
             papaya.Container.addViewer("viewer", params, function(err, params){
                                             //.modal("show");
                                             console.log("in papaya callback?", err, params)
@@ -156,7 +159,7 @@ var class_mapper = {"-1": "warning", "0": "danger",
 
 
 
-var load_hotkeys = function(template_instance){
+load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "d d",
                     callback : function(){
@@ -709,6 +712,7 @@ Template.view_images.events({
      console.log("in resize")
      var viewer = papayaContainers[0].viewer
      viewer.resizeViewer(papayaContainers[0].getViewerDimensions())
+     papayaContainers[0].resizeViewerComponents(true);
 
  },
  "click #addNewDrawing": function(e, template){

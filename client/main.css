@@ -243,7 +243,7 @@ li a {
 
 
 .qbox {
-    padding-top:250px;
+    padding-top:300px;
     padding-left: 30px;
     z-index: 2;
 }
@@ -369,4 +369,15 @@ h4 td, th{
     white-space: nowrap;
     }
 
-
+.container-fluid {
+padding-top: 15px;
+}
+.multiselect-container {
+    height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.nvtooltip {
+    position: absolute;
+    z-index: 999
+}

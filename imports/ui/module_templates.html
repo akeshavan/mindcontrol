@@ -1,47 +1,63 @@
 <template name="base">
 
-    {{> exams}}
-    
-    {{> freesurferOnly}}
-    
-    <!--{{> niiOnly}}-->
+
+    {{> demographic }}
+
+    {{> mindboggle }}
+
+    {{> dura }}
+
+    {{> align }}
+
+    {{> freesurfer }}
+
+    {{> antsCT }}
+
+    {{> nifti }}
+
 
 </template>
 
-<template name="exams">
 
-<h1 id="exams">Exams</h1>
+<template name="demographic">
+
+<h1 id="Exams">Exams</h1>
+
     <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
       Toggle Calendar
     </button>
     <br>
     <br>
-    <div class="collapse in" id="collapseExample" aria-labelledby="collapseExample">
-        <div id="d3vis_date" data-intro="Step 2: Click on a date to show exams from a particular day" data-step="2"></div>
+    <div class="collapse " id="collapseExample" aria-labelledby="collapseExample">
+        <div id="d3vis_date_demographic"></div>
     </div>
 
-    <div id="exam_table" data-intro="To filter by any of the columns, click a value in the column">
-        
+
+
+
+    <div id="demographic_table">
+
         {{> tabular table=TabularTables.demographic selector=selector class="table table-striped table-bordered table-condensed"}}
-        
+
     </div>
-    
+
 </template>
 
-<template name="freesurferOnly">
 
- <div id="freesurfer">
-  <h1>Freesurfer</h1></div>
+<template name="mindboggle">
+
+<h1 id="Mindboggle">Mindboggle</h1>
+
  <br>
   <br>
     Selected Metric: {{currentMetric}}
-  <div class="d3board" data-intro="Click and drag on the histogram to filter data by a freesurfer regional volume"><!-- height="150px" width="600px">-->
-      
-        <svg id="d3vis_freesurfer"></svg>
+  <div class="d3board">
+
+        <svg id="d3vis_mindboggle"></svg>
 
   </div>
 
-    <select id="metric-select-freesurfer" class="form-control" data-intro="Change the freesurfer metric here">
+    <select id="metric-select-mindboggle" class="form-control">
     <option disabled="disabled" selected="selected" >Please Select</option>
     {{#each metric}}
         <option value="{{this}}">{{this}}</option>
@@ -49,11 +65,132 @@
 </select>
 
   <br><br>
-  <div id="fs_table">
-    {{> tabular table=TabularTables.freesurfer selector=selector class="table table-striped table-bordered table-condensed"}}
-  </div>
+
+
+
+
+    <div id="mindboggle_table">
+
+        {{> tabular table=TabularTables.mindboggle selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
 
 </template>
+
+
+<template name="dura">
+
+<h1 id="Brain Mask">Brain Mask</h1>
+
+
+
+    <div id="dura_table">
+
+        {{> tabular table=TabularTables.dura selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
+<template name="align">
+
+<h1 id="Alignment">Alignment</h1>
+
+
+
+    <div id="align_table">
+
+        {{> tabular table=TabularTables.align selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
+<template name="freesurfer">
+
+<h1 id="Freesurfer">Freesurfer</h1>
+
+ <br>
+  <br>
+    Selected Metric: {{currentMetric}}
+  <div class="d3board">
+
+        <svg id="d3vis_freesurfer"></svg>
+
+  </div>
+
+    <select id="metric-select-freesurfer" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+
+
+
+
+    <div id="freesurfer_table">
+
+        {{> tabular table=TabularTables.freesurfer selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
+<template name="antsCT">
+
+<h1 id="Ants Cortical Thickness">Ants Cortical Thickness</h1>
+
+ <br>
+  <br>
+    Selected Metric: {{currentMetric}}
+  <div class="d3board">
+
+        <svg id="d3vis_antsCT"></svg>
+
+  </div>
+
+    <select id="metric-select-antsCT" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+
+
+
+
+    <div id="antsCT_table">
+
+        {{> tabular table=TabularTables.antsCT selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
+<template name="nifti">
+
+<h1 id="Nifti Files">Nifti Files</h1>
+
+
+
+    <div id="nifti_table">
+
+        {{> tabular table=TabularTables.nifti selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
 
 <template name="body_sidebar">
 
@@ -61,18 +198,45 @@
             <div class="bs-docs-sidebar">
 
                     <ul class="nav nav-list bs-docs-sidenav affix">
-                        <li><a href="#exams"><span class="badge badge-inverse"></span> Exams</a></li>
-                        <li><a href="#freesurfer"><span class="badge badge-inverse"></span> Freesurfer</a></li>
+                        
+                        <li><a href="#Exams">
+                            <span class="badge badge-inverse"></span> Exams</a>
+                        </li>
+                        
+                        <li><a href="#Mindboggle">
+                            <span class="badge badge-inverse"></span> Mindboggle</a>
+                        </li>
+                        
+                        <li><a href="#Brain Mask">
+                            <span class="badge badge-inverse"></span> Brain Mask</a>
+                        </li>
+                        
+                        <li><a href="#Alignment">
+                            <span class="badge badge-inverse"></span> Alignment</a>
+                        </li>
+                        
+                        <li><a href="#Freesurfer">
+                            <span class="badge badge-inverse"></span> Freesurfer</a>
+                        </li>
+                        
+                        <li><a href="#Ants Cortical Thickness">
+                            <span class="badge badge-inverse"></span> Ants Cortical Thickness</a>
+                        </li>
+                        
+                        <li><a href="#Nifti Files">
+                            <span class="badge badge-inverse"></span> Nifti Files</a>
+                        </li>
+                        
                     </ul>
 
                  <ul class="nav nav-list affix qbox">
                  <h5>Query Box</h5>
 
-  <button class="btn btn-default btn-small reset" data-intro="Step 4: You can also click reset to remove all filters" data-step="4" data-position="right"> Reset </button>
+  <button class="btn btn-default btn-small reset"> Reset </button>
                      <br><br>
 
 
-                 <div class="well" data-step="3" data-intro="Step 3: After selecting a date, a query parameter appears. Click the x to remove the filter">
+                 <div class="well">
 
                      {{#each currentSelector}}
                     <span class="tag label label-info">
@@ -96,7 +260,7 @@
                 {{#each savedQueries}}
 
                     <span class="tag label label-primary">
-                      <span class="query {{name}}">{{name}}</span>
+                      <span class="query ">{{name}}</span>
                         <a><i class="removequery glyphicon glyphicon-trash glyphicon-white"></i></a>
                     </span>
 
@@ -110,5 +274,3 @@
         </div>
 
 </template>
-
-
