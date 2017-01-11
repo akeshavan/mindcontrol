@@ -7,7 +7,7 @@ if (Meteor.isServer) {
   
  Meteor.startup(function () {
     //Subjects.remove({})
-    if (Subjects.find().count() === 0) {
+    /*if (Subjects.find().count() === 0) {
         //load the json from here: https://www.dropbox.com/s/enb5zemvmu2oqgw/data.json?dl=0
         var source_json = "http://localhost:3002/database/mindcontrol_initial_data.json"
         //console.log(HTTP.get(source_json).content)
@@ -17,7 +17,7 @@ if (Meteor.isServer) {
             Subjects.insert(val)
         })
         
-    }
+    }*/
   });
   
   Meteor.publish('get_qc_doc', function tasksPublication(entry_type, name) {
