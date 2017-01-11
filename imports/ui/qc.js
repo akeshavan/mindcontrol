@@ -94,7 +94,7 @@ addPapaya = function(data, entry_type, template_instance, force){
             console.log("papayacontainers is", papayaContainers.pop())
         }
 
-        
+
 
             var cmap = res.colormaps
             if (cmap){
@@ -118,8 +118,8 @@ addPapaya = function(data, entry_type, template_instance, force){
                     else{
                         params[split_name] = {lut: opts.name, alpha: opts.alpha, min: opts.min, max: opts.max}
                     }
-    
-    
+
+
                 }
             }
             console.log("params is", params)
@@ -163,7 +163,7 @@ load_hotkeys = function(template_instance){
     contextHotkeys.add({
                     combo : "d d",
                     callback : function(){
-                        
+
                         var currMode = template_instance.logMode.get()
                         if (currMode == "contour"){
                             var contours = template_instance.contours.get()
@@ -177,20 +177,20 @@ load_hotkeys = function(template_instance){
                             template_instance.contours.set(contours)
                             papayaContainers[0].viewer.drawViewer(true)
                         }
-                        
+
                         else if (currMode == "point"){
-                            
+
                         }
-                        
+
                         else if (currMode == "paint"){
                             //TODO: undo painting when you have time.
                             var painters = template_instance.painters.get()
                             var currPaint = painters.pop()
                             restore_vals(currPaint)
                             template_instance.painters.set(painters)
-                            
+
                         }
-                        
+
                     }
                 })
 
@@ -213,25 +213,25 @@ load_hotkeys = function(template_instance){
                             currMode ="paint"
                         }
                         else if (currMode == "paint"){
-                            currMode = "point"   
+                            currMode = "point"
                         }
                         template_instance.logMode.set(currMode)
                     }
                 })
-    
+
     contextHotkeys.add({
                     combo : "z z",
                     callback : function(){
                         console.log("you want to hide the last overlay")
                         idx = papayaContainers[0].viewer.screenVolumes.length - 1
                         var isHidden = papayaContainers[0].viewer.screenVolumes[idx].hidden
-                        
+
                         if (!isHidden){papaya.Container.hideImage(0, idx)}
                         else{papaya.Container.showImage(0, idx)}
                         //papaya.Container.showImage(0, imageIndex)
                     }
-                })            
-                
+                })
+
     contextHotkeys.load()
 }
 
@@ -248,7 +248,7 @@ var sync_templates_decorator = function(template_instance){ return function(data
     var data = JSON.parse(data)
     //console.log("you want to sync a template w/ data", data)
     //console.log("template_instance is", template_instance)
-    
+
     if (data["action"] == "insert"){
         for (var key in data["data"]){
             var current = template_instance[key].get()
@@ -262,12 +262,12 @@ var sync_templates_decorator = function(template_instance){ return function(data
             }
             //console.log("current is", current)
             template_instance[key].set(current)
-            
+
         }
-        
+
     }
-    
-    
+
+
     if (data["action"] == "update"){
         for (var key in data["data"]){
             //console.log("you want to update entry in", key, "with uuid", data["data"][key]["uuid"])
@@ -282,9 +282,9 @@ var sync_templates_decorator = function(template_instance){ return function(data
         }
     }
     papayaContainers[0].viewer.drawViewer(true)
-    
 
-    
+
+
 }}
 
 
@@ -299,7 +299,7 @@ Template.view_images.onCreated(function(){
     this.painters = new ReactiveVar([])
     this.connections = {}
     Meteor.subscribe("presences")
-    
+
     if (use_peerJS){
         window.peer = new Peer({
           key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
@@ -307,12 +307,12 @@ Template.view_images.onCreated(function(){
           config: {'iceServers': [
             { url: 'stun:stun.l.google.com:19302' },
             { url: 'stun:stun1.l.google.com:19302' },
-          ]}    
+          ]}
         });
-        
+
         peer.on('open', function () {
           console.log("peer ID is", peer.id);
-          
+
           var current_profile = Meteor.users.findOne({_id: Meteor.userId()}).profile
           if (!current_profile){
               current_profile = {}
@@ -325,20 +325,20 @@ Template.view_images.onCreated(function(){
             }})
             console.log("profile si", Meteor.users.findOne({_id: Meteor.userId()}).profile)
         });
-        
+
         //TODO: sometimes this is null??? Then where do we set the listener?
         var my_template = this
-        
+
         peer.on("connection", function(conn){
             console.log("conn is", conn)
             conn.on("data", sync_templates_decorator(my_template))
-            
+
         });
     }
 
-    
-    
-    
+
+
+
 })
 
 
@@ -349,45 +349,45 @@ Template.view_images.helpers({
         Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
     },
-    
+
     peerUsers: function(){
-      
-      if (use_peerJS){  
+
+      if (use_peerJS){
           var userIds = Presences.find().map(function(presence) {return presence.userId;});
           // exclude the currentUser
           var name = get_qc_name()
-    
+
           var template_instance = Template.instance()
           var to_return =  Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
-          
+
           if (to_return.count){
             var conns = get_open_connections(this)
             if (!conns.length){
-                
-                
+
+
                 var dude = Meteor.users.findOne({_id: {$in: userIds, $ne: Meteor.userId()}})
                 if (dude){
                 console.log("there are no connections but there is another person out there, so i'm connecting now", dude.username)
                 var conn = peer.connect(dude.profile[name])
                 conn.on("data", sync_templates_decorator(template_instance))
                 }
-                
+
             }
-            
+
             console.log("a peerjs connection exists, now we add a listener")
             for(var i = 0; i<conns.length; i++){
                 conns[i].on("data", sync_templates_decorator(template_instance))
             }
-            
+
           }
-    
+
           if (to_return == null){
               return []
           }
           return to_return
       }
       else{return 0}
-      
+
     },
 
     loggedPoints: function(){
@@ -550,9 +550,9 @@ Template.view_images.helpers({
             return to_display
         }
     },
-    
+
     loadPainter: function(){
-        return Session.get("reloadPainter")   
+        return Session.get("reloadPainter")
     }
 })
 
@@ -680,7 +680,7 @@ Template.view_images.events({
      template.loggedPoints.set(points)
      papayaContainers[0].viewer.drawViewer(true)
      send_to_peers({"action": "remove", "data":{"loggedPoints": this}})
-     
+
      //fill_all(template)
  },
  "click .remove-contour": function(event, template){
@@ -763,15 +763,15 @@ Template.view_images.events({
     console.log("you want to load", this)
     papaya.Container.addImage(0, this.absolute_path)
  },
- 
+
  'input #paintValue': function (event, template) {
     Session.set("paintValue", event.currentTarget.value);
   },
-  
+
   "click #paintEraser": function(event, template){
       Session.set("paintValue", 0)
   },
-  
+
   "click #paintPicker": function(event, template){
     var viewer = papayaContainers[0].viewer
     var N = viewer.screenVolumes.length
@@ -781,9 +781,9 @@ Template.view_images.events({
     var offset = ori.convertIndexToOffset(papayaRoundFast(c.x),papayaRoundFast(c.y),papayaRoundFast(c.z))
     Session.set("paintValue", vol.imageData.data[offset])
   },
-  
+
   "click #loadPainter": function(event, template){
-      
+
       var qc = Session.get("currentQC")
       var output = Subjects.findOne({entry_type: qc.entry_type, name: qc.name},{check_masks:1, _id:0, name:1, loggedPoints: 1, contours: 1})
       if (output){
@@ -793,12 +793,12 @@ Template.view_images.events({
                 var after_load = papayaload_callback(output)
                 after_load()
                 Session.set("reloadPainter", false)
-            }            
+            }
         }
       };
-    
+
   }
-  
+
 
 })
 
@@ -847,12 +847,11 @@ Template.view_images.rendered = function(){
                         Session.set("reloadPainter", true)
                     }
                 }
-                
-                
-                
+
+
                 addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
-                
+
                 //get_config()
             }
 
