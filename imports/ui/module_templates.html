@@ -1,190 +1,21 @@
 <template name="base">
 
 
-    {{> demographic }}
-
-    {{> mindboggle }}
-
-    {{> dura }}
-
-    {{> align }}
-
-    {{> freesurfer }}
-
-    {{> antsCT }}
-
-    {{> nifti }}
+    {{> mintlabs }}
 
 
 </template>
 
 
-<template name="demographic">
-
-<h1 id="Exams">Exams</h1>
-
-    <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
-      Toggle Calendar
-    </button>
-    <br>
-    <br>
-    <div class="collapse " id="collapseExample" aria-labelledby="collapseExample">
-        <div id="d3vis_date_demographic"></div>
-    </div>
-
-
-
-
-    <div id="demographic_table">
-
-        {{> tabular table=TabularTables.demographic selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="mindboggle">
-
-<h1 id="Mindboggle">Mindboggle</h1>
-
- <br>
-  <br>
-    Selected Metric: {{currentMetric}}
-  <div class="d3board">
-
-        <svg id="d3vis_mindboggle"></svg>
-
-  </div>
-
-    <select id="metric-select-mindboggle" class="form-control">
-    <option disabled="disabled" selected="selected" >Please Select</option>
-    {{#each metric}}
-        <option value="{{this}}">{{this}}</option>
-    {{/each}}
-</select>
-
-  <br><br>
-
-
-
-
-    <div id="mindboggle_table">
-
-        {{> tabular table=TabularTables.mindboggle selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="dura">
-
-<h1 id="Brain Mask">Brain Mask</h1>
-
-
-
-    <div id="dura_table">
-
-        {{> tabular table=TabularTables.dura selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="align">
-
-<h1 id="Alignment">Alignment</h1>
-
-
-
-    <div id="align_table">
-
-        {{> tabular table=TabularTables.align selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="freesurfer">
+<template name="mintlabs">
 
 <h1 id="Freesurfer">Freesurfer</h1>
 
- <br>
-  <br>
-    Selected Metric: {{currentMetric}}
-  <div class="d3board">
-
-        <svg id="d3vis_freesurfer"></svg>
-
-  </div>
-
-    <select id="metric-select-freesurfer" class="form-control">
-    <option disabled="disabled" selected="selected" >Please Select</option>
-    {{#each metric}}
-        <option value="{{this}}">{{this}}</option>
-    {{/each}}
-</select>
-
-  <br><br>
 
 
+    <div id="mintlabs_table">
 
-
-    <div id="freesurfer_table">
-
-        {{> tabular table=TabularTables.freesurfer selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="antsCT">
-
-<h1 id="Ants Cortical Thickness">Ants Cortical Thickness</h1>
-
- <br>
-  <br>
-    Selected Metric: {{currentMetric}}
-  <div class="d3board">
-
-        <svg id="d3vis_antsCT"></svg>
-
-  </div>
-
-    <select id="metric-select-antsCT" class="form-control">
-    <option disabled="disabled" selected="selected" >Please Select</option>
-    {{#each metric}}
-        <option value="{{this}}">{{this}}</option>
-    {{/each}}
-</select>
-
-  <br><br>
-
-
-
-
-    <div id="antsCT_table">
-
-        {{> tabular table=TabularTables.antsCT selector=selector class="table table-striped table-bordered table-condensed"}}
-
-    </div>
-
-</template>
-
-
-<template name="nifti">
-
-<h1 id="Nifti Files">Nifti Files</h1>
-
-
-
-    <div id="nifti_table">
-
-        {{> tabular table=TabularTables.nifti selector=selector class="table table-striped table-bordered table-condensed"}}
+        {{> tabular table=TabularTables.mintlabs selector=selector class="table table-striped table-bordered table-condensed"}}
 
     </div>
 
@@ -199,32 +30,8 @@
 
                     <ul class="nav nav-list bs-docs-sidenav affix">
                         
-                        <li><a href="#Exams">
-                            <span class="badge badge-inverse"></span> Exams</a>
-                        </li>
-                        
-                        <li><a href="#Mindboggle">
-                            <span class="badge badge-inverse"></span> Mindboggle</a>
-                        </li>
-                        
-                        <li><a href="#Brain Mask">
-                            <span class="badge badge-inverse"></span> Brain Mask</a>
-                        </li>
-                        
-                        <li><a href="#Alignment">
-                            <span class="badge badge-inverse"></span> Alignment</a>
-                        </li>
-                        
                         <li><a href="#Freesurfer">
                             <span class="badge badge-inverse"></span> Freesurfer</a>
-                        </li>
-                        
-                        <li><a href="#Ants Cortical Thickness">
-                            <span class="badge badge-inverse"></span> Ants Cortical Thickness</a>
-                        </li>
-                        
-                        <li><a href="#Nifti Files">
-                            <span class="badge badge-inverse"></span> Nifti Files</a>
                         </li>
                         
                     </ul>
