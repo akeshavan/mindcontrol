@@ -848,10 +848,13 @@ Template.view_images.rendered = function(){
                     }
                 }
 
-
-                addPapaya(output, qc.entry_type, Template.instance())
-                load_hotkeys(Template.instance())
-
+                if (Meteor.user()){
+                  addPapaya(output, qc.entry_type, Template.instance())
+                  load_hotkeys(Template.instance())
+                }
+                else{
+                  alert("Please Log in to see images.")
+                }
                 //get_config()
             }
 
