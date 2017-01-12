@@ -34,11 +34,11 @@ if __name__ == "__main__":
     entry = {"entry_type": args.entry_type,
              "name": args.name,
              "check_masks": args.images}
-    coll.find(query)
-    if coll.count():
+    res = coll.find(query)
+    if res.count():
         coll.update(query, {"$set": entry})
     else:
-        coll.insert(entry)
+        print(coll.insert(entry))
     url = "{}:{}/{}/{}".format(args.server, args.port-1,
                                args.entry_type, args.name)
     print(url)
