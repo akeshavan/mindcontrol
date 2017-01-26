@@ -777,7 +777,18 @@ Template.view_images.events({
    }
 
    template.loggedPoints.set(contours)
-   papayaContainers[0].viewer.drawViewer(true)
+
+
+   var this_ = contours[idx]
+   if (this_.visible){
+       papayaContainers[0].viewer.gotoCoordinate(this_.matrix_coor)
+       var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(this_.matrix_coor);
+       var viewer = papayaContainers[0].viewer
+       draw_point(screenCoor, viewer, pointColor, 5)
+   }
+   else{
+       papayaContainers[0].viewer.drawViewer(true)
+   }
  },
 
  "click .load": function(e, template){
