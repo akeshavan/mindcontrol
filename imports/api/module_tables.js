@@ -19,7 +19,7 @@ name:"demographic",
     columns:[
     
       
-        get_reduce_view("demographic", "msid", "msid"),
+        get_filter_field("demographic", "msid", "msid"),
       
     
       
@@ -36,6 +36,40 @@ name:"demographic",
     
       
         get_filter_field("demographic", "metrics.DCM_StudyDate", "Date"),
+      
+    
+    ]
+    })
+
+
+TabularTables.lst =  new Tabular.Table({
+name:"lst",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("lst", "subject_id", "Exam ID"),
+      
+    
+      
+        get_qc_viewer("lst", "name", "FLAIR file"),
+      
+    
+      
+        get_qc_filter_field("lst", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("lst", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("lst", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
       
     
     ]
@@ -202,6 +236,40 @@ name:"antsCT",
     
       
         get_filter_list_field("antsCT", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
+TabularTables.diff_long =  new Tabular.Table({
+name:"diff_long",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("diff_long", "msid", "msid"),
+      
+    
+      
+        get_qc_viewer("diff_long", "name", "prepost"),
+      
+    
+      
+        get_qc_filter_field("diff_long", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("diff_long", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("diff_long", "quality_check.user_assign", "Assigned To"),
       
     
       

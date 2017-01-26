@@ -534,7 +534,6 @@ Template.view_images.helpers({
     },
     pointVS: function(idx){
       var contours = Template.instance().loggedPoints.get()
-
       var select = contours[idx]
       if (select.visible == true || select.visible==null){
         return true

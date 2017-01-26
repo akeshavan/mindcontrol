@@ -100,6 +100,28 @@ Template.demographic.rendered = function() {
 
 
 
+Template.lst.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("lst")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
 Template.mindboggle.rendered = function() {
 
       if (!this.rendered){
@@ -196,6 +218,21 @@ Template.antsCT.rendered = function() {
 
 
 
+Template.diff_long.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
 Template.nifti.rendered = function() {
 
       if (!this.rendered){
@@ -216,6 +253,25 @@ Template.nifti.rendered = function() {
 Template.demographic.helpers({
 
 selector: function(){return get_filter("demographic")},
+
+
+
+})
+
+
+
+Template.lst.helpers({
+
+selector: function(){return get_filter("lst")},
+
+
+
+metric: function(){
+        return get_metrics("lst")
+    },
+currentMetric: function(){
+        return Session.get("current_lst")
+    }
 
 
 
@@ -300,6 +356,16 @@ currentMetric: function(){
 
 
 
+Template.diff_long.helpers({
+
+selector: function(){return get_filter("diff_long")},
+
+
+
+})
+
+
+
 Template.nifti.helpers({
 
 selector: function(){return get_filter("nifti")},
@@ -311,6 +377,16 @@ selector: function(){return get_filter("nifti")},
 
 
 
+  
+
+  
+   Template.lst.events({
+    "change #metric-select-lst": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_lst", metric)
+    }
+   })
   
 
   
@@ -345,6 +421,8 @@ selector: function(){return get_filter("nifti")},
         Session.set("current_antsCT", metric)
     }
    })
+  
+
   
 
   

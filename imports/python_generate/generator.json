@@ -4,7 +4,7 @@
   {"name": "Exams",
     "entry_type": "demographic",
   "fields": [
-    {"function_name": "get_reduce_view",
+    {"function_name": "get_filter_field",
       "id": "msid",
       "name": "msid"
     },
@@ -304,6 +304,52 @@
         }
       }
     },
+
+    {"name": "Tumor Diffusion Longitudinal",
+    "entry_type": "diff_long",
+  "fields": [
+
+        {
+          "function_name": "get_filter_field",
+          "id": "msid",
+          "name": "msid"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "prepost"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":null,
+  "colormaps": {
+        "0": {
+          "name": "Grayscale",
+          "alpha": 1
+        }
+      }
+    },
+
      {"name": "Nifti Files",
     "entry_type": "nifti",
   "fields": [
