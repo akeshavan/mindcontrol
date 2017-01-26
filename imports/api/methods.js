@@ -78,6 +78,22 @@ Meteor.methods({
     updateQC: function(qc, form_data){
         //console.log(form_data)
         Subjects.update({entry_type: qc.entry_type, name:qc.name}, {$set: form_data})
+        if (Meteor.isServer){
+            var sys = Npm.require('sys')
+            var exec = Npm.require('child_process').exec;
+            function puts(error, stdout, stderr) {
+                 sys.puts(stdout)
+                 console.log("donezo")
+                 exec("mc_up -e production -s "+sid.subject_id,
+                 function(error,stdout,stderr){sys.puts(stdout)})
+             }
+            var sid = Subjects.findOne({entry_type:qc.entry_type, name:qc.name})
+            console.log("the subject to edit is", sid.subject_id)
+            if (qc.entry_type == "lst"){
+                exec("edit_lst.py "+sid.subject_id, puts);
+            }
+
+        }
     },
     
     get_metric_names: function(entry_type){
