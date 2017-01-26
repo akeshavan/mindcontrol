@@ -52,6 +52,7 @@
             <th>Annotation</th>
             <th>Logged By</th>
             <th></th>
+            <th></th>
           </tr>
         {{#each loggedPoints}}
           <tr>
@@ -61,6 +62,13 @@
             <td>
   <a class="remove-point"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 </td>
+                      <td><a class="toggle-pointvisibility">
+                        {{#if pointVS @index}}
+                          <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        {{else}}
+                          <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        {{/if}}
+                      </a></td>
           </tr>
         {{/each}}
         </table>

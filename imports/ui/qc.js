@@ -532,6 +532,17 @@ Template.view_images.helpers({
         return false
       }
     },
+    pointVS: function(idx){
+      var contours = Template.instance().loggedPoints.get()
+
+      var select = contours[idx]
+      if (select.visible == true || select.visible==null){
+        return true
+      }
+      else{
+        return false
+      }
+    },
 
     loadableImages: function(){
         var images = Session.get("loadableImages")
@@ -754,6 +765,19 @@ Template.view_images.events({
    }
 
    template.contours.set(contours)
+   papayaContainers[0].viewer.drawViewer(true)
+ },
+"click .toggle-pointvisibility": function(e, template){
+   var contours = template.loggedPoints.get()
+   var idx = contours.indexOf(this)
+   if (contours[idx].visible == true ||contours[idx].visible == null){
+     contours[idx].visible = false
+   }
+   else{
+     contours[idx].visible = true
+   }
+
+   template.loggedPoints.set(contours)
    papayaContainers[0].viewer.drawViewer(true)
  },
 

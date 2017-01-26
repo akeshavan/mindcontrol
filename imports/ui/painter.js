@@ -98,7 +98,7 @@ fill_all_loggedPoints = function(lp){
         lp.forEach(function(val, idx, arr){
          var screenCoor = papayaContainers[0].viewer.convertCoordinateToScreen(val.matrix_coor);
          var viewer = papayaContainers[0].viewer
-         if (viewer.intersectsMainSlice(val.matrix_coor)){
+         if (viewer.intersectsMainSlice(val.matrix_coor) && (val.visible || val.visible == undefined) ){
              draw_point(screenCoor, viewer, pointColor, 5)
          }
 
