@@ -6,7 +6,7 @@ if (Meteor.isServer) {
   
   
  Meteor.startup(function () {
-    //Subjects.remove({})
+    Subjects.remove({})
     //console.log("in metero startup function")
     if (Subjects.find().count() === 0) {
         //load the json from here: https://www.dropbox.com/s/enb5zemvmu2oqgw/data.json?dl=0
