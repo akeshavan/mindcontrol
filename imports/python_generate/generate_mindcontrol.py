@@ -1,7 +1,12 @@
 __author__ = 'akeshavan'
 from jinja2 import Environment, FileSystemLoader
-from nipype.utils.filemanip import load_json
+import simplejson
 import os
+
+def load_json(filename):
+    with open(filename,'r') as fp:
+        data=json.load(fp)
+    return data
 
 files_to_generate = [{"filename": "module_tables.js.tmpl", "location":"../api/"},
                      {"filename": "module_templates.js.tmpl", "location":"../ui/"},
