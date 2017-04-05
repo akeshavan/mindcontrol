@@ -15,6 +15,25 @@
 
 <h1 id="Brainmask">Brainmask</h1>
 
+ <br>
+  <br>
+    Selected Metric: {{currentMetric}}
+  <div class="d3board">
+
+        <svg id="d3vis_brainmask"></svg>
+
+  </div>
+
+    <select id="metric-select-brainmask" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+
+
 
 
     <div id="brainmask_table">
@@ -30,6 +49,25 @@
 
 <h1 id="White Matter">White Matter</h1>
 
+ <br>
+  <br>
+    Selected Metric: {{currentMetric}}
+  <div class="d3board">
+
+        <svg id="d3vis_wm"></svg>
+
+  </div>
+
+    <select id="metric-select-wm" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+
+
 
 
     <div id="wm_table">
@@ -44,6 +82,25 @@
 <template name="aparcaseg">
 
 <h1 id="Segmentation">Segmentation</h1>
+
+ <br>
+  <br>
+    Selected Metric: {{currentMetric}}
+  <div class="d3board">
+
+        <svg id="d3vis_aparcaseg"></svg>
+
+  </div>
+
+    <select id="metric-select-aparcaseg" class="form-control">
+    <option disabled="disabled" selected="selected" >Please Select</option>
+    {{#each metric}}
+        <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
+  <br><br>
+
 
 
 

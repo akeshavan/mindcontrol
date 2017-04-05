@@ -38,7 +38,7 @@
           "name": "Notes"
         }
       ],
-      "graph_type": null,
+      "graph_type": "histogram",
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
@@ -90,7 +90,7 @@
           "name": "Notes"
         }
       ],
-      "graph_type": null,
+      "graph_type": "histogram",
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,
@@ -140,7 +140,7 @@
           "name": "Notes"
         }
       ],
-      "graph_type": null,
+      "graph_type": "histogram",
       "colormaps": {
         "0":{"name": "Grayscale",
             "alpha": 1,

@@ -86,6 +86,13 @@ Template.brainmask.rendered = function() {
 
     
 
+       this.autorun(function() {
+                render_histogram("brainmask")
+
+       }); //end autorun
+
+     
+
   }
 
 
@@ -100,6 +107,13 @@ Template.wm.rendered = function() {
 
 
     
+
+       this.autorun(function() {
+                render_histogram("wm")
+
+       }); //end autorun
+
+     
 
   }
 
@@ -116,6 +130,13 @@ Template.aparcaseg.rendered = function() {
 
     
 
+       this.autorun(function() {
+                render_histogram("aparcaseg")
+
+       }); //end autorun
+
+     
+
   }
 
 
@@ -130,6 +151,15 @@ selector: function(){return get_filter("brainmask")},
 
 
 
+metric: function(){
+        return get_metrics("brainmask")
+    },
+currentMetric: function(){
+        return Session.get("current_brainmask")
+    }
+
+
+
 })
 
 
@@ -137,6 +167,15 @@ selector: function(){return get_filter("brainmask")},
 Template.wm.helpers({
 
 selector: function(){return get_filter("wm")},
+
+
+
+metric: function(){
+        return get_metrics("wm")
+    },
+currentMetric: function(){
+        return Session.get("current_wm")
+    }
 
 
 
@@ -150,13 +189,46 @@ selector: function(){return get_filter("aparcaseg")},
 
 
 
+metric: function(){
+        return get_metrics("aparcaseg")
+    },
+currentMetric: function(){
+        return Session.get("current_aparcaseg")
+    }
+
+
+
 })
 
 
 
 
   
-
+   Template.brainmask.events({
+    "change #metric-select-brainmask": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_brainmask", metric)
+    }
+   })
   
 
+  
+   Template.wm.events({
+    "change #metric-select-wm": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_wm", metric)
+    }
+   })
+  
+
+  
+   Template.aparcaseg.events({
+    "change #metric-select-aparcaseg": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_aparcaseg", metric)
+    }
+   })
   
