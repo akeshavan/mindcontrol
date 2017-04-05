@@ -25,6 +25,9 @@ meteor
 In a browser navigate to localhost:3000
 
 ## Configure
+For configuration tutorials, check out http://nbviewer.jupyter.org/github/akeshavan/mindcontrol_docs/blob/master/Installing_mindcontrol.ipynb
+
+For an example Freesurfer editing instance of Mindcontrol, see http://nbviewer.jupyter.org/github/akeshavan/mindcontrol_docs/blob/master/MindPrepFS.ipynb
 
 To see an example schema, see this file: https://dl.dropboxusercontent.com/u/9020198/data/data_rf.json
 
