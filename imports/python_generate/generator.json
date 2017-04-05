@@ -77,5 +77,44 @@
       },
       "staticURL": "https://dl.dropboxusercontent.com/u/9020198/data/",
       "usePeerJS": true
+    },
+{
+      "name": "Test",
+      "entry_type": "test",
+      "fields": [
+        {
+          "function_name": "get_filter_field",
+          "id": "subject_id",
+          "name": "Exam ID"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "View Image"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+      ],
+      "graph_type": "histogram",
+      "staticURL": "http://localhost:3002/",
+      "usePeerJS": false
     }
 ]}

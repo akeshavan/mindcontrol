@@ -75,50 +75,144 @@ render_histogram = function(entry_type){
                 }
 }
 
-Template.exams.rendered = function() {
+
+
+Template.demographic.rendered = function() {
 
       if (!this.rendered){
         this.rendered = true
          }
 
 
+    
       this.autorun(function() {
           Meteor.call("getDateHist", function(error, result){
-              do_d3_date_histogram(result, "#d3vis_date")
+              do_d3_date_histogram(result, "#d3vis_date_demographic")
               })
 
       })
+
+     
+
   }
 
-Template.exams.helpers({selector: function(){return get_filter("demographic")}})
 
-Template.freesurferOnly.rendered = function(){
 
-        if (!this.rendered){
-            this.rendered = true
-        }
 
-            this.autorun(function() {
+
+Template.freesurfer.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
                 render_histogram("freesurfer")
 
-            }); //end autorun
+       }); //end autorun
 
-        }
+     
 
-Template.freesurferOnly.events({
+  }
+
+
+
+
+
+Template.test.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+       this.autorun(function() {
+                render_histogram("test")
+
+       }); //end autorun
+
+     
+
+  }
+
+
+
+
+
+
+
+Template.demographic.helpers({
+
+selector: function(){return get_filter("demographic")},
+
+
+
+})
+
+
+
+Template.freesurfer.helpers({
+
+selector: function(){return get_filter("freesurfer")},
+
+
+
+metric: function(){
+        return get_metrics("freesurfer")
+    },
+currentMetric: function(){
+        return Session.get("current_freesurfer")
+    }
+
+
+
+})
+
+
+
+Template.test.helpers({
+
+selector: function(){return get_filter("test")},
+
+
+
+metric: function(){
+        return get_metrics("test")
+    },
+currentMetric: function(){
+        return Session.get("current_test")
+    }
+
+
+
+})
+
+
+
+
+  
+
+  
+   Template.freesurfer.events({
     "change #metric-select-freesurfer": function(event, template){
         var metric = $(event.currentTarget).val()
         console.log("metric: ", metric)
         Session.set("current_freesurfer", metric)
     }
-})
+   })
+  
 
-Template.freesurferOnly.helpers({
-    selector: function(){return get_filter("freesurfer")},
-    metric: function(){
-        return get_metrics("freesurfer")
-    },
-    currentMetric: function(){
-        return Session.get("current_freesurfer")
+  
+   Template.test.events({
+    "change #metric-select-test": function(event, template){
+        var metric = $(event.currentTarget).val()
+        console.log("metric: ", metric)
+        Session.set("current_test", metric)
     }
-    })
+   })
+  
