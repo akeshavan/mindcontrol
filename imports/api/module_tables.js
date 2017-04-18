@@ -280,6 +280,52 @@ name:"diff_long",
     })
 
 
+TabularTables.t1ants_reg_long =  new Tabular.Table({
+name:"t1ants_reg_long",
+    autoWidth: false,
+    collection: Subjects,
+    columns:[
+    
+      
+        get_filter_field("t1ants_reg_long", "msid", "msid"),
+      
+    
+      
+        get_filter_field("t1ants_reg_long", "from_mse", "from_mse"),
+      
+    
+      
+        get_filter_field("t1ants_reg_long", "base_mse", "base_mse"),
+      
+    
+      
+        get_filter_field("t1ants_reg_long", "timepoint", "Base mse timepoint"),
+      
+    
+      
+        get_qc_viewer("t1ants_reg_long", "name", "click to view"),
+      
+    
+      
+        get_qc_filter_field("t1ants_reg_long", "quality_check.QC", "QC"),
+      
+    
+      
+        get_filter_field("t1ants_reg_long", "checkedBy", "checked by"),
+      
+    
+      
+        get_filter_list_field("t1ants_reg_long", "quality_check.user_assign", "Assigned To"),
+      
+    
+      
+        {data: "quality_check.notes_QC", title: "Notes" }
+      
+    
+    ]
+    })
+
+
 TabularTables.nifti =  new Tabular.Table({
 name:"nifti",
     autoWidth: false,

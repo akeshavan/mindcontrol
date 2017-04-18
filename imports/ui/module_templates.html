@@ -17,6 +17,8 @@
 
     {{> diff_long }}
 
+    {{> t1ants_reg_long }}
+
     {{> nifti }}
 
 
@@ -229,6 +231,21 @@
 </template>
 
 
+<template name="t1ants_reg_long">
+
+<h1 id="Longitudinal Lesion Map">Longitudinal Lesion Map</h1>
+
+
+
+    <div id="t1ants_reg_long_table">
+
+        {{> tabular table=TabularTables.t1ants_reg_long selector=selector class="table table-striped table-bordered table-condensed"}}
+
+    </div>
+
+</template>
+
+
 <template name="nifti">
 
 <h1 id="Nifti Files">Nifti Files</h1>
@@ -282,6 +299,10 @@
                         
                         <li><a href="#Tumor Diffusion Longitudinal">
                             <span class="badge badge-inverse"></span> Tumor Diffusion Longitudinal</a>
+                        </li>
+                        
+                        <li><a href="#Longitudinal Lesion Map">
+                            <span class="badge badge-inverse"></span> Longitudinal Lesion Map</a>
                         </li>
                         
                         <li><a href="#Nifti Files">

@@ -78,7 +78,7 @@ Meteor.methods({
     updateQC: function(qc, form_data){
         //console.log(form_data)
         Subjects.update({entry_type: qc.entry_type, name:qc.name}, {$set: form_data})
-        if (Meteor.isServer){
+        /*if (Meteor.isServer){
             var sys = Npm.require('sys')
             var exec = Npm.require('child_process').exec;
             function puts(error, stdout, stderr) {
@@ -92,7 +92,7 @@ Meteor.methods({
             if (qc.entry_type == "lst"){
                 exec("edit_lst.py "+sid.subject_id, puts);
             }
-        }
+        }*/
     },
     
     get_metric_names: function(entry_type){

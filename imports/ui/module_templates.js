@@ -233,6 +233,21 @@ Template.diff_long.rendered = function() {
 
 
 
+Template.t1ants_reg_long.rendered = function() {
+
+      if (!this.rendered){
+        this.rendered = true
+         }
+
+
+    
+
+  }
+
+
+
+
+
 Template.nifti.rendered = function() {
 
       if (!this.rendered){
@@ -366,6 +381,16 @@ selector: function(){return get_filter("diff_long")},
 
 
 
+Template.t1ants_reg_long.helpers({
+
+selector: function(){return get_filter("t1ants_reg_long")},
+
+
+
+})
+
+
+
 Template.nifti.helpers({
 
 selector: function(){return get_filter("nifti")},
@@ -421,6 +446,8 @@ selector: function(){return get_filter("nifti")},
         Session.set("current_antsCT", metric)
     }
    })
+  
+
   
 
   

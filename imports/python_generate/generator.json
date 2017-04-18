@@ -349,7 +349,65 @@
         }
       }
     },
+  {"name": "Longitudinal Lesion Map",
+    "entry_type": "t1ants_reg_long",
+  "fields": [
 
+        {
+          "function_name": "get_filter_field",
+          "id": "msid",
+          "name": "msid"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "from_mse",
+          "name": "from_mse"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "base_mse",
+          "name": "base_mse"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "timepoint",
+          "name": "Base mse timepoint"
+        },
+        {
+          "function_name": "get_qc_viewer",
+          "id": "name",
+          "name": "click to view"
+        },
+        {
+          "function_name": "get_qc_filter_field",
+          "id": "quality_check.QC",
+          "name": "QC"
+        },
+        {
+          "function_name": "get_filter_field",
+          "id": "checkedBy",
+          "name": "checked by"
+        },
+        {
+          "function_name": "get_filter_list_field",
+          "id": "quality_check.user_assign",
+          "name": "Assigned To"
+        },
+        {
+          "function_name": null,
+          "id": "quality_check.notes_QC",
+          "name": "Notes"
+        }
+
+  ],
+  "graph_type":null,
+  "colormaps": {
+        "0": {
+          "name": "Grayscale",
+          "alpha": 1
+        }
+      }
+    },
      {"name": "Nifti Files",
     "entry_type": "nifti",
   "fields": [
