@@ -10,7 +10,7 @@ ENV LC_ALL C
 
 RUN mkdir -p ${MC_DIR} &&\
 		cd ${MC_DIR} &&\
-		git clone https://github.com/clowd-control/mindcontrol.git ${MC_DIR}
+		git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}
 
 EXPOSE 3000
 WORKDIR ${MC_DIR}

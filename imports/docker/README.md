@@ -4,7 +4,7 @@
 (from this directory)
 
 ```
-docker build -t clowd-control/mindcontrol .
+docker build -t clowdcontrol/mindcontrol .
 ```
 
 ## To Run
@@ -12,5 +12,5 @@ docker build -t clowd-control/mindcontrol .
 
 Note: the `-v` mount is **very important** as it contains the backup of the MongoDB.
 ```
-docker run -it --rm -v ${PWD}/.mindcontrol/:/home/mincontrol/.meteor/ -p 3000:3000 clowd-control/mindcontrol
+docker run -it --rm -v ${PWD}/.mindcontrol/:/home/mincontrol/.meteor/ -p 3000:3000 clowdcontrol/mindcontrol
 ```
