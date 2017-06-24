@@ -32,11 +32,11 @@ label_qa = function(name,object){
 /*Tabular Table Setup*/
 
 get_filter_field = function(entry_type, field_name, title){
-    
-    var returnfunc = {data:field_name, 
-                      title:title, 
+
+    var returnfunc = {data:field_name,
+                      title:title,
                       render: function(val, type, doc){
-                                
+
                                 if (val != null){
                                     html = '<a class="filter '+entry_type+'+'+field_name+'+'+val+'">'+val+'</a>'
                                     return Spacebars.SafeString(html)
@@ -44,18 +44,33 @@ get_filter_field = function(entry_type, field_name, title){
                                 else {
                                     return ""
                                 }
-                          
-                                
+
+
                             }//end function
                       }; //end returnfunc
     return returnfunc
-    
+
+}
+
+button_launcher = function(foo){
+  var html = '<button class="clouder btn btn-primary btn-small">Launch Clouder</button>'
+  return Spacebars.SafeString(html)
+}
+
+get_button_launcher = function(entry_type, field_name, title){
+  var returnfunc = {data:field_name,
+                    title:title,
+                    render: function(val, type, doc){
+                              return button_launcher()
+                          }//end function
+                    }; //end returnfunc
+  return returnfunc
 }
 
 get_filter_list_field = function(entry_type, field_name, title){
-    
-    var returnfunc = {data:field_name, 
-                      title:title, 
+
+    var returnfunc = {data:field_name,
+                      title:title,
                       render: function(val, type, doc){
                                 var html = ""
                                 if (val != null){
@@ -68,26 +83,26 @@ get_filter_list_field = function(entry_type, field_name, title){
                                         tmp = '<a class="filter '+entry_type+'+'+field_name+'+'+val2+'">'+val2+'</a>'
                                         html = html +" "+ tmp
                                     }
-                                    
+
                                 })
                                 return Spacebars.SafeString(html)}
                                 else{return ""}
-                          
-                                
+
+
                             }//end function
                       }; //end returnfunc
     return returnfunc
-    
+
 }
 
 get_qc_filter_field = function(entry_type, field_name, title){
-    
 
-    
-    var returnfunc = {data:field_name, 
-                      title:title, 
+
+
+    var returnfunc = {data:field_name,
+                      title:title,
                       render: function(val, type, doc){
-                            
+
                                 var val_mapper = {"-1": "Not Checked", "0": "Fail", "1": "Pass", "2": "Needs Edits", "3": "Edited"}
                                 var class_mapper = {"-1": " label label-warning", "0": " label label-danger",
                                                    "1": " label label-success", "2": " label label-primary", "3": " label label-info"}
@@ -100,11 +115,11 @@ get_qc_filter_field = function(entry_type, field_name, title){
                             }//end function
                       }; //end returnfunc
     return returnfunc
-    
+
 }
 
 get_qc_viewer = function(entry_type, field_name, title){
-    
+
     var output = {data:field_name, title:title, render: function(val, type, doc){
 	        html = '<a href="/HREF"> VAL </a>'.replace("HREF",entry_type+"/"+val).replace("VAL", val)
 
@@ -112,21 +127,21 @@ get_qc_viewer = function(entry_type, field_name, title){
 	        //console.log(html)
 	        return Spacebars.SafeString(html)
         }}
-    
+
     return output
-    
+
 }
 
 
 tableFields = {
-    
+
     "msid": get_filter_field("demographic", "msid", "msid"),
-        
+
     "subject_id": {data:"subject_id", title: "Exam ID", render: function(val, type, doc){
 	        html = '<a class="exam subject_id '+val+'">'+val+'</a>'
 	        return Spacebars.SafeString(html)
         }},
-        
+
     "Study Tag": {data:"Study Tag", title:"Study Tag", render: function(val, type, doc){
             if (val == null){
                 return null
@@ -134,7 +149,7 @@ tableFields = {
             html = '<a class="exam study_tag '+val+'">'+val+'</a>'
             return Spacebars.SafeString(html)
         }},
-        
+
     "Site": {data:"DCM_InstitutionName", title:"Site", render: function(val, type, doc){
             if (val == null){
                 return null
@@ -142,7 +157,7 @@ tableFields = {
             html = '<a class="exam site '+val+'">'+val+'</a>'
             return Spacebars.SafeString(html)
         }},
-        
+
     "viewNifti": {data:"name", title:"nifti filename", render: function(val, type, doc){
 	                  html = '<a target="_blank" href="/viewImage/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	                  return Spacebars.SafeString(html)
@@ -153,7 +168,7 @@ tableFields = {
 	html = '<a target="_blank" href="/viewImage_mni/'+val+'/mseID/'+val.split("-")[1]+'">'+val+'</a>'
 	                  return Spacebars.SafeString(html)
 	}},
-	              
+
     "Date": {data:"DCM_StudyDate", title:"Date"},
 
     "checkedBy": {data: "checkedBy", title:"checkedBy", render: function(val, type, doc){
@@ -170,13 +185,13 @@ tableFields = {
     }},
 
     "QC": get_qc_filter_field("freesurfer", "quality_check.QC", "QC"),//{data:"quality_check", title:"QC", render: label_qa },
-    
+
     "viewFS": {data:"name", title:"Freesurfer Subject ID", render: function(val, type, doc){
 	        html = '<a target="_blank" href="#" class="viewQC '+'">'+val+'</a>'
 	        //console.log(html)
 	        return Spacebars.SafeString(html)
-        }},  
-        
+        }},
+
     "completeFS": {data:"complete", title:"done", render:function(val, type, doc){
             if (val == true){
                 html = '<a class="fs complete true"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> yes</a>'
@@ -186,7 +201,7 @@ tableFields = {
             html = '<a class="fs complete false"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> no</a>'
                 return Spacebars.SafeString(html)}
         }},
-        
+
     "percentFS": {data:"subject_id", title:"% FS", render: function(val, type, doc){
 	        total = doc["freesurfer_t1s"].length
 	        count = 0.0
@@ -197,16 +212,13 @@ tableFields = {
 	        }
 	        return count/total*100
         }},
-        
+
     "totalFS": {data:"subject_id", title:"Total FS", render: function(val, type, doc){
 	        return doc["freesurfer_t1s"].length
         }},
-        
+
     "numNifti": {data:"num_nii", title:"# nifti", render: function(val, type, doc){
 	        return doc["nifti_files"].length
         }}
-    
+
 }
-
-
-

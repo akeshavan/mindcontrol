@@ -108,6 +108,9 @@ Template.module.events({
      var metric = $(event.currentTarget).val()
      console.log("metric: ", metric)
      Session.set("current_"+this.entry_type, metric)
+ },
+ "click .clouder": function(event, template){
+   Meteor.call("launch_clouder", "ls -la")
  }
 })
 

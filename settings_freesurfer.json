@@ -36,6 +36,11 @@
             "function_name": null,
             "id": "quality_check.notes_QC",
             "name": "Notes"
+          },
+          {
+            "function_name": "get_button_launcher",
+            "id": "subject_id",
+            "name": "Launch Clouder"
           }
         ],
         "graph_type": "histogram",
@@ -52,7 +57,7 @@
             "max": 2000
           }
         },
-        "staticURL": "http://54.210.207.242:8080/",
+        "staticURL": "http://localhost:8080/",
         "usePeerJS": true
       },
   {
@@ -102,7 +107,7 @@
             "alpha": 0.5
           }
         },
-        "staticURL": "http://54.210.207.242:8080/",
+        "staticURL": "http://localhost:8080/",
         "usePeerJS": true
       },
   {
@@ -152,7 +157,7 @@
             "alpha": 0.5
           }
         },
-        "staticURL": "http://54.210.207.242:8080/",
+        "staticURL": "http://localhost:8080/",
         "usePeerJS": true
       }]
 }
