@@ -1,6 +1,7 @@
 {
   "public": {
     "startup_json":"http://localhost:8080/all_entries.json",
+    "load_if_empty": true,
     "modules": [
     {
         "name": "Brainmask",
