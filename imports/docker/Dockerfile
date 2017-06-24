@@ -7,7 +7,7 @@ RUN apt-get install -y git
 
 ENV MC_DIR /home/mindcontrol
 ENV LC_ALL C
-RUN npm install -g npm install http-server -g
+RUN npm install http-server -g
 
 USER mindcontrol
 RUN mkdir -p ${MC_DIR} &&\
