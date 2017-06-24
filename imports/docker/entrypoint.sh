@@ -3,5 +3,5 @@
 cd /bids/derivatives/mindcontrol_freesurfer/
 python3 /home/mindcontrol/imports/python_generate/start_static_server &&
 
-cd /home/mindcontrol
+cd /mindcontrol
 meteor --settings settings_freesurfer.json

@@ -12,18 +12,19 @@ RUN npm install http-server -g
 
 ADD entrypoint.sh /home/entrypoint.sh
 
-RUN useradd --create-home --home-dir ${MC_DIR} mindcontrol
+RUN useradd  --create-home --home-dir ${MC_DIR} mindcontrol
 RUN chown mindcontrol:mindcontrol /home/entrypoint.sh
 RUN chmod +x /home/entrypoint.sh
+RUN mkdir /mindcontrol && chown mindcontrol:mindcontrol /mindcontrol
 
 USER mindcontrol
 
-RUN mkdir -p ${MC_DIR} &&\
-		cd ${MC_DIR} &&\
-		git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}
+RUN mkdir -p /mindcontrol &&\
+		cd /mindcontrol &&\
+		git clone https://github.com/clowdcontrol/mindcontrol.git /mindcontrol
 
 EXPOSE 3000
-WORKDIR ${MC_DIR}
+WORKDIR /mindcontrol
 
 ENTRYPOINT ["/home/entrypoint.sh"]
 
