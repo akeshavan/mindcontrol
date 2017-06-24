@@ -15,16 +15,15 @@ ADD entrypoint.sh /home/entrypoint.sh
 RUN useradd  --create-home --home-dir ${MC_DIR} mindcontrol
 RUN chown mindcontrol:mindcontrol /home/entrypoint.sh
 RUN chmod +x /home/entrypoint.sh
-RUN mkdir /mindcontrol && chown mindcontrol:mindcontrol /mindcontrol
 
 USER mindcontrol
 
-RUN mkdir -p /mindcontrol &&\
-		cd /mindcontrol &&\
-		git clone https://github.com/clowdcontrol/mindcontrol.git /mindcontrol
+RUN mkdir -p ${MC_DIR}/mindcontrol &&\
+		cd ${MC_DIR}/mindcontrol &&\
+		git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}/mindcontrol
 
 EXPOSE 3000
-WORKDIR /mindcontrol
+WORKDIR ${MC_DIR}/mindcontrol
 
 ENTRYPOINT ["/home/entrypoint.sh"]
 
