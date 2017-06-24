@@ -52,7 +52,7 @@
             "max": 2000
           }
         },
-        "staticURL": "http://localhost:8080/",
+        "staticURL": "http://54.210.207.242:8080/",
         "usePeerJS": true
       },
   {
@@ -102,7 +102,7 @@
             "alpha": 0.5
           }
         },
-        "staticURL": "http://localhost:8080/",
+        "staticURL": "http://54.210.207.242:8080/",
         "usePeerJS": true
       },
   {
@@ -152,7 +152,7 @@
             "alpha": 0.5
           }
         },
-        "staticURL": "http://localhost:8080/",
+        "staticURL": "http://54.210.207.242:8080/",
         "usePeerJS": true
       }]
 }
