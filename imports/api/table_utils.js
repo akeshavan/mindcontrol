@@ -53,7 +53,7 @@ get_filter_field = function(entry_type, field_name, title){
 }
 
 button_launcher = function(foo){
-  var html = '<button class="clouder btn btn-primary btn-small">Launch Clouder</button>'
+  var html = '<button class="clouder btn btn-primary btn-small">Launch Clowder</button>'
   return Spacebars.SafeString(html)
 }
 
