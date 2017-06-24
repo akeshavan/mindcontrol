@@ -3,7 +3,7 @@ MAINTAINER Anisha Keshavan <anishakeshavan@gmail.com>
 
 USER root
 RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get install -y git python3
 
 ENV MC_DIR /home/mindcontrol
 ENV LC_ALL C
