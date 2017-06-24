@@ -17,7 +17,7 @@ RUN chown mindcontrol:mindcontrol /home/entrypoint.sh
 RUN chmod +x /home/entrypoint.sh
 
 RUN mkdir -p ${MC_DIR}/mindcontrol &&\
-    chown -R mindcontrol:mindcontol /home/mindcontrol &&\
+    chown -R mindcontrol /home/mindcontrol &&\
     chmod -R a+rx /home/mindcontrol
 
 USER mindcontrol
