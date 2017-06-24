@@ -16,11 +16,14 @@ RUN useradd  --create-home --home-dir ${MC_DIR} mindcontrol
 RUN chown mindcontrol:mindcontrol /home/entrypoint.sh
 RUN chmod +x /home/entrypoint.sh
 
+RUN mkdir -p ${MC_DIR}/mindcontrol &&\
+    chown -R mindcontrol:mindcontol /home/mindcontrol &&\
+    chmod -R a+rx /home/mindcontrol
+
 USER mindcontrol
 
-RUN mkdir -p ${MC_DIR}/mindcontrol &&\
-		cd ${MC_DIR}/mindcontrol &&\
-		git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}/mindcontrol
+RUN cd ${MC_DIR}/mindcontrol &&\
+	git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}/mindcontrol
 
 EXPOSE 3000
 WORKDIR ${MC_DIR}/mindcontrol
