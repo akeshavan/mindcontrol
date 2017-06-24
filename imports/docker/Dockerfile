@@ -5,11 +5,13 @@ USER root
 RUN apt-get update
 RUN apt-get install -y git python3
 
-ENV MC_DIR /home/mindcontrol
 ENV LC_ALL C
 RUN npm install http-server -g
 
+ENV MC_DIR /home/mindcontrol
+RUN useradd --create-home --home-dir ${MC_DIR} mindcontrol
 USER mindcontrol
+
 RUN mkdir -p ${MC_DIR} &&\
 		cd ${MC_DIR} &&\
 		git clone https://github.com/clowdcontrol/mindcontrol.git ${MC_DIR}
