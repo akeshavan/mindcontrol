@@ -1,6 +1,6 @@
 {
   "public": {
-    "startup_json":"https://dl.dropboxusercontent.com/s/vnohn5nh9ho3j8a/data_rf.json?dl=0",
+    "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/mindcontrol_freesurfer/mindcontrol_startup_data.json",
     "load_if_empty": true,
     "modules": [
     {"name": "Exams",
@@ -76,7 +76,7 @@
             "alpha": 0.5
           }
         },
-        "staticURL": "https://dl.dropboxusercontent.com/u/9020198/data/",
+        "staticURL": "",
         "usePeerJS": true
       }
   ]
