@@ -1,47 +1,21 @@
 {
   "public": {
-    "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/mindcontrol_freesurfer/mindcontrol_startup_data.json",
+    "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/hbn_manifest.json",
     "load_if_empty": true,
     "modules": [
-    {"name": "Exams",
-      "entry_type": "demographic",
-    "fields": [
-      {"function_name": "get_filter_field",
-        "id": "msid",
-        "name": "msid"
-      },
-      {"function_name": "get_filter_field",
-        "id": "subject_id",
-        "name": "Exam ID"
-      },
-      {"function_name": "get_filter_field",
-        "id": "Study Tag",
-        "name": "Study Tag"
-      },
-      {"function_name": "get_filter_field",
-        "id": "DCM_InstitutionName",
-        "name": "Site"
-      },
-      {"function_name": "get_filter_field",
-        "id": "metrics.DCM_InstitutionName",
-        "name": "Date"
-      }
-    ],
-    "graph_type":"datehist",
-    "showgraph": true},
       {
-        "name": "Freesurfer",
-        "entry_type": "freesurfer",
+        "name": "T1w",
+        "entry_type": "T1w",
         "fields": [
           {
             "function_name": "get_filter_field",
             "id": "subject_id",
-            "name": "Exam ID"
+            "name": "Subject ID"
           },
           {
             "function_name": "get_qc_viewer",
             "id": "name",
-            "name": "Freesurfer ID"
+            "name": "Image File"
           },
           {
             "function_name": "get_qc_filter_field",
@@ -65,19 +39,164 @@
           }
         ],
         "graph_type": "histogram",
-        "colormaps": {
-          "0":{"name": "Grayscale",
-              "alpha": 1,
-              "min": 0,
-              "max": 255
+        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "usePeerJS": false
+      },
+      {
+        "name": "T2w",
+        "entry_type": "T2w",
+        "fields": [
+          {
+            "function_name": "get_filter_field",
+            "id": "subject_id",
+            "name": "Subject ID"
           },
-          "1": {
-            "name": "custom.Freesurfer",
-            "alpha": 0.5
+          {
+            "function_name": "get_qc_viewer",
+            "id": "name",
+            "name": "Image File"
+          },
+          {
+            "function_name": "get_qc_filter_field",
+            "id": "quality_check.QC",
+            "name": "QC"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "checkedBy",
+            "name": "checked by"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "quality_check.user_assign",
+            "name": "Assigned To"
+          },
+          {
+            "function_name": null,
+            "id": "quality_check.notes_QC",
+            "name": "Notes"
           }
-        },
-        "staticURL": "",
-        "usePeerJS": true
+        ],
+        "graph_type": null,
+        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "usePeerJS": false
+      },
+      {
+        "name": "FLAIR",
+        "entry_type": "FLAIR",
+        "fields": [
+          {
+            "function_name": "get_filter_field",
+            "id": "subject_id",
+            "name": "Subject ID"
+          },
+          {
+            "function_name": "get_qc_viewer",
+            "id": "name",
+            "name": "Image File"
+          },
+          {
+            "function_name": "get_qc_filter_field",
+            "id": "quality_check.QC",
+            "name": "QC"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "checkedBy",
+            "name": "checked by"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "quality_check.user_assign",
+            "name": "Assigned To"
+          },
+          {
+            "function_name": null,
+            "id": "quality_check.notes_QC",
+            "name": "Notes"
+          }
+        ],
+        "graph_type": null,
+        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "usePeerJS": false
+      },
+      {
+        "name": "MT-off_PD",
+        "entry_type": "MT-off_PD",
+        "fields": [
+          {
+            "function_name": "get_filter_field",
+            "id": "subject_id",
+            "name": "Subject ID"
+          },
+          {
+            "function_name": "get_qc_viewer",
+            "id": "name",
+            "name": "Image File"
+          },
+          {
+            "function_name": "get_qc_filter_field",
+            "id": "quality_check.QC",
+            "name": "QC"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "checkedBy",
+            "name": "checked by"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "quality_check.user_assign",
+            "name": "Assigned To"
+          },
+          {
+            "function_name": null,
+            "id": "quality_check.notes_QC",
+            "name": "Notes"
+          }
+        ],
+        "graph_type": null,
+        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "usePeerJS": false
+      },
+      {
+        "name": "MT-on_PD",
+        "entry_type": "MT-on_PD",
+        "fields": [
+          {
+            "function_name": "get_filter_field",
+            "id": "subject_id",
+            "name": "Subject ID"
+          },
+          {
+            "function_name": "get_qc_viewer",
+            "id": "name",
+            "name": "Image File"
+          },
+          {
+            "function_name": "get_qc_filter_field",
+            "id": "quality_check.QC",
+            "name": "QC"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "checkedBy",
+            "name": "checked by"
+          },
+          {
+            "function_name": "get_filter_field",
+            "id": "quality_check.user_assign",
+            "name": "Assigned To"
+          },
+          {
+            "function_name": null,
+            "id": "quality_check.notes_QC",
+            "name": "Notes"
+          }
+        ],
+        "graph_type": null,
+        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "usePeerJS": false
       }
   ]
   }
