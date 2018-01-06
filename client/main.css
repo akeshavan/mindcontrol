@@ -1,5 +1,11 @@
+html {
+  height: 100%;
+}
+
 body {
   padding-top: 50px;
+  /*padding-bottom: 50px;*/
+  height: 100%;
 }
 
 #metric-select {

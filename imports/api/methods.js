@@ -76,7 +76,7 @@ Meteor.methods({
     },
 
     updateQC: function(qc, form_data){
-        //console.log(form_data)
+        console.log(form_data)
         Subjects.update({entry_type: qc.entry_type, name:qc.name}, {$set: form_data})
     },
 

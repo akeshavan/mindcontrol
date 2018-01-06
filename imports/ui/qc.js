@@ -581,9 +581,35 @@ Template.view_images.events({
 
         var qc = Session.get("currentQC")
         var update = {}
+        console.log("qc is", qc)
+        var qc = Subjects.findOne({entry_type: qc.entry_type, name:qc.name})
+        //console.log("current entry", current_entry)
+
+        if (!qc["quality_vote"]){
+          console.log("init new quality vote")
+          update["quality_vote"] = []
+        } else {
+          update["quality_vote"] = qc["quality_vote"]
+          console.log("quality vote exists", update)
+        }
+
+        // backwards compatibility; save the original vote
+        if(qc["quality_check"] && update["quality_vote"].length === 0){
+          vote_entry = {quality_check: qc.quality_check,
+                        checkedBy: qc.checkedBy,
+                        checkedAt: qc.checkedAt}
+          update["quality_vote"].push(vote_entry)
+        }
+
         update["quality_check"] = form_data
         update["checkedBy"] = Meteor.user().username
         update["checkedAt"] = new Date()
+
+        vote_entry = {quality_check: update.quality_check,
+                      checkedBy: update.checkedBy,
+                      checkedAt: update.checkedAt}
+        update["quality_vote"].push(vote_entry)
+
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
         update["painters"] = template.painters.get()
