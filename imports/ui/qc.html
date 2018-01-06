@@ -32,7 +32,8 @@
                 </li>
 
                 <li>
-                     <div class="panel panel-{{modeCSS.pointColor}}">
+{{#if showPoints}}
+<div class="panel panel-{{modeCSS.pointColor}}">
   <div class="panel-heading">
 
     <!--<h3 class="panel-title swapmode point" data-toggle="collapse" data-target="#collapseLP">Logged Points</h3> -->
@@ -69,9 +70,11 @@
    <div class="panel-footer">Shift+click to log points. Annotate points in the table above.</div>
    </div>
 </div>
+{{/if}}
                 </li>
                 <li>
-                     <div class="panel panel-{{modeCSS.contourColor}}">
+{{#if showContours}}
+  <div class="panel panel-{{modeCSS.contourColor}}">
   <div class="panel-heading">
     <!--<h4 class="panel-title" > -->
         <table>
@@ -144,9 +147,11 @@
    <div class="panel-footer">Shift+click & drag to draw curves. Annotate curves in the table above.</div>
   </div>
 </div>
+{{/if}}
                 </li>
                 <li>
-                     <div class="panel panel-{{modeCSS.paintColor}}">
+  {{#if showPainter}}
+  <div class="panel panel-{{modeCSS.paintColor}}">
   <div class="panel-heading">
     <!--<h4 class="panel-title" > -->
         <table>
@@ -161,7 +166,7 @@
   <div id="collapseP" class="panel-collapse collapse" role="tabpanel">
   <div class="panel-body">
 
-    
+
     <form class="form-inline">
       <div class="form-group">
         <!--<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>-->
@@ -174,11 +179,12 @@
       <button type="button" class="btn btn-default btn-small" id="paintEraser"><span class="glyphicon glyphicon-erase"></span></button>
       <button type="button" class="btn btn-default btn-small" id="paintPicker"><span class="fa fa-eyedropper"></span></button>
     </form>
-    
+
   </div>
    <div class="panel-footer">Shift+click & drag to paint curves.</div>
   </div>
 </div>
+{{/if}}
                 </li>
 
                 <li>
@@ -190,11 +196,11 @@
     <div class="panel-body">
 
     {{#each peerUsers}}
-    
+
     {{username}}
-    
+
     {{/each}}
-  
+
 
   </div>
   </div>
@@ -258,7 +264,7 @@
       <select id="user-assign" name="user_assign" width="100%" class="form-control" multiple="multiple">
 
           <option disabled="disabled" selected="selected">Assign To</option>
-          
+
               {{#each user}}
                   <option value="{{this.username}}">{{this.username}}</option>
               {{/each}}

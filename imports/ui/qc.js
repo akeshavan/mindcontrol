@@ -12,7 +12,7 @@ import "./painter.js"
 
 //var staticURL = "http://127.0.0.1:3002/"
 //var staticURL = "https://dl.dropboxusercontent.com/u/9020198/data/"
-use_peerJS = true
+
 
 
 addNewDrawing= function(template){
@@ -294,8 +294,10 @@ Template.view_images.onCreated(function(){
     this.painters = new ReactiveVar([])
     this.connections = {}
     Meteor.subscribe("presences")
-
-    if (use_peerJS){
+    var qc = Session.get("currentQC")
+    var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+    console.log("settings are", settings)
+    if (settings.usePeerJS){
         window.peer = new Peer({
           key: 'fqw6u5vy67n1att9',  // get a free key at http://peerjs.com/peerserver
           debug: 3,
@@ -345,9 +347,40 @@ Template.view_images.helpers({
         return Meteor.users.find({}).fetch()
     },
 
-    peerUsers: function(){
+    showPainter: function() {
+      var qc = Session.get("currentQC")
+      var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+      if (settings.logPainter == null){
+        return true
+      } else {
+        return settings.logPainter
+      }
+    },
 
-      if (use_peerJS){
+    showContours: function() {
+      var qc = Session.get("currentQC")
+      var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+      if (settings.logContours == null){
+        return true
+      } else {
+        return settings.logContours
+      }
+    },
+
+    showPoints: function() {
+      var qc = Session.get("currentQC")
+      var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+      if (settings.logPoints == null){
+        return true
+      } else {
+        return settings.logPoints
+      }
+    },
+
+    peerUsers: function(){
+      var qc = Session.get("currentQC")
+      var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+      if (settings.usePeerJS){
           var userIds = Presences.find().map(function(presence) {return presence.userId;});
           // exclude the currentUser
           var name = get_qc_name()

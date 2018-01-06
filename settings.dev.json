@@ -40,7 +40,10 @@
         ],
         "graph_type": "histogram",
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
-        "usePeerJS": false
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": true,
+        "logPoints": true
       },
       {
         "name": "T2w",
@@ -79,7 +82,10 @@
         ],
         "graph_type": null,
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
-        "usePeerJS": false
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": false,
+        "logPoints": false
       },
       {
         "name": "FLAIR",
