@@ -13,7 +13,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
-            
+
             <li><a>{{> loginButtons}}</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -22,20 +22,25 @@
 </template>
 
 <template name="main_body" data-spy="scroll" data-target=".bs-docs-sidebar">
-    
+
     <head><title>MindControl Refactor</title></head>
     {{> navbar}}
+
 
     <div class="row">
 
       {{> Template.dynamic template=sidebar_content}}
-        
-      <div class="container span9">
-    
+
+      <div class="container col-sm-9 col-md-9 col-lg-9">
+
+        {{#if use_custom}}
+        {{> custom}}
+        {{/if}}
+
         <br>
-        
+
         {{>Template.dynamic template=content}}
-    
+
       </div>
     </div> <!--End Row-->
 
@@ -48,5 +53,3 @@
 {{> tabular table=TabularTables.task selector=selector class="table table-striped table-bordered table-condensed"}}
 
 </template>
-
-

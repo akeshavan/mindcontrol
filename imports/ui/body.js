@@ -10,7 +10,9 @@ import '../api/publications.js';
 import '../api/methods.js';
 import './body.html';
 import "./qc.js";
+import "./custom.js";
 import "./qc.html";
+import "./custom.html";
 
 var update_subjects = function(filter, list_of_remaining){
         console.log("list of remaining is", list_of_remaining)
@@ -27,9 +29,9 @@ var update_subjects = function(filter, list_of_remaining){
                 return 0
             }
         })
-        
+
         return 0
-        
+
 }
 
 var run_recursive_update = function(gSelector){
@@ -67,26 +69,26 @@ Template.main_body.events({
         if (name != ""){
             Meteor.call("save_query", name, JSON.stringify(gSelector))
         }
-        
+
     },
-    
+
     "click .remove": function(e){
         var gSelector = Session.get("globalSelector")
         console.log("this is", this, "selector is", gSelector)
         var key = this.mapper.split("+")
-        
+
         delete gSelector[key[0]][key[1]]
-        
+
         if (Object.keys(gSelector[key[0]]).length==0){
             delete gSelector[key[0]]
         }
-        
+
         console.log("gSelector is now", gSelector)
         Session.set("globalSelector", gSelector)
         var filter = get_filter(key[0])
         delete filter.subject_id
         console.log("remove filter is", filter)
-        
+
         var all_keys = Object.keys(gSelector)
         var remaining = []
         for (i=0;i<all_keys.length;i++){
@@ -94,24 +96,24 @@ Template.main_body.events({
                 remaining.push(all_keys[i])
             }
         }
-        
+
         update_subjects(filter, remaining)
     },
-    
+
     "click .removequery": function(e){
         console.log("in removequert, this is",this)
         Meteor.call("removeQuery", this.selector, this.name)
     },
-    
+
     "click .query": function(e){
         //console.log(this.selector, this.name)
         Session.set("globalSelector", JSON.parse(this.selector))
         var gSelector = JSON.parse(this.selector)
         run_recursive_update(gSelector)
-        
-        
+
+
     },
-    
+
     "click .filter": function(e){
         //console.log(e)
         var element = e.toElement.className.split(" ")//.slice(1).split("-")
@@ -121,29 +123,29 @@ Template.main_body.events({
         //console.log("element is", element)
         var entry_type = element[0]
         var field = element[1]
-        var value = element[2]//.slice(2).join(" ")        
+        var value = element[2]//.slice(2).join(" ")
         //console.log(entry_type, field, value)
 
         var gSelector = Session.get("globalSelector")
         if (Object.keys(gSelector).indexOf(entry_type) < 0){
             gSelector[entry_type] = {}
         }
-        
+
         if (value == "undefined"){
             value = null
         }
-        
+
         gSelector[entry_type][field] = value
 
         //console.log("insert subject selector in this filter function", gSelector)
-        
+
         Session.set("globalSelector", gSelector)
         //THIS IS HACKY
         var filter = get_filter(entry_type)
         if (field=="metrics.DCM_StudyDate"){
             value = parseInt(value)
         }
-        
+
         filter[field] = value
         //console.log("filter in .filter is", filter)
 
@@ -155,7 +157,7 @@ Template.main_body.events({
         })
 
     },
-    
+
     "click .viewQC": function(e){
         e.preventDefault();
         var element = e.toElement.className.split(" ")//.slice(1).split("-")
@@ -166,15 +168,21 @@ Template.main_body.events({
         var entry_type = element[0]
         var field = element[1]
         console.log("element is", element)
-        //var value = element[2]//.slice(2).join(" ")    
+        //var value = element[2]//.slice(2).join(" ")
         console.log("you want to view QC for", entry_type, field)
-        
+
         Session.set("currentQC", {"entry_type": entry_type, "name": field})
-        
+
         //$("#modal-fullscreen").modal("show")
-          
+
     }
 
+})
+
+Template.main_body.helpers({
+  use_custom: function(){
+    return Meteor.settings.public.use_custom;
+  }
 })
 
 Template.body_sidebar.helpers({
@@ -185,7 +193,7 @@ Template.body_sidebar.helpers({
         return keys
 
     },
-    
+
     currentSelector: function(){
         var gSelector = Session.get("globalSelector")
         //console.log("current query is", gSelector)
@@ -194,23 +202,23 @@ Template.body_sidebar.helpers({
             var keys = Object.keys(gSelector)
             var outlist = []
             for (i=0;i<keys.length;i++){
-                
+
                 var subkeys = Object.keys(gSelector[keys[i]])
                 for (j=0;j<subkeys.length; j++){
-                    tmp = {}    
+                    tmp = {}
                     var keyname = keys[i] + "+" + subkeys[j]
                     tmp["mapper"] = keyname
                     tmp["name"] = subkeys[j]
                     outlist.push(tmp)
                 }
-                
+
             }
             return outlist
         }
-        
+
 
     },
-        
+
     savedQueries: function(){
         Meteor.subscribe("userList")
         var user = Meteor.users.findOne(Meteor.userId(), {fields: {username:1, queries:1}})
@@ -225,7 +233,7 @@ Template.body_sidebar.helpers({
 
         return []
     }
-    
-    
-    
+
+
+
 })

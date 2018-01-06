@@ -14,12 +14,14 @@ guid = function(){
 
 send_to_peers = function(data){
     //console.log("you want to send", data, "to peers")
-  if (use_peerJS){
+    var qc = Session.get("currentQC")
+    var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
+  if (settings.usePeerJS){
     var conns = get_open_connections()
     //console.log("cons are", conns)
     data["user"] = Meteor.users.findOne({_id: Meteor.userId()}).username
     /*conns.forEach(function(val, idx, arr){
-      val.send(data)  
+      val.send(data)
     })*/
     for(var i =0; i<conns.length;i++){
         var conn = conns[i]
@@ -51,7 +53,7 @@ var snapToGrid = function(coords){
         //console.log(val)
         }
     var new_val = new papaya.core.Coordinate(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z))
-    
+
     out_coords.push(new_val)
 
   })
@@ -140,7 +142,7 @@ setValue = function(x,y,z, val){
 
 setContoursToZero = function(contours){
     //var contours = template.contours.get()
-        
+
     contours.forEach(function(val, idx, arr){
         //console.log("in fillall", val)
         //console.log(val)
@@ -153,8 +155,8 @@ setContoursToZero = function(contours){
                   setValue(x,y,z,0)
 
               })
-               
-              
+
+
               })
         }
     })
@@ -182,14 +184,14 @@ var annotate_point = function(template, originalCoord, screenCoor){
 }
 
 var start_curve = function(template, originalCoord, screenCoor){
-    
+
     var contours = template.contours.get()
             //console.log("on mousedown, contours is", contours)
     if (!contours.length){
         var entry = {contours: [{complete: false, matrix_coor:[], world_coor:[]}],
                         checkedBy: Meteor.user().username, name:"Drawing 0", uuid: guid()}
         contours.push(entry)
-        
+
         send_to_peers({"action": "insert", "data":{"contours": entry}})
         Session.set('selectedDrawing', 0)
         //console.log("pushed contours", contours)
@@ -213,14 +215,14 @@ var start_curve = function(template, originalCoord, screenCoor){
         currentContour.world_coor.push(world)
     }
     template.contours.set(contours)
-    
+
     send_to_peers({"action": "update", "data":{"contours": getSelectedDrawingEntry(template)}})
     Session.set("isDrawing", true)
-            
+
 
             //console.log("contour begin")
 
-    
+
 }
 
 var continue_curve = function(template, originalCoord, screenCoor){
@@ -284,7 +286,7 @@ var start_paint = function(template, originalCoord, screenCoor){
     context.lineWidth = 3;
     //context.beginPath();
     //context.moveTo(screenCoor.x, screenCoor.y)
-    
+
 }
 
 var continue_paint = function(template, originalCoord, screenCoor){
@@ -302,18 +304,18 @@ var continue_paint = function(template, originalCoord, screenCoor){
     //currentPaint.world_coor.push(world)
     currentPaint.start_point = screenCoor
     template.painters.set(painters)
-    
+
     draw_point(screenCoor, viewer, curveColor, 3)
     var canvas = viewer.canvas
     var context = canvas.getContext('2d');
     context.beginPath();
-    
+
     context.moveTo(prevStart.x, prevStart.y)
     context.lineTo(screenCoor.x, screenCoor.y);
     //context.moveTo(screenCoor.x, screenCoor.y);
     context.stroke();
-    context.closePath();                 
-    
+    context.closePath();
+
 }
 
 var line = function(x0, y0, z0, x1, y1, z1, val){
@@ -355,13 +357,13 @@ var end_paint = function(template, originalCoord, screenCoor){
     var N = painters.length
     var currentPaint = painters[N-1]
     var currVal = Session.get("paintValue")
-    
+
     currentPaint.matrix_coor.push(originalCoord)
     //currentPaint.world_coor.push(world)
     currentPaint.paintValue = currVal
-    
-    
-    
+
+
+
     var viewer = papayaContainers[0].viewer
     draw_point(screenCoor, viewer, curveColor, 3)
     var canvas = viewer.canvas
@@ -369,7 +371,7 @@ var end_paint = function(template, originalCoord, screenCoor){
 
     context.lineTo(screenCoor.x, screenCoor.y);
     context.moveTo(screenCoor.x, screenCoor.y);
-    context.stroke();      
+    context.stroke();
     context.closePath();
     currentPaint.matrix_coor = snapToGrid(currentPaint.matrix_coor)
     //console.log(currentPaint.matrix_coor)
@@ -399,7 +401,7 @@ var end_paint = function(template, originalCoord, screenCoor){
     template.painters.set(painters)
     console.log("currentPaint is", currentPaint)
     //console.log(currentPaint)
-               
+
 
 }
 
@@ -409,12 +411,12 @@ restore_vals = function(currPaint){
         currPaint.matrix_coor.reverse()
         currPaint.matrix_coor.forEach(function(val, idx, arr){
             setValue(papayaFloorFast(val.x), papayaFloorFast(val.y), papayaFloorFast(val.z), val.old_val)
-            //console.log( currPaint.original_vals[idx])        
+            //console.log( currPaint.original_vals[idx])
         })
         var viewer = papayaContainers[0].viewer
         viewer.drawViewer(true,false)
     }
-    
+
 }
 
 logpoint = function(e, template, type){
@@ -426,44 +428,44 @@ logpoint = function(e, template, type){
         var currentCoor = papayaContainers[0].viewer.cursorPosition
         var originalCoord = new papaya.core.Coordinate(currentCoor.x, currentCoor.y, currentCoor.z)
         var screenCoor = new papaya.core.Point(e.offsetX, e.offsetY) //papayaContainers[0].viewer.convertCoordinateToScreen(originalCoord);
-        
+
         var mode = template.logMode.get()
 
         if ( mode == "point" && type=="click"){
             annotate_point(template, originalCoord, screenCoor)
         }
-        
+
         else if (mode == "contour"){
             if (type=="mousedown"){
                 start_curve(template, originalCoord, screenCoor)
             }
-    
+
             else if (type=="mousemove"){
                 continue_curve(template, originalCoord, screenCoor)
             }
-            
+
             else if (type=="mouseup" || type=="mouseout"){
                 end_curve(template, originalCoord, screenCoor)
             }
 
         }
-        
+
         else if (mode == "paint"){
             if (type=="mousedown"){
                 start_paint(template, originalCoord, screenCoor)
             }
-    
+
             else if (type=="mousemove" && Session.get("isDrawing")){
                 continue_paint(template, originalCoord, screenCoor)
             }
-            
+
             else if (type=="mouseup" || type=="mouseout"){
                 end_paint(template, originalCoord, screenCoor)
-                
+
             }
 
         }
-        
+
 
 
     }

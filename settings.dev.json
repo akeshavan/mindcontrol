@@ -2,6 +2,7 @@
   "public": {
     "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/hbn_manifest.json",
     "load_if_empty": true,
+    "use_custom": true,
     "modules": [
       {
         "name": "T1w",
@@ -42,7 +43,7 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": true,
+        "logContours": false,
         "logPoints": true
       },
       {
@@ -84,7 +85,7 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": true,
+        "logContours": false,
         "logPoints": true
       },
       {
@@ -126,7 +127,7 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": true,
+        "logContours": false,
         "logPoints": true
       },
       {
@@ -168,7 +169,7 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": true,
+        "logContours": false,
         "logPoints": true
       },
       {
@@ -210,7 +211,7 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": true,
+        "logContours": false,
         "logPoints": true
       }
   ]
