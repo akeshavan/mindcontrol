@@ -379,3 +379,20 @@ h4 td, th{
     color: #333;
     white-space: nowrap;
     }
+
+.form-space {
+  margin-bottom: 15px;
+}
+
+.first-tick {
+  margin-right: 9%;
+}
+
+.tick {
+  margin-left: 9%;
+  margin-right: 9%;
+}
+
+.last-tick {
+  margin-left: 9%;
+}

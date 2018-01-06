@@ -84,8 +84,8 @@
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
         "logPainter": false,
-        "logContours": false,
-        "logPoints": false
+        "logContours": true,
+        "logPoints": true
       },
       {
         "name": "FLAIR",
@@ -124,7 +124,10 @@
         ],
         "graph_type": null,
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
-        "usePeerJS": false
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": true,
+        "logPoints": true
       },
       {
         "name": "MT-off_PD",
@@ -163,7 +166,10 @@
         ],
         "graph_type": null,
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
-        "usePeerJS": false
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": true,
+        "logPoints": true
       },
       {
         "name": "MT-on_PD",
@@ -202,7 +208,10 @@
         ],
         "graph_type": null,
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
-        "usePeerJS": false
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": true,
+        "logPoints": true
       }
   ]
   }

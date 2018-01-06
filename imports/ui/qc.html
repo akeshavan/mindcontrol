@@ -213,7 +213,7 @@
     <h3 class="panel-title" data-target="#collapseEdit" data-toggle="collapse">Save Changes</h3>
   </div>
   <div id="collapseEdit" class="panel-collapse collapse in" role="tabpanel">
-    <div class="panel-body">
+    <div class="panel-body" style="text-align: -webkit-center">
 
 
   <form id="QC_form" class="new-qc">
@@ -258,8 +258,39 @@
 
       </div>
       <div class="input-group">
+        <div class="form-space">
+      <label>Confidence: </label>
+      <div class="form-group">
+        <div class="ticklabels">
+          <span class="first-tick">1</span>
+          <span class="tick">2</span>
+          <span class="tick">3</span>
+          <span class="tick">4</span>
+          <span class="last-tick">5</span>
+        </div>
+        <input
+            id="conf"
+            type="range"
+            min="1"
+            max="5"
+            step="1"
+            value="3"
+            list="steplist"
+            data-orientation="vertical">
 
-    <label>Assign To: </label>
+        <datalist id="steplist">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </datalist>
+
+      </div>
+      </div>
+
+
+    <label style="margin-top: 5px;">Assign To: </label>
     <div class="form-group">
       <select id="user-assign" name="user_assign" width="100%" class="form-control" multiple="multiple">
 
@@ -271,8 +302,9 @@
       </select>
     </div>
 
+
   <br>
-      <label>
+      <label  style="margin-top: 15px;">
         Notes:</label> <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
 
     </div>
@@ -303,14 +335,19 @@
                 <div class="row">
                     <div class="col-lg-12">
 
- <a class="btn btn-default" id="menu-toggle">Toggle Editor Menu</a>
- <a class="btn btn-default" id="resize">Resize</a>
+ <a class="btn btn-default" id="menu-toggle">
+ <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+ </a>
+ <a class="btn btn-default" id="resize">
+<span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+ </a>
 
   <a class="btn btn-default" id="touchscreen">
 {{#if isTouch}}
-Touchscreen
+Mode: <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span>
+
 {{else}}
-Not touchscreen
+Mode: <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
 {{/if}}
   </a>
 

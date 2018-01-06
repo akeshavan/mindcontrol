@@ -630,19 +630,57 @@ Template.view_images.events({
         if(qc["quality_check"] && update["quality_vote"].length === 0){
           vote_entry = {quality_check: qc.quality_check,
                         checkedBy: qc.checkedBy,
-                        checkedAt: qc.checkedAt}
+                        checkedAt: qc.checkedAt,
+                        }
           update["quality_vote"].push(vote_entry)
         }
 
         update["quality_check"] = form_data
         update["checkedBy"] = Meteor.user().username
         update["checkedAt"] = new Date()
+        update["confidence"] = parseInt($("#conf")[0].value)
 
         vote_entry = {quality_check: update.quality_check,
                       checkedBy: update.checkedBy,
-                      checkedAt: update.checkedAt}
+                      checkedAt: update.checkedAt,
+                      confidence: update.confidence}
         update["quality_vote"].push(vote_entry)
 
+        var voters = _.groupBy(update["quality_vote"], function(e){
+          return e["checkedBy"]
+        })
+
+        function Sum(total, num) {
+            return total + num;
+        }
+
+        var votes = [];
+        _.each(voters, function(v){
+          var sub_votes = []
+          _.each(v, function(i){
+            if (i.quality_check.QC == "0"){
+              sub_votes.push(-1*i.confidence)
+            } else if (i.quality_check.QC == "1") {
+              sub_votes.push(i.confidence)
+            }
+          })
+          console.log("sub votes", sub_votes)
+
+          try {
+            votes.push(sub_votes.reduce(Sum)/sub_votes.length)
+          } catch (e) {
+            console.log("votes NaN", e)
+          }
+
+        })
+        console.log("votes", votes)
+
+        try {
+          update["average_vote"] = votes.reduce(Sum)/votes.length;
+        } catch (e) {
+          console.log("votes NaN", e);
+        }
+        
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
         update["painters"] = template.painters.get()
@@ -877,6 +915,7 @@ Template.view_images.rendered = function(){
       //console.log('Template onLoad');
     }
 
+    var self = this;
 
     this.autorun(function(){
         var qc = Session.get("currentQC")
@@ -906,6 +945,7 @@ Template.view_images.rendered = function(){
 
                 addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
+
 
                 //get_config()
             }
