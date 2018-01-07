@@ -700,6 +700,8 @@ Template.view_images.events({
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
         update["painters"] = template.painters.get()
+        update["metrics.average_vote"] = update["average_vote"];
+        update["metrics.num_votes"] = update["num_votes"];
         console.log("update to", update)
         //console.log("update is", update)
 
