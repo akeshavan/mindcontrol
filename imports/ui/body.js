@@ -40,19 +40,52 @@ var run_recursive_update = function(gSelector){
     update_subjects(filter, all_keys)
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function wait1() {
+  console.log('Waiting for DOM load ...');
+  await sleep(500);
+
+}
+
 Template.navbar.rendered = function(){
   // $("#login-buttons").hide()
   if (Meteor.settings.public.needs_consent){
+
+
     this.autorun(function(){
-      if ((Session.get("consent") == null || Session.get("consent") == undefined) && Meteor.user()){
-        Session.set("consent", true);
+
+      consent = Session.get("consent")
+
+      if (Meteor.user()){
+        console.log("user is logged in");
+        Session.set("consent", true)
+
+        // make sure hte login/logouts have their callbacks
+        wait1().then(function(){
+          $("#login-name-link").click(function(e){
+            wait1().then(function(){
+              $("#login-buttons-logout").click(function(e){
+                Meteor.logout(function(){
+                  Session.set("consent", false);
+                  console.log("consent is", Session.get("consent"));
+                });
+              });
+            });
+          });
+
+        })
       }
-      if (Session.get("consent") == false){
-        $("#login-buttons").hide();
-        Meteor.logout();
-      } else {
+      // show_login = Session.get("show_login")
+
+      if (consent){
         $("#login-buttons").show();
+      } else {
+        $("#login-buttons").hide();
       }
+
     })
   }
 
