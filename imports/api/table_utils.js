@@ -74,7 +74,7 @@ get_filter_list_field = function(entry_type, field_name, title){
                       render: function(val, type, doc){
                                 var html = ""
                                 if (val != null){
-                                    console.log("val is", val)
+                                    //console.log("val is", val)
                                 if(typeof val == "string"){
                                     val = [val]
                                 }
@@ -122,7 +122,7 @@ get_qc_ave_field = function(entry_type, field_name, title){
   var returnfunc = {data:field_name,
                     title:title,
                     render: function(val, type, doc){
-                            console.log("rendering", val, type, doc);
+                            //console.log("rendering", val, type, doc);
                               var val_mapper = {"-1": "Not Rated", "0": val, "1": val, "2": "Needs Edits", "3": "Edited"}
                               var class_mapper = {"-1": " label label-warning", "0": " label label-danger",
                                                  "1": " label label-success", "2": " label label-primary", "3": " label label-info"}
@@ -130,7 +130,7 @@ get_qc_ave_field = function(entry_type, field_name, title){
                               if (val != null){
                                   realval = val > 0 ? 1 : 0;
                               }
-                              console.log(class_mapper[realval], val_mapper[realval])
+                              //console.log(class_mapper[realval], val_mapper[realval])
                               if (realval >= 0){
                                 html = '<span class="'+class_mapper[realval]+'">'+val_mapper[realval]+'</span>'
                               }

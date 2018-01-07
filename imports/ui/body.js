@@ -44,10 +44,10 @@ Template.navbar.rendered = function(){
   // $("#login-buttons").hide()
   if (Meteor.settings.public.needs_consent){
     this.autorun(function(){
-      if (Session.get("consent") == null && Meteor.user()){
+      if ((Session.get("consent") == null || Session.get("consent") == undefined) && Meteor.user()){
         Session.set("consent", true);
       }
-      if (!Session.get("consent")){
+      if (Session.get("consent") == false){
         $("#login-buttons").hide();
         Meteor.logout();
       } else {
