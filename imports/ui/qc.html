@@ -326,14 +326,21 @@
 
         <!-- Page Content -->
 
-        {{#unless currentUser}}
-        <div class="alert alert-danger" role="alert"><strong>Please log in to edit!</strong></div>
-        {{/unless}}
+{{> consentModal}}
 
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
+
+                      {{#unless currentUser}}
+                        {{#if consent}}
+                            <div class="alert alert-danger" role="alert"><strong>Please <a onclick="document.getElementById('login-sign-in-link').click()"> log in </a> to edit!</strong></div>
+                        {{else}}
+                        <div class="alert alert-danger" role="alert"><strong>Please sign the <a data-toggle="modal" data-target=".bs-example-modal-lg">consent form</a> and then log in to edit!</strong></div>
+
+                        {{/if}}
+                      {{/unless}}
 
  <a class="btn btn-default" id="menu-toggle">
  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>

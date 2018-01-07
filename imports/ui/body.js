@@ -40,6 +40,21 @@ var run_recursive_update = function(gSelector){
     update_subjects(filter, all_keys)
 }
 
+Template.navbar.rendered = function(){
+  // $("#login-buttons").hide()
+  if (Meteor.settings.public.needs_consent){
+    this.autorun(function(){
+      if (!Session.get("consent")){
+        $("#login-buttons").hide();
+        Meteor.logout();
+      } else {
+        $("#login-buttons").show();
+      }
+    })
+  }
+
+}
+
 Template.main_body.events({
     "click .reset": function(){
         Session.set("globalSelector", {})

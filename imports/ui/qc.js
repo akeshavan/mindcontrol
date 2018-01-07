@@ -7,7 +7,8 @@ import "./module_templates.js"
 import "./routers.js"
 import "./papaya_changes.js"
 import "./painter.js"
-
+import "./custom.html"
+import "./custom.js"
 
 
 //var staticURL = "http://127.0.0.1:3002/"
@@ -347,6 +348,15 @@ Template.view_images.helpers({
         return Meteor.users.find({}).fetch()
     },
 
+    consent: function(){
+      if (Meteor.settings.public.needs_consent){
+        if (!Session.get("consent")){
+          return false
+        }
+      }
+      return true
+    },
+
     showPainter: function() {
       var qc = Session.get("currentQC")
       var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})
@@ -680,7 +690,7 @@ Template.view_images.events({
         } catch (e) {
           console.log("votes NaN", e);
         }
-        
+
         update["loggedPoints"] = template.loggedPoints.get()
         update["contours"] = template.contours.get()
         update["painters"] = template.painters.get()

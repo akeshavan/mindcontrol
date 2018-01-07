@@ -3,6 +3,7 @@
     "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/hbn_manifest.json",
     "load_if_empty": true,
     "use_custom": true,
+    "needs_consent": true,
     "modules": [
       {
         "name": "T1w",

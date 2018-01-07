@@ -14,17 +14,21 @@ Template.consent.helpers({
   "getconsent": function(){
     console.log("consent is", Session.get("consent"))
     return Session.get("consent")
+  },
+  "isLoggedIn": function(){
+    return !Meteor.user();
   }
 })
 
-Template.custom.events({
+Template.consent.events({
   "click #consent": function(e){
-    window.scrollTo(0,0)
+    // window.scrollTo(0,0)
     console.log("user has consented");
+    console.log($(".bs-example-modal-lg").modal) //('hide');
     Session.set("consent", true);
   }
 })
 
-Template.custom.rendered = function(){
-  // $("#login-buttons").hide()
+Template.consent.rendered = function(){
+
 }
