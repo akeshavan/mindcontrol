@@ -118,6 +118,31 @@ get_qc_filter_field = function(entry_type, field_name, title){
 
 }
 
+get_qc_ave_field = function(entry_type, field_name, title){
+  var returnfunc = {data:field_name,
+                    title:title,
+                    render: function(val, type, doc){
+                            console.log("rendering", val, type, doc);
+                              var val_mapper = {"-1": "Not Rated", "0": val, "1": val, "2": "Needs Edits", "3": "Edited"}
+                              var class_mapper = {"-1": " label label-warning", "0": " label label-danger",
+                                                 "1": " label label-success", "2": " label label-primary", "3": " label label-info"}
+                              var realval = -1
+                              if (val != null){
+                                  realval = val > 0 ? 1 : 0;
+                              }
+                              console.log(class_mapper[realval], val_mapper[realval])
+                              if (realval >= 0){
+                                html = '<span class="'+class_mapper[realval]+'">'+val_mapper[realval]+'</span>'
+                              }
+                              else {
+                                html = '<a class="'+class_mapper[realval]+' filter '+entry_type+'+'+field_name+'+'+val+'">'+val_mapper[realval]+'</a>'
+                              }
+                            return Spacebars.SafeString(html)
+                          }//end function
+                    }; //end returnfunc
+  return returnfunc
+}
+
 get_qc_viewer = function(entry_type, field_name, title){
 
     var output = {data:field_name, title:title, render: function(val, type, doc){

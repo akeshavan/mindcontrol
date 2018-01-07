@@ -20,19 +20,14 @@
             "name": "Image File"
           },
           {
-            "function_name": "get_qc_filter_field",
-            "id": "quality_check.QC",
-            "name": "QC"
+            "function_name": "get_qc_ave_field",
+            "id": "average_vote",
+            "name": "QC vote"
           },
           {
-            "function_name": "get_filter_field",
-            "id": "checkedBy",
-            "name": "checked by"
-          },
-          {
-            "function_name": "get_filter_field",
-            "id": "quality_check.user_assign",
-            "name": "Assigned To"
+            "function_name": null,
+            "id": "num_votes",
+            "name": "# votes"
           },
           {
             "function_name": null,

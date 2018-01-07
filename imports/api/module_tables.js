@@ -28,6 +28,9 @@ Meteor.settings.public.modules.forEach(function(mod, idx, arr){
         case "get_qc_filter_field":
           return get_qc_filter_field(mod.entry_type, field.id, field.name)
           break
+        case "get_qc_ave_field":
+          return get_qc_ave_field(mod.entry_type, field.id, field.name)
+          break
         case "get_button_launcher":
           return get_button_launcher(mod.entry_type, field.id, field.name)
           break

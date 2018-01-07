@@ -653,7 +653,8 @@ Template.view_images.events({
         vote_entry = {quality_check: update.quality_check,
                       checkedBy: update.checkedBy,
                       checkedAt: update.checkedAt,
-                      confidence: update.confidence}
+                      confidence: update.confidence,
+                      }
         update["quality_vote"].push(vote_entry)
 
         var voters = _.groupBy(update["quality_vote"], function(e){
@@ -669,9 +670,13 @@ Template.view_images.events({
           var sub_votes = []
           _.each(v, function(i){
             if (i.quality_check.QC == "0"){
-              sub_votes.push(-1*i.confidence)
+              if (i.confidence){
+                sub_votes.push(-1*i.confidence)
+              }
             } else if (i.quality_check.QC == "1") {
-              sub_votes.push(i.confidence)
+              if (i.confidence){
+                sub_votes.push(i.confidence)
+              }
             }
           })
           console.log("sub votes", sub_votes)
@@ -687,6 +692,7 @@ Template.view_images.events({
 
         try {
           update["average_vote"] = votes.reduce(Sum)/votes.length;
+          update["num_votes"] = votes.length;
         } catch (e) {
           console.log("votes NaN", e);
         }
