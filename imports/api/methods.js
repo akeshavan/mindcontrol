@@ -46,7 +46,12 @@ Meteor.methods({
                     {$group: {_id: "$lowerBound", count: {$sum: 1}}}])
                 var output = {}
                 output["histogram"] = _.sortBy(foo, "_id")
-                output["minval"] = minval*0.95
+                if (minval < 0){
+                  output["minval"] = minval*1.05
+                } else {
+                  output["minval"] = minval*0.95
+                }
+
                 output["maxval"] = maxval*1.05
                 return output
           }
