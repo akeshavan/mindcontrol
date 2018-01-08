@@ -35,6 +35,7 @@
             "name": "Notes"
           }
         ],
+        "metric_names": ["Age","EHQ_Total","Sex","average_vote","num_votes"],
         "graph_type": "histogram",
         "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
         "usePeerJS": false,
