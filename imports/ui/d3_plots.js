@@ -282,6 +282,14 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
 
       };
 
+clear_histogram = function(dom_id){
+  d3.select(dom_id).selectAll("rect").data([]).exit().remove();
+  d3.select(dom_id).selectAll("text").data([]).exit().remove();
+  d3.select("#d3vis_T1w").append("text").text("Nothing to show right now").attr("x", 0).attr("y", 50).attr("dy", "2em")
+    .attr("fill", "#d9534f")
+
+}
+
 do_d3_histogram = function (values, minval, maxval, metric, dom_id, entry_type) {
     // Defer to make sure we manipulate DOM
     _.defer(function () {

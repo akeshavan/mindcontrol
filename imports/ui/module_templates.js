@@ -67,6 +67,7 @@ render_histogram = function(entry_type){
                     }
                     else{
                         console.log("attempt to clear histogram here")
+                        clear_histogram("#d3vis_"+entry_type)
                     }
 
 
