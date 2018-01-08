@@ -734,6 +734,16 @@ Template.view_images.events({
      template.touchscreen.set(!currMode)
 
  },
+
+ "click #screenshot": function(event, template){
+   var a = papayaContainers[0].viewer.canvas.toDataURL("image/png");
+   var iframe = "<iframe width='100%' height='100%' style='border:0;' src='" + a + "'></iframe>"
+   var x = window.open();
+   x.document.open();
+   x.document.write(iframe);
+   x.document.close();
+ },
+
  "mousemove #papayaContainer0": function(event, template){
 
      logpoint(event, template, "mousemove")
