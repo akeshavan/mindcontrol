@@ -37,11 +37,11 @@
 
     <p> Next, read the instructions on how to view images and save your ratings: </p>
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel-group" id="accordion1" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingInstruction" data-toggle="collapse" data-parent="#accordion" href="#collapseInstruction">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseInstruction" aria-expanded="true" aria-controls="collapseInstruction">
+            <a role="button" data-toggle="collapse" data-parent="#accordion1" href="#collapseInstruction" aria-expanded="true" aria-controls="collapseInstruction">
               2. Instructions
             </a>
 
@@ -103,11 +103,11 @@
     <p> Follow these guidelines when you rate the images: </p>
 
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingGuidelines" data-toggle="collapse" data-parent="#accordion" href="#collapseGuidelines">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseGuidelines" aria-expanded="true" aria-controls="collapseGuidelines">
+            <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#collapseGuidelines" aria-expanded="true" aria-controls="collapseGuidelines">
             3. Guidelines
           </a>
           </h4>
@@ -121,7 +121,7 @@
             <p class="lead"> Scans with too much motion cannot be segmented </p>
             <p> The image below shows varying amounts of motion artifacts (you can see bands on the images). Images with too much motion cannot be automatically segmented because its too difficult to see the boundaries between tissues. </p>
             <img src="/motion_QC.png" width="100%"/>
-            <p class="center-block muted" style="text-align: center"><small>Figure 3: Four images with varying levels on motion (banding artifacts). Image on the left has many artifacts, and it is difficult to delineate tissue types. Motion guidelines are adapted from <a href="http://www.pnas.org/content/113/33/9357.full.pdf?with-ds=yes">(Walhovd et al., 2016)</a></small></p>
+            <p class="center-block muted" style="text-align: center"><small>Figure 3: Four images with varying levels on motion (banding artifacts). Image on the left has many artifacts, and it is difficult to delineate tissue types. The red arrow on the second image from the left shows the banding artifact to a lesser degree, and the green arrow on the third image from the left points to very minor banding artifacts. Motion guidelines are adapted from <a href="http://www.pnas.org/content/113/33/9357.full.pdf?with-ds=yes">(Walhovd et al., 2016)</a></small></p>
 
             <p> If you are not sure how to rate a scan with motion, give your rating a low confidence score (a 1 or 2). Don't worry if you are wrong, we will be averaging ratings across many raters.</p>
 
@@ -129,7 +129,7 @@
             <p class="lead"> Shift + Click to annotate slices or regions of the image that are low quality </p>
             <p> Sometimes artifacts are only on a few slices. Annotate these slices so we know where they are:</p>
             <img src="/badQ.png" width="75%" class="center-block" />
-            <p class="center-block muted" style="text-align: center"><small>Figure 4: Three examples showing images with artifacts only on a few slices. The image on the right shows a defacing error in the frontal lobe.</small></p>
+            <p class="center-block muted" style="text-align: center"><small>Figure 4: Three examples showing images with artifacts only on a few slices. The image on the right shows a defacing error in the frontal lobe. The circle on the center image highlights an abnormally noisy region, and the image on the left is noisy throughout the whole image.</small></p>
 
             <p> The red dots on the image above show the annotations in regions of noise. Scroll through the entire brain when you QC, and watch out for bad defacing in the frontal lobes.</p>
 
@@ -147,8 +147,8 @@
     </div>
 
     Our goal is first finish rating all images with the <a class=" label label-warning filter T1w+average_vote+undefined">Not Rated</a> tag in the tables below.
-     Click on the <a class=" label label-warning filter T1w+average_vote+undefined">Not Rated</a> tag to filter the table to only show scans that haven't been rated yet.
-     
+     Click on the <a class=" label label-warning filter T1w+average_vote+undefined">Not Rated</a> tag to filter the table to only show scans that haven't been rated yet. As you rate, ask yourself, <strong> "Would you include this scan in your study for volumetric and cortical thickness analysis?"</strong>
+
 
      <div class="bs-callout bs-callout-default">
        <h4>Open Data</h4>
@@ -163,6 +163,26 @@
 
 
   </div>
+
+</template>
+
+<template name="leaderboard">
+
+  <table class="table table-striped table-hover table-responsive" style="width: auto;">
+   <tr>
+     <th class="header-table">Rank</th>
+     <th class="header-table">Username</th>
+     <th class="header-table">#</th>
+   </tr>
+   {{#each users}}
+   <tr >
+     <td class="item-table">{{idx}}</td>
+     <td class="item-table">{{username}}</td>
+     <td class="item-table">{{images}}</td>
+   </tr>
+   {{/each}}
+
+ </table>
 
 </template>
 
@@ -200,28 +220,19 @@
   University of Washington eScience Institute<br>
   <a href="#">arokem@uw.edu</a></p>
 
-  <p>Dylan Nielson<br>
-  National Institutes of Mental Health<br>
-  <a href="#">Dylan.nielson@nih.gov</a></p>
-
-  <p>Adam Thomas<br>
-  National Institutes of Mental Health<br>
-  <a href="#">Adamt@nih.gov</a></p>
-
   <h6>RESEARCHER’S STATEMENT:</h6>
 <p>  We are asking you to be in a research study.  The purpose of this consent form is to give you the information you will need to help you decide whether to be in the study or not.  Please read the form carefully.  You may ask questions about the purpose of the research, what we would ask you to do, the possible risks and benefits, your rights as a volunteer, and anything else about the research or this form that is not clear. Please email keshavan@uw.edu if you have any questions. When we have answered all your questions, you can decide if you want to be in the study or not.  This process is called “informed consent.”
 </p>
   <h6>PURPOSE OF THE STUDY</h6>
-  <p>Image annotation is needed to extract data from images. The purpose of this study is to train better computer algorithms to annotate images, and also correct any errors the computer makes.  In particular, we aim to train you to accurately annotate images through a game. We aim to 1) collect image annotation data from you, 2) track how quickly and accurately you learn to annotate images, and 3) combine annotations from many users into the most accurate annotation. This information will be used to train new computer algorithms.
+  <p>Image annotation is needed to extract data from images. The purpose of this study is to train better computer algorithms to annotate images, and also correct any errors the computer makes. We aim to 1) collect image annotation data from you, and 2) combine annotations from many users into the most accurate annotation. This information will be used to train new computer algorithms.
     </p>
   <h6>STUDY PROCEDURES</h6>
 
-  <p>You will be asked to log in. You may use an existing social media login (e.g. Twitter, Facebook, Google, etc.), and you may be asked to create a nickname. You may also choose to include your social media avatar to display alongside your nickname in the public leaderboard. Alternatively, you may also have the option to use an anonymous login, but you may not have access to your scores in the future.
-    </p>
-  <p>You will be given instructions on how to annotate images for a particular task. Try your best to annotate the images as quickly and accurately as you can. You may complete however many tasks you wish. Each task can take anywhere from 30 seconds to 5 minutes. You may stop playing at any time.
-    </p>
-  <p>You may use any device with a web browser (computer, tablet, or phone). We will record all settings you use on the application, your annotations, your screen resolution, and your nickname. This data will be made publically available to researchers.
-    </p>
+  <p>You will be asked to log in. You may be given the option to use an existing social media login (e.g. Twitter, Facebook, Google, etc.), and you may be asked to create a an anonymous username to be displayed to the public. You may also choose to include your social media avatar to display alongside your anonymous username in the public leaderboard. Alternatively, you may also have the option to use an anonymous login. You may provide your email when you sign up for an account if you wish to be contacted about future work related to this task.</p>
+  <p>You will be given instructions on how to annotate images for a particular task. Try your best to annotate the images as quickly and accurately as you can. You may complete however many tasks you wish. Each task can take anywhere from 30 seconds to 5 minutes. You may stop annotating at any time.
+  </p>
+  <p>You may use any device with a web browser (computer, tablet, or phone). We will record all settings you use on the application, your annotations, your screen resolution, and your anonymous username. This data will be made publically available to researchers.
+  </p>
   <h6>RISKS, STRESS, OR DISCOMFORT</h6>
   <p>Some people feel that providing information for research or having the research session recorded is an invasion of privacy. If you wish to remain anonymous, we recommend creating an anonymous nickname that does not include any identifiers relating to you.
     </p>
@@ -230,7 +241,7 @@
     </p>
 
   <h6>CONFIDENTIALITY OF RESEARCH INFORMATION</h6>
-  <p>Your social media login information (such as username and email address) will remain confidential and will not be shared outside the study team.
+  <p>Your social media login information (such as username and email address), if provided, will remain confidential and will not be shared outside the study team.  
   Government or university staff sometimes review studies such as this one to make sure they are being done safely and legally.  If a review of this study takes place, your records may be examined.  The reviewers will protect your privacy.  The study records will not be used to put you at legal risk of harm.
     </p>
   <h6>RESEARCH-RELATED INJURY</h6>

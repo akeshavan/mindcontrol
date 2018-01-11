@@ -1,6 +1,6 @@
 <template name="navbar">
      <nav class="navbar navbar-inverse navbar-fixed-top">
-      
+
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
@@ -23,16 +23,16 @@
 
 <template name="main_body" data-spy="scroll" data-target=".bs-docs-sidebar">
 
-    <head><title>MindControl Refactor</title></head>
+    <head><title>MindControl</title></head>
     {{> navbar}}
 
 
-    <div class="row">
+    <div>
 
       {{> Template.dynamic template=sidebar_content}}
 
-      <div class="container col-sm-9 col-md-9 col-lg-9">
-
+      <div class="col-sm-9 col-md-9 col-lg-9">
+        <div class="">
         {{#if use_custom}}
         {{> custom}}
         {{/if}}
@@ -41,6 +41,7 @@
 
         {{>Template.dynamic template=content}}
 
+        </div>
       </div>
     </div> <!--End Row-->
 

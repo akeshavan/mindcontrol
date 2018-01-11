@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating';
 
 import './module_templates.html';
 import "./d3_plots.js"
+import './custom.html'
+import "./custom.js"
 
 
 get_filter = function(entry_type){

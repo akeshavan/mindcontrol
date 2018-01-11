@@ -8,6 +8,7 @@ import "./table_utils.js"
 import "./publications.js"
 import "./methods.js"
 
+
 TabularTables = {}
 
 console.log("Meteor settings are", Meteor.settings)

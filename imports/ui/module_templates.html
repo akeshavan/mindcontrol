@@ -42,66 +42,63 @@
 
   {{> tabular table=table selector=selector class="table table-striped table-bordered table-condensed"}}
 
-
 </template>
 
 <template name="body_sidebar">
 
-  <div class="span3">
-            <div class="bs-docs-sidebar">
+  <div class="col-md-3 col-sm-3 col-lg-3 ">
+    <div class="bs-docs-sidebar">
+      <h5> Leaderboard </h5>
+      {{> leaderboard }}
+      <div id="sticky" class="">
+        <h5> Modules </h5>
+        <ul class="nav nav-list bs-docs-sidenav">
 
-                    <ul class="nav nav-list bs-docs-sidenav affix">
+          {{#each modules}}
+            <li><a href="#{{this.name}}">
+                <span class="badge badge-inverse"></span> {{this.name}}</a>
+            </li>
+          {{/each}}
 
-                      {{#each modules}}
-                        <li><a href="#{{this.name}}">
-                            <span class="badge badge-inverse"></span> {{this.name}}</a>
-                        </li>
-                      {{/each}}
+        </ul>
 
-                    </ul>
+        <ul class="nav nav-list">
+          <h5>Query Box</h5>
 
-                 <ul class="nav nav-list affix qbox">
-                 <h5>Query Box</h5>
+          <button class="btn btn-default btn-small reset"> Reset </button>
+          <br><br>
 
-  <button class="btn btn-default btn-small reset"> Reset </button>
-                     <br><br>
+          <div class="well">
+             {{#each currentSelector}}
+            <span class="tag label label-info">
+              <span class="{{this.mapper}}">{{this.name}}</span>
+              <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a>
+            </span>
+            <br><br>
+             {{/each}}
+          </div>
 
-
-                 <div class="well">
-
-                     {{#each currentSelector}}
-                    <span class="tag label label-info">
-                      <span class="{{this.mapper}}">{{this.name}}</span>
-                      <a><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a>
-                    </span>
-                    <br><br>
-                     {{/each}}
-
-
-                 </div>
-<form class="form-inline">
-    <div class="form-group">
-        <button class="btn btn-default btn-small save"> Save </button>
-        <input type="text" name="qname" id="qname" class="form-control"><br>
-    </div>
-</form>
-                <h5>Saved Queries</h5>
-
-
-                {{#each savedQueries}}
-
-                    <span class="tag label label-primary">
-                      <span class="query ">{{name}}</span>
-                        <a><i class="removequery glyphicon glyphicon-trash glyphicon-white"></i></a>
-                    </span>
-
-                    <br>
-                    <br>
-
-                {{/each}}
-
-                 </ul>
+          <form class="form-inline">
+            <div class="form-group">
+                <button class="btn btn-default btn-small save"> Save </button>
+                <input type="text" name="qname" id="qname" class="form-control"><br>
             </div>
-        </div>
+          </form>
+
+          <h5>Saved Queries</h5>
+
+          {{#each savedQueries}}
+            <span class="tag label label-primary">
+              <span class="query ">{{name}}</span>
+                <a><i class="removequery glyphicon glyphicon-trash glyphicon-white"></i></a>
+            </span>
+            <br>
+            <br>
+          {{/each}}
+
+        </ul>
+      </div> <!-- end sticky -->
+    </div>
+  </div>
 
 </template>
