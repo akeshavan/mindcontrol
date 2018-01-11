@@ -361,8 +361,6 @@ Mode: <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
 {{/if}}
   </a>
 
-
-
 <!-- Single button -->
 {{#if loadableImages.length}}
 <div class="btn-group">
@@ -380,10 +378,6 @@ Mode: <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
   </div>
 </div>{{/if}}
                         Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
-
-{{#if nextOnQueue != currentQC.name}}
-<a class="btn btn-primary" style="float:right" id="next" href="{{nextOnQueue}}"> Next Image </a>
-{{/if}}
                         <br><br>
                         <div id="viewer" width="500px"></div>
 

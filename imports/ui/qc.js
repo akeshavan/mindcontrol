@@ -357,18 +357,6 @@ Template.view_images.helpers({
       return true
     },
 
-    nextOnQueue: function(){
-      //console.log("calculating nextOnQueue");
-      var qc = Session.get("currentQC");
-      var filter = get_filter(qc.entry_type);
-      var next_name = Meteor.call("getRandomName", filter, qc.name, function(err, val){
-        //console.log("DONE", val);
-        Session.set("nextOnQueue", val);
-      });
-      //console.log("next name is", next_name);
-      return Session.get("nextOnQueue")
-    },
-
     showPainter: function() {
       var qc = Session.get("currentQC")
       var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})

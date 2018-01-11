@@ -1,9 +1,5 @@
 import {Subjects} from "./module_tables.js"
 
-function randomInt(min, max){
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
 Meteor.methods({
 
     getDateHist: function(){
@@ -14,25 +10,6 @@ Meteor.methods({
                 return foo
             }
 
-
-      },
-
-      getRandomName: function(filter, currentName){
-        if (Meteor.isServer){
-          filter["name"] = {"$ne": currentName};
-          var total = Subjects.find(filter).count();
-          //console.log("total for filter",filter,"is", total);
-          var random = randomInt(0,total-1);
-
-          //console.log("random number", random);
-          data = Subjects.find(filter, {skip: random, limit: 1}).fetch();
-          if (data.length){
-            //console.log("name found", data[0].name);
-            return data[0].name;
-          } else {
-            return ""
-          }
-        }
 
       },
 
