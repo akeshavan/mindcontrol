@@ -377,9 +377,14 @@ Mode: <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
 
   </div>
 </div>{{/if}}
-                        Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
-                        <br><br>
-                        <div id="viewer" width="500px"></div>
+                    Logging: {{currentMode}} {{#if selectedDrawingName}}, drawing on {{selectedDrawingName}} {{/if}}
+
+                    {{#if nextImage}}
+                     <a class="btn btn-primary" style="float:right" id="next" href="{{nextImage}}"> Next Image </a>
+                    {{/if}}
+
+                    <br><br>
+                    <div id="viewer" width="500px"></div>
 
                     </div>
                 </div>

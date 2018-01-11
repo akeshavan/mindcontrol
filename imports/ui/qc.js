@@ -84,10 +84,14 @@ var addPapaya = function(data, entry_type, template_instance, callback){
 
         }
         Session.set("loadableImages", loadableImages)
+        console.log("checking papaya containers");
         if (papayaContainers.length != 0){
             var prev_volumes = papayaContainers[0].params.images
             var isSame = arraysEqual(prev_volumes, params["images"])
-            if (isSame){
+            console.log("same params", params);
+
+            if (isSame && $("#"+papayaContainers[0].viewerHtml[0].id).length){
+                console.log("id exists?");
                 return
             }
             console.log("papayacontainers is", papayaContainers.pop())
@@ -346,6 +350,10 @@ Template.view_images.helpers({
     user: function(){
         Meteor.subscribe('userList')
         return Meteor.users.find({}).fetch()
+    },
+
+    nextImage: function(){
+      return Session.get("nextImage");
     },
 
     consent: function(){
@@ -936,6 +944,10 @@ return function(){
     }
 }
 
+function randomInt(min, max){
+     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 Template.view_images.rendered = function(){
 
     if(!this._rendered) {
@@ -948,7 +960,21 @@ Template.view_images.rendered = function(){
     this.autorun(function(){
         var qc = Session.get("currentQC")
         Session.set("reloadPainter", false)
-
+        var filter = get_filter(qc.entry_type);
+        console.log("filter is", filter);
+        Meteor.subscribe("get_next_id", filter, qc.name, function(){
+          var new_filter = filter;
+          new_filter["name"] = {"$ne": qc.name}
+          console.log("new filter", new_filter);
+          var nextData = Subjects.find(new_filter).fetch()
+          console.log("subscription done", nextData);
+          if (nextData.length){
+            var rando = randomInt(0, nextData.length - 1);
+            Session.set("nextImage", nextData[rando].name);
+          } else {
+            Session.set("nextImage", null);
+          }
+        });
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)
         if (qc){
@@ -969,7 +995,7 @@ Template.view_images.rendered = function(){
                     }
                 }
 
-
+                console.log("adding papaya")
 
                 addPapaya(output, qc.entry_type, Template.instance())
                 load_hotkeys(Template.instance())
