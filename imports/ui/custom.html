@@ -167,22 +167,23 @@
 </template>
 
 <template name="leaderboard">
+  <div style="padding : 4px; width : 100%; height : 250px; overflow : auto; ">
+    <table class="table table-striped table-hover table-responsive" style="width: auto;">
+     <tr>
+       <th class="header-table">Rank</th>
+       <th class="header-table">Username</th>
+       <th class="header-table">#</th>
+     </tr>
+     {{#each users}}
+     <tr >
+       <td class="item-table">{{idx}}</td>
+       <td class="item-table">{{username}}</td>
+       <td class="item-table">{{images}}</td>
+     </tr>
+     {{/each}}
 
-  <table class="table table-striped table-hover table-responsive" style="width: auto;">
-   <tr>
-     <th class="header-table">Rank</th>
-     <th class="header-table">Username</th>
-     <th class="header-table">#</th>
-   </tr>
-   {{#each users}}
-   <tr >
-     <td class="item-table">{{idx}}</td>
-     <td class="item-table">{{username}}</td>
-     <td class="item-table">{{images}}</td>
-   </tr>
-   {{/each}}
-
- </table>
+   </table>
+  </div>
 
 </template>
 
@@ -241,7 +242,7 @@
     </p>
 
   <h6>CONFIDENTIALITY OF RESEARCH INFORMATION</h6>
-  <p>Your social media login information (such as username and email address), if provided, will remain confidential and will not be shared outside the study team.  
+  <p>Your social media login information (such as username and email address), if provided, will remain confidential and will not be shared outside the study team.
   Government or university staff sometimes review studies such as this one to make sure they are being done safely and legally.  If a review of this study takes place, your records may be examined.  The reviewers will protect your privacy.  The study records will not be used to put you at legal risk of harm.
     </p>
   <h6>RESEARCH-RELATED INJURY</h6>

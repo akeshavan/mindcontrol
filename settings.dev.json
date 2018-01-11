@@ -1,6 +1,6 @@
 {
   "public": {
-    "startup_json":"https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/hbn_manifest.json",
+    "startup_json":"http://dxugxjm290185.cloudfront.net/hbn/hbn_manifest.json",
     "load_if_empty": true,
     "use_custom": true,
     "needs_consent": true,
@@ -37,7 +37,7 @@
         ],
         "metric_names": ["Age","EHQ_Total","Sex","average_vote","num_votes"],
         "graph_type": "histogram",
-        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
@@ -79,7 +79,7 @@
           }
         ],
         "graph_type": null,
-        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
@@ -121,7 +121,7 @@
           }
         ],
         "graph_type": null,
-        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
@@ -163,7 +163,7 @@
           }
         ],
         "graph_type": null,
-        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
@@ -205,7 +205,7 @@
           }
         ],
         "graph_type": null,
-        "staticURL": "https://s3-us-west-2.amazonaws.com/akeshavan-mindcontrol/hbn/",
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
