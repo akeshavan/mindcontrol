@@ -41,11 +41,11 @@ Check out the [demo](http://mindcontrol.herokuapp.com/). [This data is from the 
 * click on a site (for example, Baltimore) to only show exams from that site
 * In the freesurfer table, click the select box to change the metric of the histogram
 
-![switch histograms](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/histogram_switch.gif)
+![switch histograms](http://dxugxjm290185.cloudfront.net/demo_gifs/histogram_switch.gif)
 
 * Brush the histogram to filter the table, which only shows freesurfer id's that match the brush range 
 
-![brushing and viewing images](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/histogram_brushing_and_image_viewing.gif)
+![brushing and viewing images](http://dxugxjm290185.cloudfront.net/demo_gifs/histogram_brushing_and_image_viewing.gif)
 
 * Save your filter by typing a name in the left text-box
 * Click 'reset' to undo the filtering
@@ -53,17 +53,17 @@ Check out the [demo](http://mindcontrol.herokuapp.com/). [This data is from the 
 * Mark Pass, Fail, Needs Edits, or Edited, and leave some comments about the image. Click 'save'
 * You can log points
 
-![log points](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/logLesion.gif)
+![log points](http://dxugxjm290185.cloudfront.net/demo_gifs/logLesion.gif)
 
 * You can log curves
 
-![log curves](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/logContour.gif)
+![log curves](http://dxugxjm290185.cloudfront.net/demo_gifs/logContour.gif)
 
 * Edit voxels:
 
-![edit voxels](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/dura_edit.gif)
+![edit voxels](http://dxugxjm290185.cloudfront.net/demo_gifs/dura_edit.gif)
 
 * (beta) You can collaborate on the same image:
 
-![collaborate](https://dl.dropboxusercontent.com/u/9020198/mindcontrol_demo_gifs/syncedViewers.gif)
+![collaborate](http://dxugxjm290185.cloudfront.net/demo_gifs/syncedViewers.gif)
 
