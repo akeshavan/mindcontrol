@@ -963,8 +963,18 @@ Template.view_images.rendered = function(){
         var filter = get_filter(qc.entry_type);
         console.log("filter is", filter);
         Meteor.subscribe("get_next_id", filter, qc.name, function(){
-          var new_filter = filter;
+          var new_filter = {};
+          var subFilter = Session.get("subjectSelector")
+          if (subFilter.subject_id["$in"].length){
+            //way of getting subjects w/ out knowing other filter params
+            new_filter = subFilter
+          } else {
+            new_filter = filter
+          }
+
+          window.Subjects = Subjects;
           new_filter["name"] = {"$ne": qc.name}
+
           console.log("new filter", new_filter);
           var nextData = Subjects.find(new_filter).fetch()
           console.log("subscription done", nextData);

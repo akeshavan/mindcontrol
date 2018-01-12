@@ -20,7 +20,7 @@ if (Meteor.isServer) {
 
       //var cursor_fetch = Subjects.find(filter, {fields: {name: 1, _id: 0}})
       console.log("getting next ids");
-      return Subjects.find(filter, {fields: {name:1, subject_id: 1}});
+      return Subjects.find(filter, {fields: {name:1, subject_id: 1, entry_type: 1}});
 
   });
 
