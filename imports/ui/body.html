@@ -23,16 +23,16 @@
 
 <template name="main_body" data-spy="scroll" data-target=".bs-docs-sidebar">
 
-    <head><title>MindControl</title></head>
+    <div class="all_stuff">
     {{> navbar}}
 
 
-    <div>
+    <div class="sidebar_and_content">
 
       {{> Template.dynamic template=sidebar_content}}
 
-      <div class="col-sm-8 col-md-8 col-lg-9">
-        <div class="">
+      <div class="col-sm-8 col-md-9 col-lg-9">
+        <div class="row">
         {{#if use_custom}}
         {{> custom}}
         {{/if}}
@@ -42,9 +42,13 @@
         {{>Template.dynamic template=content}}
 
         </div>
+
       </div>
+
     </div> <!--End Row-->
 
+{{> footer}}
+</div>
 <!--{{> qc_modal}}-->
 
 </template>
@@ -52,5 +56,32 @@
 <template name="tasks">
 
 {{> tabular table=TabularTables.task selector=selector class="table table-striped table-bordered table-condensed"}}
+
+</template>
+
+<template name="footer">
+
+  <div class="myfooter">
+    <div id="">
+
+        <div class="row">
+          <div class="col-md-12" style="padding-top: 60px;">
+            <p>For more information on Mindcontrol, see:</p>
+            <p>
+              <img style="width:18px;" src="/GitHub-Mark-32px.png"> &nbsp;
+              <a href="https://github.com/akeshavan/mindcontrol">Source code on GitHub</a>
+            </p>
+            <p><span class="glyphicon glyphicon-book" aria-hidden="true"></span> &nbsp;
+            <a href="http://www.sciencedirect.com/science/article/pii/S1053811917302707?via%3Dihub">
+              Keshavan, Anisha, et al.
+              "Mindcontrol: A web application for brain segmentation quality control."
+               NeuroImage (2017).</a>
+             </p>
+
+          </div>
+        </div>
+
+    </div>
+  </div>
 
 </template>

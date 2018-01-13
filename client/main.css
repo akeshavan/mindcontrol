@@ -485,3 +485,30 @@ h4 td, th{
   position: fixed;
   top: 50px;
 }
+
+.myfooter {
+  height: 200px;
+  width: 100%;
+  text-align: center;
+  float: left;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #e5e5e5;
+  margin-top: 20px;
+  position: relative;
+}
+
+#child {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 75%;
+    height: 30%;
+    margin: auto;
+}
+
+.all_stuff {
+  float: left;
+}
