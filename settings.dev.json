@@ -41,7 +41,8 @@
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
-        "logPoints": true
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       },
       {
         "name": "T2w",
@@ -83,7 +84,8 @@
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
-        "logPoints": true
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       },
       {
         "name": "FLAIR",
@@ -125,7 +127,8 @@
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
-        "logPoints": true
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       },
       {
         "name": "MT-off_PD",
@@ -167,7 +170,8 @@
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
-        "logPoints": true
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       },
       {
         "name": "MT-on_PD",
@@ -209,7 +213,8 @@
         "usePeerJS": false,
         "logPainter": false,
         "logContours": false,
-        "logPoints": true
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       }
   ]
   }

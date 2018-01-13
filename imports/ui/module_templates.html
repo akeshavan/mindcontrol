@@ -46,7 +46,7 @@
 
 <template name="body_sidebar">
 
-  <div class="col-md-3 col-sm-3 col-lg-3 ">
+  <div class="col-md-4 col-sm-4 col-lg-3 ">
     <div class="bs-docs-sidebar">
       <h5> Leaderboard </h5>
       {{> leaderboard }}
@@ -68,7 +68,7 @@
           <button class="btn btn-default btn-small reset"> Reset </button>
           <br><br>
 
-          <div class="well">
+          <div class="well sidebar" style="max-width: 200px;">
              {{#each currentSelector}}
             <span class="tag label label-info">
               <span class="{{this.mapper}}">{{this.name}}</span>
@@ -81,7 +81,7 @@
           <form class="form-inline">
             <div class="form-group">
                 <button class="btn btn-default btn-small save"> Save </button>
-                <input type="text" name="qname" id="qname" class="form-control"><br>
+                <input type="text" name="qname" id="qname" class="form-control" style="max-width: 140px;"><br>
             </div>
           </form>
 

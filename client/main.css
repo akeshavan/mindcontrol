@@ -162,6 +162,9 @@ a:hover {
   .bs-docs-sidenav > li > a {
     width: 230px \9; /* Override the previous IE8-9 hack */
   }
+  .sidebar {
+    width: 258px;
+  }
 }
 
 /* Desktop
@@ -187,6 +190,10 @@ a:hover {
     width: 218px;
     margin-top: 30px;
     margin-right: 0;
+  }
+
+  .sidebar {
+    width: 218px;
   }
 
   .subhead h1,

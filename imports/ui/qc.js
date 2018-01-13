@@ -365,6 +365,16 @@ Template.view_images.helpers({
       return true
     },
 
+    qc_options: function(){
+      var qc = Session.get("currentQC")
+      var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type});
+      if (settings.qc_options){
+        return settings.qc_options;
+      } else {
+        return {"pass": 1, "fail": 1, "needs_edits": 1, "edited": 1, "assignTo": 1, "notes": 1, "confidence": 1}
+      }
+    },
+
     showPainter: function() {
       var qc = Session.get("currentQC")
       var settings = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == qc.entry_type})

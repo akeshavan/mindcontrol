@@ -222,34 +222,42 @@
         <div class="input-group">
 
 <table class="table table-hover table-striped">
-          <tr>
+          <tr>{{#if qc_options.pass}}
             <th>
                 <div class="radio">
 
       <label>
         <input type="radio" name="QC" id="options_pass" value="1" checked>
-        PASS
+        <span class=" label label-success" style="font-size:1em;">Pass</span>
         </label>
+
     </div>
-    </th>
-            <th>    <div class="radio">
+    </th>{{/if}}{{#if qc_options.fail}}
+            <th>
+
+              <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_fail" value="0">
-        FAIL
+        <span class=" label label-danger" style="font-size:1em;">Fail</span>
       </label>
-    </div></th>
+
+    </div></th>{{/if}}
+    {{#if qc_options.needs_edits}}
             <th>    <div class="radio">
+
       <label>
         <input type="radio" name="QC" id="options_edit" value="2">
-        NEEDS EDITS
+        <span class=" label label-primary" style="font-size:1em;">Needs Edits</span>
       </label>
-    </div></th>
+
+    </div></th>{{/if}}{{#if qc_options.edited}}
             <th>    <div class="radio">
       <label>
         <input type="radio" name="QC" id="options_edited" value="3">
-        EDITED
+        <span class=" label label-info" style="font-size:1em;">Edited</span>
+
       </label>
-    </div></th>
+    </div></th>{{/if}}
           </tr>
 </table>
 
@@ -258,6 +266,7 @@
 
       </div>
       <div class="input-group">
+        {{#if qc_options.confidence}}
         <div class="form-space">
       <label>Confidence: </label>
       <div class="form-group">
@@ -288,8 +297,9 @@
 
       </div>
       </div>
+      {{/if}}
 
-
+      {{#if qc_options.assignTo}}
     <label style="margin-top: 5px;">Assign To: </label>
     <div class="form-group">
       <select id="user-assign" name="user_assign" width="100%" class="form-control" multiple="multiple">
@@ -304,14 +314,16 @@
 
 
   <br>
+  {{/if}}
+  {{#if qc_options.notes}}
       <label  style="margin-top: 15px;">
         Notes:</label> <textarea class="form-control" rows="3" width="100%" name="notes_QC"></textarea>
-
+  {{/if}}
     </div>
     </div>
 <br>
       <label>
-          <button class="btn btn-success" type="submit">Save</button>
+          <button class="btn btn-primary" type="submit">Save</button>
       </label>
   </form>
 

@@ -78,7 +78,7 @@ Template.consent.rendered = function(){
     if (navbar && sticky){
       // Get the offset position of the navbar
 
-      if (window.pageYOffset >= sticky) {
+      if (window.pageYOffset >= sticky && window.innerWidth > 767) {
         navbar.classList.add("sticky")
       } else {
         navbar.classList.remove("sticky");
