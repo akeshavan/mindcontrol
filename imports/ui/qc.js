@@ -972,6 +972,11 @@ Template.view_images.rendered = function(){
         Session.set("reloadPainter", false)
         var filter = get_filter(qc.entry_type);
         console.log("filter is", filter);
+        $("#conf")[0].value = 3;
+        $("#options_pass").prop('checked', false);
+        $("#options_fail").prop('checked', false);
+        $("#options_edit").prop('checked', false);
+        $("#options_edited").prop('checked', false);
         Meteor.subscribe("get_next_id", filter, qc.name, function(){
           var new_filter = {};
           var subFilter = Session.get("subjectSelector")
