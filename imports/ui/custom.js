@@ -22,7 +22,7 @@ Template.leaderboard.helpers({
     var data = Meteor.users.find({}) //.skip(Session.get("leaderboardPage"));
     if (data){
       data.forEach(function(val){
-        var entry = {username: val.username}
+        var entry = {username: val.username.split("@")[0]}
         Meteor.subscribe('userCount', val.username);
         var num = Subjects.find({"quality_vote.checkedBy":val.username}).count();
         entry["images"] = num;

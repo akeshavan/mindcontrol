@@ -972,11 +972,7 @@ Template.view_images.rendered = function(){
         Session.set("reloadPainter", false)
         var filter = get_filter(qc.entry_type);
         console.log("filter is", filter);
-        $("#conf")[0].value = 3;
-        $("#options_pass").prop('checked', false);
-        $("#options_fail").prop('checked', false);
-        $("#options_edit").prop('checked', false);
-        $("#options_edited").prop('checked', false);
+
         Meteor.subscribe("get_next_id", filter, qc.name, function(){
           var new_filter = {};
           var subFilter = Session.get("subjectSelector")
@@ -999,6 +995,15 @@ Template.view_images.rendered = function(){
           } else {
             Session.set("nextImage", null);
           }
+
+          var likert = randomInt(1, 5);
+          $("#conf")[0].value = likert; // Cameron: randomly set so you have to change it.
+          $("#options_pass").prop('checked', false);
+          $("#options_fail").prop('checked', false);
+          $("#options_edit").prop('checked', false);
+          $("#options_edited").prop('checked', false);
+          $("#notes").val('');
+          
         });
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)
