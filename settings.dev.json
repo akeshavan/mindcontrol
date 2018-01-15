@@ -170,6 +170,39 @@
         "logContours": false,
         "logPoints": true,
         "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
+      },
+      {
+        "name": "DWI",
+        "entry_type": "dwi",
+        "fields": [
+          {
+            "function_name": "get_qc_viewer",
+            "id": "name",
+            "name": "Image File"
+          },
+          {
+            "function_name": "get_qc_ave_field",
+            "id": "average_vote",
+            "name": "QC vote"
+          },
+          {
+            "function_name": null,
+            "id": "num_votes",
+            "name": "# votes"
+          },
+          {
+            "function_name": null,
+            "id": "quality_check.notes_QC",
+            "name": "Notes"
+          }
+        ],
+        "graph_type": null,
+        "staticURL": "https://dxugxjm290185.cloudfront.net/hbn/",
+        "usePeerJS": false,
+        "logPainter": false,
+        "logContours": false,
+        "logPoints": true,
+        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 1}
       }
   ]
   }
