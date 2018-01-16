@@ -985,17 +985,24 @@ Template.view_images.rendered = function(){
 
           window.Subjects = Subjects;
           new_filter["name"] = {"$ne": qc.name}
-
+          new_filter["checkedBy"] = {"$ne": Meteor.user().username};
+          new_filter["quality_vote.checkedBy"] = {"$ne": Meteor.user().username};
           console.log("new filter", new_filter);
-          var nextData = Subjects.find(new_filter).fetch()
-          console.log("subscription done", nextData);
-          if (nextData.length){
-            var rando = randomInt(0, nextData.length - 1);
-            Session.set("nextImage", nextData[rando].name);
-          } else {
+          var nextData = Subjects.findOne(new_filter, {sort: {num_votes:1}});
+          if (!nextData){
             Session.set("nextImage", null);
+          } else {
+            new_filter["num_votes"] = nextData.num_votes;
+            var nextData = Subjects.find(new_filter).fetch();
+            console.log("subscription done", nextData);
+            if (nextData.length){
+              var rando = randomInt(0, Math.min(0, nextData.length - 1));
+              Session.set("nextImage", nextData[rando].name);
+            } else {
+              Session.set("nextImage", null);
+            }
           }
-
+          
           var likert = randomInt(1, 5);
           $("#conf")[0].value = likert; // Cameron: randomly set so you have to change it.
           $("#options_pass").prop('checked', false);
@@ -1003,7 +1010,7 @@ Template.view_images.rendered = function(){
           $("#options_edit").prop('checked', false);
           $("#options_edited").prop('checked', false);
           $("#notes").val('');
-          
+
         });
         //console.log("loggedPoints?", Template.instance().loggedPoints.get())
         //console.log("in autorun, qc is", qc)

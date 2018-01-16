@@ -17,10 +17,12 @@ if (Meteor.isServer) {
       //console.log("publishing next id from", entry_type, name)
 
       filter["name"] = {$nin: [name]}
+      filter["quality_vote.checkedBy"] = {$ne:name}
 
       //var cursor_fetch = Subjects.find(filter, {fields: {name: 1, _id: 0}})
       console.log("getting next ids");
-      return Subjects.find(filter, {fields: {name:1, subject_id: 1, entry_type: 1}});
+      return Subjects.find(filter, {fields: {name:1, subject_id: 1,
+        entry_type: 1, num_votes: 1, checkedBy: 1, 'quality_vote.checkedBy':1}});
 
   });
 
