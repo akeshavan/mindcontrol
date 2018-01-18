@@ -190,7 +190,13 @@ d3barplot = function(window, data, formatCount, metric, entry_type){
         .attr("text-anchor", "middle")
         .attr("fill", "black")
         .attr("font-size", "10px")
-        .text(function(d) { return formatCount(d._id); });
+        .text(function(d) {
+          if (d._id < 1){
+            return d3.format(".2f")(d._id)
+          } else {
+            return d3.format(".1f")(d._id)
+          }
+         });
 
         var brush = d3.svg.brush()
             .x(window.d3vis.x)
@@ -341,7 +347,7 @@ do_d3_histogram = function (values, minval, maxval, metric, dom_id, entry_type) 
 
 
         var formatCount = d3.format(",.0f");
-        d3barplot(window,values, formatCount, metric, entry_type)
+        d3barplot(window, values, formatCount, metric, entry_type)
 
     });
   })
