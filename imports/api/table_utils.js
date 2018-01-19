@@ -132,7 +132,7 @@ get_qc_ave_field = function(entry_type, field_name, title){
                               }
                               //console.log(class_mapper[realval], val_mapper[realval])
                               if (realval >= 0){
-                                html = '<span class="'+class_mapper[realval]+'">'+val_mapper[realval]+'</span>'
+                                html = '<span class="'+class_mapper[realval]+'">'+d3.format('.2f')(val_mapper[realval])+'</span>'
                               }
                               else {
                                 html = '<a class="'+class_mapper[realval]+' filter '+entry_type+'+'+field_name+'+'+val+'">'+val_mapper[realval]+'</a>'
