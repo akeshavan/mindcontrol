@@ -19,17 +19,20 @@ start the server
 
 ```
 cd mindcontrol
-meteor
+meteor --settings settings.dev.json
 ```
 
 In a browser navigate to localhost:3000
 
 ## Configure
-For configuration tutorials, see the mindcontrol_docs repository: http://github.com/akeshavan/mindcontrol_docs and the tutorial jupyter notebook: http://nbviewer.jupyter.org/github/akeshavan/mindcontrol_docs/blob/master/Installing_mindcontrol.ipynb
 
-For an example Freesurfer editing instance of Mindcontrol, see http://nbviewer.jupyter.org/github/akeshavan/mindcontrol_docs/blob/master/MindPrepFS.ipynb
+Create a database json file similar to [http://dxugxjm290185.cloudfront.net/hbn/hbn_manifest.json](http://dxugxjm290185.cloudfront.net/hbn/hbn_manifest.json)
 
-To see an example schema, see this file: https://dl.dropboxusercontent.com/u/9020198/data/data_rf.json
+* The required key values pairs are `name` `subject_id` `check_masks` and `entry_type`. 
+* Make sure `name` is UNIQUE
+* `check_masks` is a list with paths relative to a `staticURL`
+* Host your database json file on a server and copy/paste its url into the "startup_json" value on `settings.dev.json`
+* Define each module in `settings.dev.json` to point to your `entry_type`, and define the module's `staticURL`
 
 ## Demo
 
