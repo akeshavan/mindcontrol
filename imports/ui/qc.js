@@ -1004,7 +1004,10 @@ Template.view_images.rendered = function(){
           }
           
           var likert = randomInt(1, 5);
-          $("#conf")[0].value = likert; // Cameron: randomly set so you have to change it.
+          try {
+              $("#conf")[0].value = likert; // Cameron: randomly set so you have to change it.
+          } catch(e) {
+          }
           $("#options_pass").prop('checked', false);
           $("#options_fail").prop('checked', false);
           $("#options_edit").prop('checked', false);
