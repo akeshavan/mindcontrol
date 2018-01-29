@@ -80,7 +80,7 @@ pub_set = {"startup_json": file_server+"startup.auto.json",
 settings = {"public": pub_set}
 
 # Write out file list to bids directory
-with open(os.path.join(bids_dir,"startup_auto.json"), "w") as h:
+with open(os.path.join(bids_dir,"startup.auto.json"), "w") as h:
     json.dump(manifest,h)
 # Write out the settings file to the mindcontrol directory
 with open("settings.auto.json", "w") as h:
