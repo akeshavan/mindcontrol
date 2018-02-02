@@ -72,7 +72,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
         var loadableImages = []
         Session.set("loadableImages", loadableImages)
         for (i=0;i<data.check_masks.length;i++){ //never load more than 2 images
-            var url = res["staticURL"]+data["check_masks"][i]+"?dl=0"
+            var url = res["staticURL"]+data["check_masks"][i]
             console.log("url is", url)
             if (i>=2){
                 loadableImages.push(url)
@@ -1002,7 +1002,7 @@ Template.view_images.rendered = function(){
               Session.set("nextImage", null);
             }
           }
-          
+
           var likert = randomInt(1, 5);
           try {
               $("#conf")[0].value = likert; // Cameron: randomly set so you have to change it.
