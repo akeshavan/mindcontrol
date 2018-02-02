@@ -666,7 +666,11 @@ Template.view_images.events({
         update["quality_check"] = form_data
         update["checkedBy"] = Meteor.user().username
         update["checkedAt"] = new Date()
-        update["confidence"] = parseInt($("#conf")[0].value)
+        try {
+          update["confidence"] = parseInt($("#conf")[0].value)
+        } catch (e) {
+
+        } 
 
         vote_entry = {quality_check: update.quality_check,
                       checkedBy: update.checkedBy,
@@ -806,7 +810,7 @@ Template.view_images.events({
          var viewer = papayaContainers[0].viewer
          draw_point(screenCoor, viewer, "rgb(0,0,255)", 3)
      })*/
-     fill_all_points(this.matrix_coor)
+     //fill_all_points(this.matrix_coor)
      fill_all(template)
 
  },
