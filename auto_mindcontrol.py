@@ -3,8 +3,15 @@ import argparse
 from pathlib import Path
 import json
 from bids.grabbids import BIDSLayout
+import subprocess
+import os
+import shutil
 
 parser = argparse.ArgumentParser(description='Autogenerate mindcontrol settings from a BIDS directory')
+parser.add_argument('--server', action = 'store_true', 
+                    help='Start a simple file server in the bids directory.')
+parser.add_argument('--meteor', action = 'store_true', 
+                    help='Start the meteor server that will serve mindcontrol.')
 parser.add_argument('bids_dir', help='The directory with the input dataset '
                     'formatted according to the BIDS standard.')
 
@@ -85,3 +92,10 @@ with open(os.path.join(bids_dir,"startup.auto.json"), "w") as h:
 # Write out the settings file to the mindcontrol directory
 with open("settings.auto.json", "w") as h:
     json.dump(settings,h)
+
+if args.server:
+    shutil.copy2("start_static_server.py",bids_dir)
+    subprocess.Popen("python start_static_server.py", cwd = bids_dir, shell = True)
+if args.meteor:
+    meteor = subprocess.Popen("meteor --settings settings.auto.json".split(' '))
+    meteor.wait()
