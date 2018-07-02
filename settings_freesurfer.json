@@ -45,6 +45,7 @@
           }
         ],
         "graph_type": "histogram",
+        "num_overlays": 1,
         "colormaps": {
           "0":{"name": "Grayscale",
               "alpha": 1,

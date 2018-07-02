@@ -67,19 +67,20 @@ var addPapaya = function(data, entry_type, template_instance, callback){
     //if (papayaContainers.length == 0){
     //Meteor.call("get_generator", entry_type, function(err, res){
     var res = _.find(Meteor.settings.public.modules, function(x){return x.entry_type == entry_type})
+    var nOverlays = res['num_overlays'] || 2;
         var params = {}
         params["images"] = []
         var loadableImages = []
         Session.set("loadableImages", loadableImages)
-        for (i=0;i<data.check_masks.length;i++){ //never load more than 2 images
+        for (i=0;i<data.check_masks.length;i++){ //never load more than nOverlays images
             var url = res["staticURL"]+data["check_masks"][i]
             console.log("url is", url)
-            if (i>=2){
+            if (i>=nOverlays){
                 loadableImages.push(url)
-
             }
             else{
                 params["images"].push(url)
+                console.log('params of images is', params['images'])
             }
 
         }
@@ -102,7 +103,7 @@ var addPapaya = function(data, entry_type, template_instance, callback){
             var cmap = res.colormaps
             if (cmap){
                 var idxs = Object.keys(cmap)
-                for (i=0;i<idxs.length;i++){
+                for (i=0;i<params['images'].length;i++){
                     var idx = idxs[i]
                     console.log("index is", idx)
                     var opts = cmap[idx]
@@ -670,7 +671,7 @@ Template.view_images.events({
           update["confidence"] = parseInt($("#conf")[0].value)
         } catch (e) {
 
-        } 
+        }
 
         vote_entry = {quality_check: update.quality_check,
                       checkedBy: update.checkedBy,
