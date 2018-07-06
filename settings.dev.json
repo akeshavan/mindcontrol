@@ -5,49 +5,7 @@
     "use_custom": true,
     "needs_consent": true,
     "modules": [
-      {
-        "name": "mindboggle",
-        "entry_type": "mindboggle",
-        "fields": [
-          {
-            "function_name": "get_qc_viewer",
-            "id": "name",
-            "name": "Image File"
-          },
-          {
-            "function_name": "get_qc_ave_field",
-            "id": "average_vote",
-            "name": "QC vote"
-          },
-          {
-            "function_name": null,
-            "id": "num_votes",
-            "name": "# votes"
-          },
-          {
-            "function_name": null,
-            "id": "quality_check.notes_QC",
-            "name": "Notes"
-          }
-        ],
-        "metric_names": [],
-        "graph_type": null,
-        "staticURL": "",
-        "usePeerJS": false,
-        "logPainter": false,
-        "logContours": true,
-        "logPoints": true,
-        "colormaps": {
-          "1": {
-            "name": "custom.Freesurfer",
-            "alpha": 0.5,
-            "min": 0,
-            "max": 2000
-          }
-        },
-        "qc_options": {"pass": 1, "fail": 1, "needs_edits": 0, "edited": 0, "assignTo": 0, "notes": 1, "confidence": 0}
-      },
-      {
+       {
         "name": "T1w",
         "entry_type": "T1w",
         "fields": [
